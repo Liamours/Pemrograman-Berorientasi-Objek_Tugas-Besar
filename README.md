@@ -1,6 +1,6 @@
 Tugas besar mata kuliah Pemrograman Berorientasi Objek
 
-Kelompok: 07
+Kelompok: 06
 Anggota:
 - Fathan Arya Maulana (103012300083)
 - Samuel Yohanes Michael Kaunang (103012300247)
