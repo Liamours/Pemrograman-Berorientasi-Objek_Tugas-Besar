@@ -8,11 +8,10 @@ Directory ini terdiri dari file-file yang akan ditampilkan pada pemaparan propos
   ![Class Diagram](Class_Diagram.png)
 
 - **Mockup**
-  - ![Page Registrasi](<Mockup/Page Registrasi.png>)
-  - ![Page Login](<Mockup/Page Login.png>)
-  - ![Page Galeri Barang](<Mockup/Page Galery Barang.png>)
-  - ![Page Detail Barang](<Mockup/Page Detail Barang.png>)
-  - ![Page Keranjang](<Mockup/Page Keranjang.png>)
-  - ![Page Profil](<Mockup/Page Profil.png>)
-  - ![Pop-out Logout](<Mockup/Pop-out Logout.png>)
-
+  - ![Page Registrasi](<Mockup/Page-Registrasi.png>)
+  - ![Page Login](<Mockup/Page-Login.png>)
+  - ![Page Galeri Barang](<Mockup/Page-Galery-Barang.png>)
+  - ![Page Detail Barang](<Mockup/Page-Detail-Barang.png>)
+  - ![Page Keranjang](<Mockup/Page-Keranjang.png>)
+  - ![Page Profil](<Mockup/Page-Profil.png>)
+  - ![Pop-out Logout](<Mockup/Pop-out-Logout.png>)
