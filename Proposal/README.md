@@ -1,5 +1,9 @@
-
 Directory ini terdiri dari file-file yang akan ditampilkan pada pemaparan proposal project kami, terdiri atas:
+
+- **Rencana Framework**
+  - Frontend: ReactJS
+  - Backend: Spring Boot
+  - Database: MySQL
 
 - **Dokumen Proposal**
   - `PBO_Tugas Besar_Proposal_kelompok 06.pdf`
