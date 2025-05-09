@@ -2,7 +2,7 @@
 
 Nama Aplikasi: Grow and Cheer
 
-Kelompok: 06
+Kelompok: 06\
 Anggota:
 
 - Fathan Arya Maulana (103012300083)
