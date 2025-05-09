@@ -1,5 +1,7 @@
 # Tugas besar mata kuliah Pemrograman Berorientasi Objek
 
+Nama Aplikasi: Grow and Cheer
+
 Kelompok: 06
 Anggota:
 
