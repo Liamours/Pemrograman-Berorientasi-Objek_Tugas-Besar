@@ -1,9 +1,0 @@
-{
-  "message": "Login sukses",
-  "token": "JWT_TOKEN_HERE",
-  "user": {
-    "id": 1,
-    "name": "user1",
-    "email": "user1i@example.com"
-  }
-}
