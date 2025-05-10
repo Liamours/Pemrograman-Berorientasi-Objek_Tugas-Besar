@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Daftar • GrowAndCheer</title>
+    <style>
+        :root {
+            --main-dark: #121212;
+            --card-dark: #1e1e1e;
+            --input-dark: #2d2d2d;
+            --highlight: #505050;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #707070;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--main-dark);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 360px;
+            padding: 0 20px;
+        }
+        .card {
+            background: var(--card-dark);
+            padding: 2.5em;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2em;
+            font-size: 1.5em;
+            letter-spacing: 1px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5em;
+            font-weight: 500;
+            font-size: 1.5em;
+            color: var(--text-primary);
+        }
+        .form-group {
+            margin-bottom: 1.5em;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        input[type="email"],
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.8em 1em;
+            background-color: var(--input-dark);
+            border: 1px solid var(--highlight);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(80, 80, 80, 0.3);
+        }
+        .error {
+            margin-top: 0.5em;
+            color: #a0a0a0;
+            font-size: 0.85em;
+        }
+        button {
+            width: 100%;
+            padding: 0.9em;
+            background-color: var(--highlight);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1em;
+        }
+        button:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .link-container {
+            text-align: center;
+            margin-top: 1.5em;
+            color: var(--text-secondary);
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: var(--text-primary);
+        }
+        .message {
+            margin-top: 1em;
+            padding: 0.8em;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .success-message {
+            background-color: rgba(80, 80, 80, 0.2);
+            color: #b0b0b0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">GrowAndCheer</div>
+
+    <div class="card">
+        <h1>Buat Akun Baru</h1>
+
+        <form th:action="@{/api/auth/register}" th:object="${registerRequest}" method="post">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" th:field="*{email}" required />
+                <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</p>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nama</label>
+                <input type="text" id="name" th:field="*{name}" required />
+                <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Nama error</p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" required minlength="6" />
+                <p class="error" th:errors="*{password}">Password error</p>
+            </div>
+
+            <button type="submit">Daftar</button>
+        </form>
+
+        <div class="message success-message" th:if="${success}" th:text="${success}"></div>
+    </div>
+
+    <div class="link-container">
+        <p>Sudah punya akun? <a th:href="@{/login}">Login di sini</a></p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,10 +1,10 @@
-package com.example.rest_service;
+package com.example.growandcheer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RestServiceApplicationTests {
+class GrowandcheerApplicationTests {
 
 	@Test
 	void contextLoads() {

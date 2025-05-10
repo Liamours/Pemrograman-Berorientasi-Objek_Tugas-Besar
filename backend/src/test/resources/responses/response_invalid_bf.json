@@ -1,0 +1,4 @@
+{
+  "status": "invalid_input",
+  "message": "Password hanya boleh mengandung A–Z, a–z, 0–9"
+}
