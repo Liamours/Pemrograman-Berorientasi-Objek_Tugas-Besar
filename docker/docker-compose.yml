@@ -9,8 +9,8 @@ services:
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ../db/growandcheer.sql:/docker-entrypoint-initdb.d/growandcheer.sql
       - db_data:/var/lib/mysql
+      - ../db/growandcheer.sql:/docker-entrypoint-initdb.d/growandcheer.sql
     ports:
       - "3308:3306"
 
