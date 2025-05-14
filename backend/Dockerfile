@@ -6,4 +6,4 @@ COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 COPY src src
 RUN ./mvnw package -DskipTests
-CMD ["java", "-jar", "target/*.jar"]
+CMD ["java", "-jar", "target/rest-service-0.0.1-SNAPSHOT.jar"]
