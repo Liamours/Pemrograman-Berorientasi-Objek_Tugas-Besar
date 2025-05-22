@@ -6,7 +6,7 @@
 
 .login-header-image {
   width: 100%;
-  height: 250px;
+  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,7 +33,7 @@ body, html {
   background-size: contain, contain, contain;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   height: 100vh;
 }
 

@@ -26,14 +26,14 @@ body, html {
 }
 
 .registration-page {
-  background-image: url(gambar/birubackgroundtengah.png) , url(gambar/warungkananblur.png), url(gambar/warungkiriblur.png);
+  background-image: url(gambar/birubackgroundtengah.png), url(gambar/warungkananblur.png), url(gambar/warungkiriblur.png);
   background-repeat: no-repeat, no-repeat, no-repeat;
-  background-position: center top, center right, center left;
-  background-size: 34%, 33%, 33%;
-  height: 100vh;
+  background-position: center top, right, left;
+  background-size: contain, contain, contain;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  height: 100vh;
 }
 
 .registration-container {

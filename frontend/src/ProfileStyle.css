@@ -1,4 +1,7 @@
-body{
+/* AccountSettings.css */
+
+body {
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -7,7 +10,7 @@ body{
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #4caf50;
+  background-color: #C1F3C8;
 }
 
 .header {
@@ -16,7 +19,7 @@ body{
   align-items: center;
   background-color: #4caf50;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
 }
 
 .logo {
@@ -41,6 +44,7 @@ body{
   background-color: #e0f7fa;
   padding: 20px;
   width: 200px;
+  height: 100%;
 }
 
 .sidebar ul {
