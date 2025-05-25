@@ -41,6 +41,23 @@ public class AuthController {
         this.userDetailsService = userDetailsService;
     }
 
+    // REGISTER
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Email udah dipake"));
+        }
+
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(registerRequest.getPassword()); // plaintext, bro
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Register sukses, silakan login!"));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         // 1. Find user by email
