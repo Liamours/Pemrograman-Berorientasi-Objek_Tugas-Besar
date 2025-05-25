@@ -22,6 +22,7 @@ import com.example.rest_service.model.User;
 import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.security.JwtTokenUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -72,5 +73,10 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "Login successful", responseData));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse> logout() {
+        // Karena tanpa blacklist, logout cukup hapus token di client
+        return ResponseEntity.ok(new ApiResponse(true, "Logout successful"));
     }
 }
