@@ -5,24 +5,24 @@
 
 package com.example.rest_service.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.example.rest_service.dto.ApiResponse;
 import com.example.rest_service.dto.LoginRequest;
 import com.example.rest_service.model.User;
 import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.security.JwtTokenUtil;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,16 +30,13 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
 
     public AuthController(UserRepository userRepository,
                           JwtTokenUtil jwtTokenUtil,
-                          BCryptPasswordEncoder passwordEncoder,
                           UserDetailsService userDetailsService) {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
     }
 
@@ -56,9 +53,9 @@ public class AuthController {
         User user = userOptional.get();
 
         // 2. Verify password with BCrypt
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!loginRequest.getPassword().equals(user.getPassword())) {
             return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, "Invalid email or password"));
+            .body(new ApiResponse(false, "Invalid email or password"));
         }
 
         // 3. Load UserDetails
