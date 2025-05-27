@@ -24,7 +24,7 @@ import com.example.rest_service.security.JwtTokenUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
