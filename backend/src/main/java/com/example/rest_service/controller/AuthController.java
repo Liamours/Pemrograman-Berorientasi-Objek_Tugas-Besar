@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.rest_service.dto.ApiResponse;
 import com.example.rest_service.dto.LoginRequest;
-import com.example.rest_service.dto.RegisterRequest;
 import com.example.rest_service.model.User;
 import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.security.JwtTokenUtil;
