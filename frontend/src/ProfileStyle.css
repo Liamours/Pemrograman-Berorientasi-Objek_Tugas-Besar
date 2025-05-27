@@ -38,13 +38,13 @@ body {
 .content {
   display: flex;
   flex-grow: 1;
+  width: 100%;
 }
 
 .sidebar {
   background-color: #e0f7fa;
   padding: 20px;
   width: 200px;
-  height: 100%;
 }
 
 .sidebar ul {

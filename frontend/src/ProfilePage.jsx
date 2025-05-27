@@ -36,7 +36,7 @@ function ProfilePage() {
                         <li><a href="#">Settings</a></li>
                         <li><a href="#">Log-out</a></li>
                     </ul>
-                </nav>
+                </nav>
                 <main className="main">
                     <div className="card">
                         <h2>Setting Akun</h2>
