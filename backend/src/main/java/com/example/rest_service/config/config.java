@@ -5,10 +5,6 @@
 
 package com.example.rest_service.config;
 
-/**
- *
- * @author ASUS
- */
-public class configuration {
-
+public class config {
 }
+

@@ -14,7 +14,6 @@ function LoginPage() {
       setMessage("Email dan password harus diisi");
       return;
     }
-  
     try {
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
@@ -25,8 +24,8 @@ function LoginPage() {
       const data = await response.json();
   
       if (response.ok) {
-        setMessage(`Login berhasil. Selamat datang, ${data.user?.name || 'User'}`);
-        localStorage.setItem('token', data.token); 
+        localStorage.setItem('token', data.token);
+        navigate('/profile'); 
       } else {
         setMessage(data.error || "Login gagal");
       }
