@@ -22,10 +22,11 @@ import com.example.rest_service.dto.RegisterRequest;
 import com.example.rest_service.model.User;
 import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.security.JwtTokenUtil;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
