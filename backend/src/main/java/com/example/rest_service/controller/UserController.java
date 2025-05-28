@@ -13,10 +13,11 @@ import com.example.rest_service.security.JwtTokenUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import com.example.rest_service.model.User;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
