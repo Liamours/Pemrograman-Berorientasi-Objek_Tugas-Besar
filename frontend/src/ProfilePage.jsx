@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileStyle.css';
-import { Link } from 'react-router-dom';
 
 function ProfilePage() {
   const [name, setName] = useState("");
@@ -10,50 +9,90 @@ function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  useEffect(() => {
-    fetch('http://localhost:8080/api/user/profile')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.data) {
-          setName(data.data.name);
-          setEmail(data.data.email);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-const handleChangePassword = () => {
-  if (newPassword !== confirmPassword) {
-    alert("Password baru dan konfirmasi password tidak cocok!");
-    return;
-  }
-
-  fetch('http://localhost:8080/api/user/profile/change-password' , {//masih salah
-    method: 'PUSH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify({
-      currentPassword,
-      newPassword
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert("Password berhasil diubah!");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        alert(data.message || "Gagal mengubah password.");
+ useEffect(() => {
+    fetch('http://localhost:8080/api/user/profile', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-    .catch(() => {
-      alert("Terjadi kesalahan saat menghubungi server.");
-    });
-};
+      .then(res => res.json())
+      .then(data => {
+        if (data.name && data.email) {
+          setName(data.name);
+          setEmail(data.email);
+          setMemberNumber("");
+        } else {
+          setName("");
+          setEmail("");
+          setMemberNumber("");
+        }
+      })
+      .catch(() => {
+        setName("");
+        setEmail("");
+        setMemberNumber("");
+      });
+  }, []);
+
+  const handleSaveAccountSettings = () => {
+    fetch('http://localhost:8080/api/user/profile/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        name,
+        email
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Perubahan akun berhasil disimpan!");
+        } else {
+          alert(data.message || "Gagal menyimpan perubahan akun.");
+        }
+      })
+      .catch(() => {
+        alert("Terjadi kesalahan saat menghubungi server.");
+      });
+  };
+
+  const handleChangePassword = () => {
+    if (newPassword !== confirmPassword) {
+      alert("Password baru dan konfirmasi password tidak cocok!");
+      return;
+    }
+
+    fetch('http://localhost:8080/api/user/profile/change-password', {
+      method: 'PUT', // ganti dari PUSH ke PUT
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        currentPassword,
+        newPassword
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Password berhasil diubah!");
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
+        } else {
+          alert(data.message || "Gagal mengubah password.");
+        }
+      })
+      .catch(() => {
+        alert("Terjadi kesalahan saat menghubungi server.");
+      });
+  };
+
   return (
     <div className="account-settings">
       <header className="header">
