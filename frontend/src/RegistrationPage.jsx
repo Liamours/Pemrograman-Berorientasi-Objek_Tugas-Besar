@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import './RegistrationStyle.css';
+import { useNavigate } from 'react-router-dom';
 
 function RegistrationPage() {
   const [email, setEmail] = useState('');
@@ -33,11 +34,6 @@ function RegistrationPage() {
       setMessage('Harap terima semua kondisi.');
       return;
     }
-    
-    // if (!name || !email || !password || !confirmPassword || !acceptTerms) {
-    //   setMessage('Harap isi semua kolom dan terima semua kondisi.');
-    //   return;
-    // }
 
     if (password !== confirmPassword) {
       setMessage('Password dan konfirmasi password tidak cocok.');
@@ -53,10 +49,10 @@ function RegistrationPage() {
 
       const data = await response.json();
 
-      if (data.message === "Registrasi sukses") {
-        setMessage('Registrasi berhasil. Silakan login.');
-      } else if (data.error) {
-        setMessage(data.error);
+      if (data.success === true) {
+        Navigate('/login');
+      } else if (data.message=="Email udah dipake") {
+        setMessage("Email sudah terdaftar. Silakan gunakan email lain.");
       }
     } catch (err) {
       setMessage('Terjadi kesalahan saat menghubungi server.');
@@ -85,7 +81,6 @@ function RegistrationPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
         <input
           type="password"
           placeholder="Password"
