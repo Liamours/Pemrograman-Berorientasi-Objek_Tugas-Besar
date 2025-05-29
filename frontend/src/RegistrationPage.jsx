@@ -18,7 +18,6 @@ function RegistrationPage() {
       setMessage('Harap isi nama.');
       return;
     }
-    
     if (!email) {
       setMessage('Harap isi email.');
       return;
