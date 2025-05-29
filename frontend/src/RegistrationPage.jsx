@@ -11,6 +11,7 @@ function RegistrationPage() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [message, setMessage] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(null);
+  const navigate = useNavigate();
 
   const handleRegistration = async () => {
     if (!name) {
@@ -50,7 +51,7 @@ function RegistrationPage() {
       const data = await response.json();
 
       if (data.success === true) {
-        Navigate('/login');
+        navigate('/login');
       } else if (data.message=="Email udah dipake") {
         setMessage("Email sudah terdaftar. Silakan gunakan email lain.");
       }
