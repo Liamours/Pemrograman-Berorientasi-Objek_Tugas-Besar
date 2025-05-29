@@ -4,6 +4,7 @@ import './RegistrationStyle.css';
 
 function RegistrationPage() {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -11,10 +12,32 @@ function RegistrationPage() {
   const [passwordMatch, setPasswordMatch] = useState(null);
 
   const handleRegistration = async () => {
-    if (!email || !password || !confirmPassword || !acceptTerms) {
-      setMessage('Harap isi semua kolom dan terima semua kondisi.');
+    if (!name) {
+      setMessage('Harap isi nama.');
       return;
     }
+    
+    if (!email) {
+      setMessage('Harap isi email.');
+      return;
+    }
+    if (!password) {
+      setMessage('Harap isi password.');
+      return;
+    }
+    if (!confirmPassword) {
+      setMessage('Harap konfirmasi password.');
+      return;
+    }
+    if (!acceptTerms) {
+      setMessage('Harap terima semua kondisi.');
+      return;
+    }
+    
+    // if (!name || !email || !password || !confirmPassword || !acceptTerms) {
+    //   setMessage('Harap isi semua kolom dan terima semua kondisi.');
+    //   return;
+    // }
 
     if (password !== confirmPassword) {
       setMessage('Password dan konfirmasi password tidak cocok.');
@@ -25,7 +48,7 @@ function RegistrationPage() {
       const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, email, password })
       });
 
       const data = await response.json();
@@ -48,6 +71,13 @@ function RegistrationPage() {
       </div>
       <div className="registration-container">
         <h2>Registrasi</h2>
+        <input
+          type="text"
+          placeholder="Nama Lengkap"
+          className="registration-input-field"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <input
           type="email"
           placeholder="Email"
