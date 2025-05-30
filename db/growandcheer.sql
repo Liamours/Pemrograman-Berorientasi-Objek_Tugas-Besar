@@ -143,6 +143,7 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `peran` enum('Client','Admin') NOT NULL DEFAULT 'Client',
+  `ismember` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -151,12 +152,12 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `nama_user`, `password`, `email`, `peran`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin123', 'admin123@growandcheer.com', 'Admin', '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(2, 'user1', 'password123', 'user1@gmail.com', 'Admin', '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(3, 'rafiq', 'password123', 'rafiq1@gmail.com', 'Admin', '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(4, 'rifqi', 'password123', 'rifqi1@gmail.com', 'Admin', '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(5, 'client_1', 'client123', 'client@mail.com', 'Client', '2025-05-29 03:44:48', '2025-05-29 03:44:48');
+INSERT INTO `user` (`user_id`, `nama_user`, `password`, `email`, `peran`, `ismember`, `created_at`, `updated_at`) VALUES
+(1, 'admin', 'admin123', 'admin123@growandcheer.com', 'Admin', 1, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
+(2, 'user1', 'password123', 'user1@gmail.com', 'Admin', 0, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
+(3, 'rafiq', 'password123', 'rafiq1@gmail.com', 'Admin', 0, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
+(4, 'rifqi', 'password123', 'rifqi1@gmail.com', 'Admin', 0, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
+(5, 'client_1', 'client123', 'client@mail.com', 'Client', 1, '2025-05-29 03:44:48', '2025-05-29 03:44:48');
 
 --
 -- Indexes for dumped tables
