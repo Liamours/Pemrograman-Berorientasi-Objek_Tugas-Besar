@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "message": "Profile berhasil diambil",
+  "data": {
+    "user_id": 1,
+    "nama_user": "user1",
+    "email": "fathan@gmail.com",
+    "peran": "Admin"
+  }
+}

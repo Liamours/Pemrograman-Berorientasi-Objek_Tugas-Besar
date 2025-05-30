@@ -1,0 +1,17 @@
+{
+    "status": false,
+    "total_harga": 200000.00,
+    "data":[{
+        "nama_barang": "Kopi Arabika",
+        "jumlah_barang": 2,
+        "harga": 75000.00,
+        "message": "Pembelian berhasil"
+    },
+    {
+        "nama_barang": "Teh Hijau",
+        "jumlah_barang": 1,
+        "harga": 50000.00,
+        "message": "Pembelian gagal"
+    }
+    ]
+}

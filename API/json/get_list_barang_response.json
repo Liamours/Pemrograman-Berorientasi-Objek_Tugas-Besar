@@ -1,0 +1,22 @@
+{
+  "status": true,
+  "message": "List barang berhasil diambil",
+  "data": [
+    {
+      "barang_id": 1,
+      "nama_barang": "Kopi Arabika",
+      "harga": 75000.00,
+      "tipe_barang_id": "Minuman",
+      "image_url": "https://example.com/images/kopi_arabika.jpg",
+      "stock": 100
+    },
+    {
+      "barang_id": 2,
+      "nama_barang": "Teh Hijau",
+      "harga": 50000.00,
+      "tipe_barang_id": "Minuman",
+      "image_url": "https://example.com/images/teh_hijau.jpg",
+      "stock": 50
+    }
+  ]
+}

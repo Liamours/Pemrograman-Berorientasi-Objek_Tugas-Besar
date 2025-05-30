@@ -51,8 +51,8 @@ function RegistrationPage() {
 
       if (data.success === true) {
         navigate('/login');
-      } else if (data.message=="Email udah dipake") {
-        setMessage("Email sudah terdaftar. Silakan gunakan email lain.");
+      } else if (data.message) {
+        setMessage(data.message);
       }
     } catch (err) {
       setMessage('Terjadi kesalahan saat menghubungi server.');

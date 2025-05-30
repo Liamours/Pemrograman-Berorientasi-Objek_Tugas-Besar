@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileStyle.css';
+import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
   const [name, setName] = useState("");
@@ -8,32 +9,50 @@ function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
- useEffect(() => {
-    fetch('http://localhost:8080/api/user/profile', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  console.log("Token dari localStorage:", token);
+
+  if (!token) {
+    setName("Token tidak ditemukan");
+    setEmail("Token tidak ditemukan");
+    setMemberNumber("Token tidak ditemukan");
+    return;
+  }
+
+  fetch('http://localhost:8080/api/user/profile', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data.name && data.email && data.id) {
+        setName(data.name);
+        setEmail(data.email);
+        setMemberNumber(data.id.toString());
+      } else {
+        setName("data tidak ditemukan");
+        setEmail("data tidak ditemukan");
+        setMemberNumber("data tidak ditemukan");
       }
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.name && data.email) {
-          setName(data.name);
-          setEmail(data.email);
-          setMemberNumber("");
-        } else {
-          setName("");
-          setEmail("");
-          setMemberNumber("");
-        }
-      })
-      .catch(() => {
-        setName("");
-        setEmail("");
-        setMemberNumber("");
-      });
-  }, []);
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      setName("Token gagal");
+      setEmail("Token gagal");
+      setMemberNumber("Token gagal");
+    });
+}, []);
+
 
   const handleSaveAccountSettings = () => {
     fetch('http://localhost:8080/api/user/profile/update', {
