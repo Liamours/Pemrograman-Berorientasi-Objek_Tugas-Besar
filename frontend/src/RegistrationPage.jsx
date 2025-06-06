@@ -1,18 +1,37 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import './RegistrationStyle.css';
+import { useNavigate } from 'react-router-dom';
 
 function RegistrationPage() {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [message, setMessage] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(null);
+  const navigate = useNavigate();
 
   const handleRegistration = async () => {
-    if (!email || !password || !confirmPassword || !acceptTerms) {
-      setMessage('Harap isi semua kolom dan terima semua kondisi.');
+    if (!name) {
+      setMessage('Harap isi nama.');
+      return;
+    }
+    if (!email) {
+      setMessage('Harap isi email.');
+      return;
+    }
+    if (!password) {
+      setMessage('Harap isi password.');
+      return;
+    }
+    if (!confirmPassword) {
+      setMessage('Harap konfirmasi password.');
+      return;
+    }
+    if (!acceptTerms) {
+      setMessage('Harap terima semua kondisi.');
       return;
     }
 
@@ -25,15 +44,15 @@ function RegistrationPage() {
       const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, email, password })
       });
 
       const data = await response.json();
 
-      if (data.message === "Registrasi sukses") {
-        setMessage('Registrasi berhasil. Silakan login.');
-      } else if (data.error) {
-        setMessage(data.error);
+      if (data.success === true) {
+        navigate('/login');
+      } else if (data.message) {
+        setMessage(data.message);
       }
     } catch (err) {
       setMessage('Terjadi kesalahan saat menghubungi server.');
@@ -49,13 +68,19 @@ function RegistrationPage() {
       <div className="registration-container">
         <h2>Registrasi</h2>
         <input
+          type="text"
+          placeholder="Nama Lengkap"
+          className="registration-input-field"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
           type="email"
           placeholder="Email"
           className="registration-input-field"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
         <input
           type="password"
           placeholder="Password"

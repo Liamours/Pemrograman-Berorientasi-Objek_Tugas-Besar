@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './LoginStyle.css';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ function LoginPage() {
   const [message, setMessage] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -19,14 +21,14 @@ function LoginPage() {
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, rememberMe }),
+        body: JSON.stringify({ email, password, rememberMe}),
       });
   
       const data = await response.json();
   
       if (response.ok) {
-        setMessage(`Login berhasil. Selamat datang, ${data.user?.name || 'User'}`);
         localStorage.setItem('token', data.token); 
+        navigate('/profile');
       } else {
         setMessage(data.error || "Login gagal");
       }

@@ -1,0 +1,9 @@
+GET /cart
+    validate user token
+    return user’s cart items (orders not checked out)
+
+GET /checkout
+    validate user token
+    calculate total, apply discounts, update stock
+    mark order as “completed”
+    return summary

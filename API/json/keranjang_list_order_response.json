@@ -1,0 +1,23 @@
+{
+  "status": true,
+  "message": "List order user terkirim",
+  "isMember": true,
+  "data": [
+    {
+      "order_id": 1,
+      "total_harga": 150000.00,
+      "status_order": "Menunggu Pembayaran",
+      "nama_barang": "Kopi Arabika",
+      "jumlah_barang": 2,
+      "stock": 100
+    },
+    {
+      "order_id": 2,
+      "total_harga": 250000.50,
+      "status_order": "Telah dibayar",
+      "nama_barang": "Teh Hijau",
+      "jumlah_barang": 2,
+      "stock": 100
+    }
+  ]
+}

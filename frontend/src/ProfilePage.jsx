@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileStyle.css';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
   const [name, setName] = useState("");
@@ -9,51 +9,109 @@ function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch('http://localhost:8080/api/user/profile')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.data) {
-          setName(data.data.name);
-          setEmail(data.data.email);
-        }
-      })
-      .catch(() => {});
-  }, []);
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  console.log("Token dari localStorage:", token);
 
-const handleChangePassword = () => {
-  if (newPassword !== confirmPassword) {
-    alert("Password baru dan konfirmasi password tidak cocok!");
+  if (!token) {
+    setName("Token tidak ditemukan");
+    setEmail("Token tidak ditemukan");
+    setMemberNumber("Token tidak ditemukan");
     return;
   }
 
-  fetch('http://localhost:8080/api/user/profile/change-password' , {//masih salah
-    method: 'PUSH',
+  fetch('http://localhost:8080/api/user/profile', {
+    method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify({
-      currentPassword,
-      newPassword
-    })
+      'Authorization': `Bearer ${token}`
+    }
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    })
     .then(data => {
-      if (data.success) {
-        alert("Password berhasil diubah!");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
+      if (data.name && data.email && data.id) {
+        setName(data.name);
+        setEmail(data.email);
+        setMemberNumber(data.id.toString());
       } else {
-        alert(data.message || "Gagal mengubah password.");
+        setName("data tidak ditemukan");
+        setEmail("data tidak ditemukan");
+        setMemberNumber("data tidak ditemukan");
       }
     })
-    .catch(() => {
-      alert("Terjadi kesalahan saat menghubungi server.");
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      setName("Token gagal");
+      setEmail("Token gagal");
+      setMemberNumber("Token gagal");
     });
-};
+}, []);
+
+
+  const handleSaveAccountSettings = () => {
+    fetch('http://localhost:8080/api/user/profile/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        name,
+        email
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Perubahan akun berhasil disimpan!");
+        } else {
+          alert(data.message || "Gagal menyimpan perubahan akun.");
+        }
+      })
+      .catch(() => {
+        alert("Terjadi kesalahan saat menghubungi server.");
+      });
+  };
+
+  const handleChangePassword = () => {
+    if (newPassword !== confirmPassword) {
+      alert("Password baru dan konfirmasi password tidak cocok!");
+      return;
+    }
+
+    fetch('http://localhost:8080/api/user/profile/change-password', {
+      method: 'PUT', // ganti dari PUSH ke PUT
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        currentPassword,
+        newPassword
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Password berhasil diubah!");
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
+        } else {
+          alert(data.message || "Gagal mengubah password.");
+        }
+      })
+      .catch(() => {
+        alert("Terjadi kesalahan saat menghubungi server.");
+      });
+  };
+
   return (
     <div className="account-settings">
       <header className="header">

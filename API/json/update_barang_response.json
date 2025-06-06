@@ -1,0 +1,12 @@
+{
+  "status": true,
+  "message": "Data barang berhasil diubah",
+  "data": {
+      "barang_id": 1,
+      "nama_barang": "Kopi Arabika",
+      "deskripsi_barang": "Kopi Arabika berkualitas premium dari pegunungan.",
+      "harga": 75000.00,
+      "tipe_barang_id": "Minuman",
+      "image_url": "https://example.com/images/kopi_arabika.jpg"
+    }
+}
