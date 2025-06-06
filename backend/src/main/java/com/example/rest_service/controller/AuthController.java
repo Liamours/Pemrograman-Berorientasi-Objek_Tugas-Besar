@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.rest_service.dto.ApiResponse;
 import com.example.rest_service.dto.LoginRequest;
+import com.example.rest_service.dto.RegisterRequest;
 import com.example.rest_service.model.User;
 import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.security.JwtTokenUtil;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -39,6 +41,23 @@ public class AuthController {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
+    }
+
+    // REGISTER
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Email udah dipake"));
+        }
+
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(registerRequest.getPassword()); // plaintext, bro
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Register sukses, silakan login!"));
     }
 
     @PostMapping("/login")

@@ -1,0 +1,11 @@
+{
+    "success": true,
+    "message": "Upgrade client ke admin berhasil",
+    "errors": null,
+    "data": {
+        "user_id": 1,
+        "nama_user": "user1",
+        "email": "fathan@gmail.com",
+        "peran": "Admin"
+    }
+}
