@@ -27,7 +27,7 @@ function LoginPage() {
       const data = await response.json();
   
       if (response.ok) {
-        localStorage.setItem('token', data.token); 
+        localStorage.setItem("token", data.data.token); 
         navigate('/profile');
       } else {
         setMessage(data.error || "Login gagal");
