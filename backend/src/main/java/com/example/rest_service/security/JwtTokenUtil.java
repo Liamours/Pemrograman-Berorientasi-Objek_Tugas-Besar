@@ -7,10 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.sql.Array;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.ArrayList;
 
 @Component
 public class JwtTokenUtil {
@@ -41,9 +43,25 @@ public class JwtTokenUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    final String username = extractUsername(token);
+    
+    // Cek apakah username cocok dan token belum kedaluwarsa
+    boolean isTokenValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    
+    if (isTokenValid) {
+        // Mendapatkan claims dari token
+        Claims claims = extractAllClaims(token);
+        
+        // Mendapatkan roles dari claims, misalnya "ROLE_ADMIN"
+        ArrayList<String> roles = claims.get("roles", ArrayList.class);
+        
+        // Cek apakah ada role ADMIN di dalam token
+        return roles != null && roles.contains("ROLE_ADMIN");
     }
+    
+    return false;
+}
+
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -69,4 +87,5 @@ public class JwtTokenUtil {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+    
 }
