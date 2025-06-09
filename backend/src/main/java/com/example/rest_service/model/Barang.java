@@ -18,8 +18,8 @@ public class Barang {
     private Integer stokBarang;
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "barang")
-    private Order order;
+    // @OneToOne(mappedBy = "barang")
+    // private Order order;
 
     // Getters and setters
     public Integer getBarangId() {
@@ -86,11 +86,11 @@ public class Barang {
         this.createdAt = createdAt;
     }
 
-    public Order getOrder() {
-        return order;
-    }
+    // public Order getOrder() {
+    //     return order;
+    // }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    // public void setOrder(Order order) {
+    //     this.order = order;
+    // }
 }

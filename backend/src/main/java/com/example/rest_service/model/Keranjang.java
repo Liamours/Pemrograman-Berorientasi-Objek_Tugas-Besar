@@ -10,13 +10,13 @@ public class Keranjang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer keranjangId;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User user;
+    // @OneToOne
+    // @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    // private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private Order order;
+    // @ManyToOne
+    // @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    // private Order order;
 
     private LocalDateTime waktuDitambahkan;
 
@@ -29,21 +29,21 @@ public class Keranjang {
         this.keranjangId = keranjangId;
     }
 
-    public User getUser() {
-        return user;
-    }
+    // public User getUser() {
+    //     return user;
+    // }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // public void setUser(User user) {
+    //     this.user = user;
+    // }
 
-    public Order getOrder() {
-        return order;
-    }
+    // public Order getOrder() {
+    //     return order;
+    // }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    // public void setOrder(Order order) {
+    //     this.order = order;
+    // }
 
     public LocalDateTime getWaktuDitambahkan() {
         return waktuDitambahkan;
