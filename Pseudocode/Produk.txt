@@ -1,7 +1,7 @@
 GET /products
     return list of all products
 
-POST /products
+POST /products/new
     validate admin token
     receive new product data
     save to ProductRepository
@@ -10,6 +10,3 @@ POST /products/stock
     validate admin token
     receive {productId, newStock}
     update stock in database
-
-GET /discounts
-    return list of products with discount > 0

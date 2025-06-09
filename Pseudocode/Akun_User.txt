@@ -18,3 +18,21 @@ GET /logout
 GET /profile
     validate token
     return current user data
+
+POST /profile/update/profile
+    validate token
+    receive namabaru, email, alamat
+    if namabaru != null && email != null && email == valid && alamat != null
+        update profile
+    else
+        return 401
+    
+
+POST /profile/update/password
+    validate token
+    receive passwordlama, passwordbaru, konfirmasipasswordbaru
+    if passwordbaru == konfirmasipasswordbaru
+        update password
+    else
+        Password gagal diubah
+    
