@@ -78,7 +78,7 @@ public class UserController {
         profile.put("email", user.getEmail());
         profile.put("name", user.getName());
         profile.put("role", user.getPeran());
-        profile.put("isMember", client.getIsmember());
+        profile.put("isMember", client.isIsmember());
         profile.put("address", client.getAlamat());
         profile.put("createdAt", user.getCreatedAt());
         profile.put("updatedAt", user.getUpdatedAt());
