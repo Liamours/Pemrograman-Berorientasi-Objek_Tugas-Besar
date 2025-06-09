@@ -6,50 +6,38 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "keranjang")
 public class Keranjang {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer keranjangId;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private Order order;
+    @JoinColumn(name = "barang_id")
+    private Barang barang;
+
+    @Column(nullable = false)
+    private Integer jumlahBarang;
 
     private LocalDateTime waktuDitambahkan;
 
-    // Getters and setters
-    public Integer getKeranjangId() {
-        return keranjangId;
-    }
+    public Keranjang() {}
 
-    public void setKeranjangId(Integer keranjangId) {
-        this.keranjangId = keranjangId;
-    }
+    public Integer getKeranjangId() { return keranjangId; }
+    public void setKeranjangId(Integer keranjangId) { this.keranjangId = keranjangId; }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public Barang getBarang() { return barang; }
+    public void setBarang(Barang barang) { this.barang = barang; }
 
-    public Order getOrder() {
-        return order;
-    }
+    public Integer getJumlahBarang() { return jumlahBarang; }
+    public void setJumlahBarang(Integer jumlahBarang) { this.jumlahBarang = jumlahBarang; }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public LocalDateTime getWaktuDitambahkan() {
-        return waktuDitambahkan;
-    }
-
-    public void setWaktuDitambahkan(LocalDateTime waktuDitambahkan) {
-        this.waktuDitambahkan = waktuDitambahkan;
-    }
+    public LocalDateTime getWaktuDitambahkan() { return waktuDitambahkan; }
+    public void setWaktuDitambahkan(LocalDateTime waktuDitambahkan) { this.waktuDitambahkan = waktuDitambahkan; }
 }
