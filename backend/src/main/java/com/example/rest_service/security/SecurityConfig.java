@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").authenticated() // Changed to cover all user endpoints
                         .requestMatchers(HttpMethod.GET, "/barang").permitAll()  // Allow public access to /barang
-                        .requestMatchers("/barang").permitAll()
+                        .requestMatchers("/barang/**").permitAll()  // Menyediakan akses tanpa autentikasi
                         .requestMatchers("/products/new").hasRole("ADMIN") // Hanya admin yang bisa akses
                         .anyRequest().authenticated()
                 )
