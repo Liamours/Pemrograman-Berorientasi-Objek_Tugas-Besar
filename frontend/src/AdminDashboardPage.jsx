@@ -87,7 +87,8 @@ useEffect(() => {
       },
       body: JSON.stringify({
         currentPassword,
-        newPassword
+        newPassword,
+        confirmPassword
       })
     })
       .then(res => res.json())
