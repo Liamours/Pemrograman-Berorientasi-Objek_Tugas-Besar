@@ -2,19 +2,18 @@ package com.example.rest_service.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Table(name = "`order`")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+    @Column(name = "order_id")
+    private Integer orderId;
 
     @ManyToOne
-    @JoinColumn(name = "keranjang_id", referencedColumnName = "id")  // Menggunakan kolom id dari Keranjang
-    private Keranjang keranjang;
-
-    @ManyToOne
-    @JoinColumn(name = "barang_id")
+    @JoinColumn(name = "barang_id", nullable = false)
     private Barang barang;
 
     private Integer jumlahBarang;
@@ -22,14 +21,17 @@ public class Order {
     private LocalDateTime tanggalOrder;
     private String alamatTujuan;
 
-    @Column(name = "status_order")
     @Enumerated(EnumType.STRING)
     private StatusOrder statusOrder;
 
+    @ManyToOne
+    @JoinColumn(name = "keranjang_id")
+    private Keranjang keranjang;
+
+
     public enum StatusOrder {
-        Pending_Client,  // Pastikan nama sesuai
-        Pending_Admin,
-        Done
+        Checkout,
+        belum
     }
 
     // Getters and setters
