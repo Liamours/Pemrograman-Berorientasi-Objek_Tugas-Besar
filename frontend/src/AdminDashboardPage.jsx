@@ -112,7 +112,8 @@ useEffect(() => {
       <div className="content">
         <nav className="sidebar">
           <ul>
-            <li><a href="#">Shopping Cart</a></li>
+            <li><a href="#">Tambah Barang</a></li>
+            <li><a href="#">Management User</a></li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Log-out</a></li>
           </ul>
