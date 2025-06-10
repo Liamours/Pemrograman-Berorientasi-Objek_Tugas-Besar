@@ -1,0 +1,7 @@
+{
+  "status": true,
+  "message": "Barang berhasil ditambahkan ke keranjang",
+  "data": {
+    "order_id": 123
+  }
+}
