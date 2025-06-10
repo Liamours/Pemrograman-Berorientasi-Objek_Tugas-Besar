@@ -13,7 +13,7 @@ public class Order {
     @JoinColumn(name = "keranjang_id", referencedColumnName = "id")  // Menggunakan kolom id dari Keranjang
     private Keranjang keranjang;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "barang_id", nullable = false)
     private Barang barang;
 

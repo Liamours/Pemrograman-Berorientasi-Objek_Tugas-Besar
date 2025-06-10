@@ -18,7 +18,7 @@ public class Barang {
     private Integer stokBarang;
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "barang")
+    @OneToOne(mappedBy = "barang",cascade = CascadeType.ALL)
     private Order order;
 
     // Getters and setters

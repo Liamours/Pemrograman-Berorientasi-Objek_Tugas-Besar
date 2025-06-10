@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/barang/detail").permitAll()
                         .requestMatchers("/barang").permitAll()
                         .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
+                        .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
