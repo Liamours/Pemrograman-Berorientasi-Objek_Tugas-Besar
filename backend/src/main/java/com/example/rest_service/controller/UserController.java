@@ -115,7 +115,6 @@ public class UserController {
 
         // Update data user
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
         userRepository.save(user);
 
         // Jika client, update alamat

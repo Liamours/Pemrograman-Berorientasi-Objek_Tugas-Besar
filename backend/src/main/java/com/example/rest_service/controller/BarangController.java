@@ -1,5 +1,6 @@
 package com.example.rest_service.controller;
 
+import com.example.rest_service.dto.BarangIdRequest;
 import com.example.rest_service.model.Barang;
 import com.example.rest_service.service.BarangService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,13 @@ public class BarangController {
         Barang savedProduct = barangService.addProduct(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
+    @PostMapping("/detail")
+    public ResponseEntity<Barang> getBarangDetail(@Valid @RequestBody BarangIdRequest request) {
+        Barang barang = barangService.getBarangById(request.getBarangId());
+        if (barang == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(barang);
 
+    }
 }

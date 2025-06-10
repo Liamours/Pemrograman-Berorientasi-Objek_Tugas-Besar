@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/barang").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/barang/detail").permitAll()
                         .requestMatchers("/barang").permitAll()
                         .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
                         .anyRequest().authenticated()

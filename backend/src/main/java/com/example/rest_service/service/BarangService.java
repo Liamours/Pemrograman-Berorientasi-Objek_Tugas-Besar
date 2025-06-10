@@ -20,4 +20,7 @@ public class BarangService {
     public Barang addProduct(Barang product) {
         return barangRepository.save(product);
     }
+    public Barang getBarangById(Integer barangId) {
+        return barangRepository.findById(barangId).orElse(null);
+    }
 }
