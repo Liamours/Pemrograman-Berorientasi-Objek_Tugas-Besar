@@ -14,12 +14,20 @@ function ProfilePage() {
   const navigate = useNavigate();
 
 
-    const openNav = () => {
+  const logout = () => {
     document.getElementById("myNav").style.width = "100%";
   };
 
-  const closeNav = () => {
+  const cancelLogout = () => {
     document.getElementById("myNav").style.width = "0%";
+  };
+
+  const hapus = () => {
+    document.getElementById("Hapus").style.width = "100%";
+  };
+
+  const cancelHapus = () => {
+    document.getElementById("Hapus").style.width = "0%";
   };
 
 useEffect(() => {
@@ -121,31 +129,42 @@ useEffect(() => {
         <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <div className="cart">Keranjang: Rp 100.000</div>
       </header>
-      <div id="myNav" class="overlay">
+      <div id="LogOut" class="overlay">
         <div class="popup-container">
-        <h2>Yakin Ingin Logout?</h2>
-        <p>Anda perlu login lagi jika sudah logout</p>
+          <h2>Yakin Ingin Keluar?</h2>
+          <p>Anda perlu login lagi jika sudah keluar</p>
         <div class="popup-actions">
-          <button class="btn-confirm" onClick={closeNav}>Batal</button>
-          <button className="btn-cancel" onClick={() => {
+          <button class="btn-cancel" onClick={cancelLogout}>Batal</button>
+          <button class="btn-confirm" onClick={() => {
             localStorage.removeItem("token");
             navigate('/login');
           }}>Terima</button>
           
         </div>
       </div>
+      <div id="Hapus" class="overlay">
+        <div class="popup-container">
+          <h2>Yakin Ingin Hapus Akun?</h2>
+          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
+          <div class="popup-actions">
+            <button class="btn-confirm" onClick={cancelHapus}>Batal</button>
+            <button class="btn-cancel" onClick={() => navigate('/login')}>Terima</button>
+          </div>
+        </div>
+      </div>
     </div>
-      <div className="content">
+     <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
             <li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
             <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Settings</a></li>
-            <li><a style={{ cursor: "pointer" }} onClick={openNav}><i class="glyphicon glyphicon-log-out"></i> Log-out</a></li>
+            <li><a style={{ cursor: "pointer" }} onClick={logout}><i class="glyphicon glyphicon-log-out"></i> Log-out</a></li>
+            <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i class="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
-        </nav>
+        </nav> 
         <main className="main">
           <div className="card">
-            <h2>Setting Akun</h2>
+            <h2>Informasi Akun</h2>
             <form>
               <label htmlFor="name">Nama</label>
               <input
