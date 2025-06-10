@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2025 at 05:48 AM
+-- Generation Time: Jun 09, 2025 at 06:35 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,8 +32,9 @@ CREATE TABLE `barang` (
   `nama_barang` varchar(100) NOT NULL,
   `deskripsi_barang` text DEFAULT NULL,
   `harga` decimal(10,2) NOT NULL CHECK (`harga` >= 0),
-  `tipe_barang_id` int(11) NOT NULL,
+  `tipe_barang` varchar(50) NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
+  `stok_barang` int(11) NOT NULL DEFAULT 0 CHECK (`stok_barang` >= 0),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -41,45 +42,30 @@ CREATE TABLE `barang` (
 -- Dumping data for table `barang`
 --
 
-INSERT INTO `barang` (`barang_id`, `nama_barang`, `deskripsi_barang`, `harga`, `tipe_barang_id`, `image_url`, `created_at`) VALUES
-(1, 'Oat Organik (1kg)', 'Oat utuh organik.', 5.50, 1, NULL, '2025-05-29 03:44:48'),
-(2, 'Air Mineral (500ml x 24)', '24 botol air mineral alami.', 12.00, 2, NULL, '2025-05-29 03:44:48'),
-(3, 'Hand Sanitizer (250ml)', 'Hand sanitizer berbasis alkohol.', 3.75, 3, NULL, '2025-05-29 03:44:48');
+INSERT INTO `barang` (`barang_id`, `nama_barang`, `deskripsi_barang`, `harga`, `tipe_barang`, `image_url`, `stok_barang`, `created_at`) VALUES
+(1, 'Oat Organik (1kg)', 'Oat utuh organik.', 5.50, 'Makanan', NULL, 100, '2025-05-28 20:44:48'),
+(2, 'Air Mineral (500ml x 24)', '24 botol air mineral alami.', 12.00, 'Minuman', NULL, 50, '2025-05-28 20:44:48'),
+(3, 'Hand Sanitizer (250ml)', 'Hand sanitizer berbasis alkohol.', 3.75, 'Kebersihan', NULL, 200, '2025-05-28 20:44:48');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detail_order`
+-- Table structure for table `client`
 --
 
-CREATE TABLE `detail_order` (
-  `detail_order_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `barang_id` int(11) NOT NULL,
-  `jumlah_barang` int(11) NOT NULL CHECK (`jumlah_barang` > 0),
-  `harga_per_unit` decimal(10,2) NOT NULL CHECK (`harga_per_unit` >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gudang`
---
-
-CREATE TABLE `gudang` (
-  `gudang_id` int(11) NOT NULL,
-  `barang_id` int(11) NOT NULL,
-  `stok_barang` int(11) NOT NULL DEFAULT 0 CHECK (`stok_barang` >= 0)
+CREATE TABLE `client` (
+  `user_id` int(11) NOT NULL,
+  `ismember` tinyint(1) NOT NULL DEFAULT 0,
+  `alamat` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `gudang`
+-- Dumping data for table `client`
 --
 
-INSERT INTO `gudang` (`gudang_id`, `barang_id`, `stok_barang`) VALUES
-(1, 1, 100),
-(2, 2, 50),
-(3, 3, 200);
+INSERT INTO `client` (`user_id`, `ismember`, `alamat`) VALUES
+(5, 1, 'Jl. Merdeka No. 123, Jakarta Pusat'),
+(6, 0, 'Jl. Sudirman Kav. 1, Jakarta Selatan');
 
 -- --------------------------------------------------------
 
@@ -88,12 +74,18 @@ INSERT INTO `gudang` (`gudang_id`, `barang_id`, `stok_barang`) VALUES
 --
 
 CREATE TABLE `keranjang` (
-  `keranjang_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `barang_id` int(11) NOT NULL,
-  `jumlah_barang` int(11) NOT NULL CHECK (`jumlah_barang` > 0),
+  `order_id` int(11) NOT NULL,
   `waktu_ditambahkan` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `keranjang`
+--
+
+INSERT INTO `keranjang` (`user_id`, `order_id`, `waktu_ditambahkan`) VALUES
+(5, 1, '2025-06-09 02:45:00'),
+(6, 2, '2025-06-09 04:15:00');
 
 -- --------------------------------------------------------
 
@@ -103,33 +95,21 @@ CREATE TABLE `keranjang` (
 
 CREATE TABLE `order` (
   `order_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `barang_id` int(11) NOT NULL,
+  `jumlah_barang` int(11) NOT NULL CHECK (`jumlah_barang` > 0),
+  `harga_per_unit` decimal(10,2) NOT NULL CHECK (`harga_per_unit` >= 0),
   `tanggal_order` timestamp NOT NULL DEFAULT current_timestamp(),
-  `total_harga` decimal(12,2) NOT NULL CHECK (`total_harga` >= 0),
   `alamat_tujuan` text NOT NULL,
   `status_order` enum('Pending_Client','Pending_Admin','Done') NOT NULL DEFAULT 'Pending_Client'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `tipe_barang`
+-- Dumping data for table `order`
 --
 
-CREATE TABLE `tipe_barang` (
-  `tipe_barang_id` int(11) NOT NULL,
-  `nama_tipe_barang` varchar(50) NOT NULL,
-  `deskripsi_tipe` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `tipe_barang`
---
-
-INSERT INTO `tipe_barang` (`tipe_barang_id`, `nama_tipe_barang`, `deskripsi_tipe`) VALUES
-(1, 'Makanan', 'Barang dapat dimakan, termasuk makanan ringan, pokok, dan bahan masak.'),
-(2, 'Minuman', 'Barang dapat diminum, termasuk jus, soda, dan air mineral.'),
-(3, 'Kebersihan', 'Barang perawatan pribadi dan pembersih.');
+INSERT INTO `order` (`order_id`, `barang_id`, `jumlah_barang`, `harga_per_unit`, `tanggal_order`, `alamat_tujuan`, `status_order`) VALUES
+(1, 1, 2, 5.50, '2025-06-09 03:00:00', 'Jl. Merdeka No. 123, Jakarta Pusat', 'Pending_Client'),
+(2, 2, 1, 12.00, '2025-06-09 04:30:00', 'Jl. Sudirman Kav. 1, Jakarta Selatan', 'Pending_Admin');
 
 -- --------------------------------------------------------
 
@@ -143,7 +123,6 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `peran` enum('Client','Admin') NOT NULL DEFAULT 'Client',
-  `ismember` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -152,12 +131,11 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `nama_user`, `password`, `email`, `peran`, `ismember`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin123', 'admin123@growandcheer.com', 'Admin', 1, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(2, 'user1', 'password123', 'user1@gmail.com', 'Admin', 0, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(3, 'rafiq', 'password123', 'rafiq1@gmail.com', 'Admin', 0, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(4, 'rifqi', 'password123', 'rifqi1@gmail.com', 'Admin', 0, '2025-05-29 03:44:48', '2025-05-29 03:44:48'),
-(5, 'client_1', 'client123', 'client@mail.com', 'Client', 1, '2025-05-29 03:44:48', '2025-05-29 03:44:48');
+INSERT INTO `user` (`user_id`, `nama_user`, `password`, `email`, `peran`, `created_at`, `updated_at`) VALUES
+(1, 'admin', 'admin123', 'admin123@growandcheer.com', 'Admin', '2025-05-28 20:44:48', '2025-05-28 20:44:48'),
+(2, 'user1', 'admin123', 'user1@gmail.com', 'Admin', '2025-05-28 20:44:48', '2025-05-28 20:44:48'),
+(5, 'client_1', 'user123', 'client@mail.com', 'Client', '2025-05-28 20:44:48', '2025-05-28 20:44:48'),
+(6, 'client_2', 'user123', 'client2@mail.com', 'Client', '2025-06-06 07:34:00', '2025-06-06 07:34:00');
 
 --
 -- Indexes for dumped tables
@@ -167,45 +145,27 @@ INSERT INTO `user` (`user_id`, `nama_user`, `password`, `email`, `peran`, `ismem
 -- Indexes for table `barang`
 --
 ALTER TABLE `barang`
-  ADD PRIMARY KEY (`barang_id`),
-  ADD KEY `tipe_barang_id` (`tipe_barang_id`);
+  ADD PRIMARY KEY (`barang_id`);
 
 --
--- Indexes for table `detail_order`
+-- Indexes for table `client`
 --
-ALTER TABLE `detail_order`
-  ADD PRIMARY KEY (`detail_order_id`),
-  ADD UNIQUE KEY `uq_order_barang` (`order_id`,`barang_id`),
-  ADD KEY `barang_id` (`barang_id`);
-
---
--- Indexes for table `gudang`
---
-ALTER TABLE `gudang`
-  ADD PRIMARY KEY (`gudang_id`),
-  ADD UNIQUE KEY `barang_id` (`barang_id`);
+ALTER TABLE `client`
+  ADD PRIMARY KEY (`user_id`);
 
 --
 -- Indexes for table `keranjang`
 --
 ALTER TABLE `keranjang`
-  ADD PRIMARY KEY (`keranjang_id`),
-  ADD UNIQUE KEY `uq_user_barang` (`user_id`,`barang_id`),
-  ADD KEY `barang_id` (`barang_id`);
+  ADD PRIMARY KEY (`user_id`,`order_id`),
+  ADD KEY `fk_keranjang_order` (`order_id`);
 
 --
 -- Indexes for table `order`
 --
 ALTER TABLE `order`
   ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `tipe_barang`
---
-ALTER TABLE `tipe_barang`
-  ADD PRIMARY KEY (`tipe_barang_id`),
-  ADD UNIQUE KEY `nama_tipe_barang` (`nama_tipe_barang`);
+  ADD KEY `fk_order_barang` (`barang_id`);
 
 --
 -- Indexes for table `user`
@@ -226,76 +186,39 @@ ALTER TABLE `barang`
   MODIFY `barang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `detail_order`
---
-ALTER TABLE `detail_order`
-  MODIFY `detail_order_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `gudang`
---
-ALTER TABLE `gudang`
-  MODIFY `gudang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `keranjang`
---
-ALTER TABLE `keranjang`
-  MODIFY `keranjang_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tipe_barang`
---
-ALTER TABLE `tipe_barang`
-  MODIFY `tipe_barang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `barang`
+-- Constraints for table `client`
 --
-ALTER TABLE `barang`
-  ADD CONSTRAINT `barang_ibfk_1` FOREIGN KEY (`tipe_barang_id`) REFERENCES `tipe_barang` (`tipe_barang_id`);
-
---
--- Constraints for table `detail_order`
---
-ALTER TABLE `detail_order`
-  ADD CONSTRAINT `detail_order_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `detail_order_ibfk_2` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`);
-
---
--- Constraints for table `gudang`
---
-ALTER TABLE `gudang`
-  ADD CONSTRAINT `gudang_ibfk_1` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE CASCADE;
+ALTER TABLE `client`
+  ADD CONSTRAINT `client_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `keranjang`
 --
 ALTER TABLE `keranjang`
-  ADD CONSTRAINT `keranjang_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `keranjang_ibfk_2` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_keranjang_order` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_keranjang_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `order`
 --
 ALTER TABLE `order`
-  ADD CONSTRAINT `order_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+  ADD CONSTRAINT `fk_order_barang` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

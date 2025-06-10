@@ -23,11 +23,14 @@ useEffect(() => {
   }
 
   fetch('http://localhost:8080/api/user/profile', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  })
+  method: 'GET',
+  credentials: 'include',  // Essential for cookies
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+})
     .then(res => {
       if (!res.ok) {
         throw new Error(`Error: ${res.status} ${res.statusText}`);
