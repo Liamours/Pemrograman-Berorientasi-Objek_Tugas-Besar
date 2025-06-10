@@ -13,13 +13,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.example.rest_service.dto.NewBarangRequest;
 import com.example.rest_service.dto.DeletebyIDRequest;
 import com.example.rest_service.dto.ApiResponse;
+import com.example.rest_service.dto.UpdateBarangRequest;
+
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,6 +66,8 @@ public class BarangController {
 
     }
 
+
+
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> deleteBarang(@Valid @RequestBody DeletebyIDRequest barangIdRequest) {
@@ -79,6 +85,24 @@ public class BarangController {
         } else {
             // Handle failure case, e.g., Barang not found
             return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Barang tidak ditemukan"));
+        }
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<ApiResponse> updateBarang(@Valid @RequestBody UpdateBarangRequest request) {
+        // Pastikan barangId tidak null
+        if (request.getBarangId() == null) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Barang ID cannot be null"));
+        }
+
+        Barang updatedBarang = barangService.updateBarang(request);
+        if (updatedBarang != null) {
+            return ResponseEntity.ok(new ApiResponse(true, "Data barang berhasil diubah", updatedBarang));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(false, "Barang tidak ditemukan"));
         }
     }

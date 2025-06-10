@@ -1,8 +1,11 @@
 package com.example.rest_service.service;
 
+import com.example.rest_service.dto.UpdateBarangRequest;
 import com.example.rest_service.model.Barang;
 import com.example.rest_service.repository.BarangRepository;
+import java.util.Optional;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +41,28 @@ public class BarangService {
             return true;
         }
         return false;
+    }
+
+    public Barang updateBarang(@Valid UpdateBarangRequest barang) {
+        // 1. Find the Barang by ID
+        Optional<Barang> optionalBarang = barangRepository.findById(barang.getBarangId());
+
+        if (optionalBarang.isPresent()) {
+            Barang existingBarang = optionalBarang.get();
+
+            // 2. Update the fields of Barang based on the input entity
+            existingBarang.setNamaBarang(barang.getNamaBarang());
+            existingBarang.setDeskripsiBarang(barang.getDeskripsiBarang());
+            existingBarang.setHarga(barang.getHarga());
+            existingBarang.setTipeBarang(barang.getTipeBarangId());
+            existingBarang.setImageUrl(barang.getImageUrl());
+            existingBarang.setStokBarang(barang.getStokBarang());
+
+            // 3. Save the updated Barang back to the repository
+            return barangRepository.save(existingBarang);
+        } else {
+            return null; // Return null if the Barang with given ID does not exist
+        }
     }
 
 }

@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/barang").permitAll()
                         .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
                         .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints
+                        .requestMatchers("/products/update").hasRole("Admin")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
