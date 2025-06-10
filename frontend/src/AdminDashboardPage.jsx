@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import './ProfileStyle.css';
+import './AdminDashboardStyle.css';
 import { useNavigate } from 'react-router-dom';
 
-function ProfilePage() {
+function AdminDashboard() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMemberNumber] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [alamat, setAlamat] = useState("");
   const navigate = useNavigate();
 
 useEffect(() => {
@@ -20,7 +18,7 @@ useEffect(() => {
     navigate('/login');
   }
 
-  fetch('http://localhost:8080/api/user/profile/client', {
+  fetch('http://localhost:8080/api/user/profile/admin', {
   method: 'GET',
   credentials: 'include',
   headers: {
@@ -39,15 +37,12 @@ useEffect(() => {
       if (data.name && data.email && data.id) {
         setName(data.name);
         setEmail(data.email);
-        setAlamat(data.address);
-        setMemberNumber(data.isMember.toString());
       }
     })
     .catch((err) => {
       console.error("Fetch error:", err);
       setName("Token gagal");
       setEmail("Token gagal");
-      setMemberNumber("Token gagal");
     });
 }, []);
 
@@ -142,19 +137,6 @@ useEffect(() => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <label htmlFor="alamat">Alamat</label>
-              <input
-                type="alamat"
-                id="alamat"
-                value={alamat}
-                onChange={(e) => setAlamat(e.target.value)}
-              />
-              <label htmlFor="member">Member</label>
-
-              <div className="member info" id="member">
-                {memberNumber}
-              </div>
-
               <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
             </form>
           </div>
@@ -191,4 +173,4 @@ useEffect(() => {
   );
 }
 
-export default ProfilePage;
+export default AdminDashboardPage;
