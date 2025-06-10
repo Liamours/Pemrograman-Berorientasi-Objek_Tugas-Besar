@@ -27,8 +27,14 @@ function LoginPage() {
       const data = await response.json();
   
       if (response.ok) {
-        localStorage.setItem("token", data.data.token); 
-        navigate('/profile');
+        localStorage.setItem("token", data.data.token);
+        if (data.data.role == 'Admin') {
+          navigate('/admin/dashboard');
+          return;
+        } else if (data.role == 'Client') {
+          navigate('/profile');
+          return
+        }
       } else {
         setMessage(data.error || "Login gagal");
       }
