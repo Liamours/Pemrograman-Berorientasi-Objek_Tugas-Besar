@@ -15,6 +15,7 @@ public class UpdateProfileRequest {
     @Email(message = "Email should be valid")
     private String email;
 
+    @NotBlank
     private String address;
 
     // Getters and Setters

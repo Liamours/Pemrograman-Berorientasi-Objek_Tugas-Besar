@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.rest_service.dto.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -125,7 +126,8 @@ public class UserController {
             clientRepository.save(client);
         }
 
-        return ResponseEntity.ok("Profile updated successfully");
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "Berhasil Mengubah"));
     }
 
     @PutMapping("/password/change")
@@ -145,7 +147,7 @@ public class UserController {
 
         // Validasi konfirmasi password
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("New password and confirmation password don't match");
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "New password and confirmation password don't match"));
         }
 
         String email = authentication.getName();
@@ -155,13 +157,14 @@ public class UserController {
         // Verifikasi password lama (tanpa encryption)
         if (!request.getCurrentPassword().equals(user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Current password is incorrect");
+                    .body(new ApiResponse(false, "Password sekarang salah"));
         }
 
         // Update password baru (tanpa encryption)
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
 
-        return ResponseEntity.ok("Password changed successfully");
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "Berhasil Mengubah"));
     }
 }
