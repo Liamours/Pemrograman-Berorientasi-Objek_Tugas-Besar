@@ -83,7 +83,7 @@ useEffect(() => {
       return;
     }
 
-    fetch('http://localhost:8080/api/user/profile/change-password', {
+    fetch('http://localhost:8080/api/user/password/change', {
       method: 'PUT', 
       headers: {
         'Content-Type': 'application/json',

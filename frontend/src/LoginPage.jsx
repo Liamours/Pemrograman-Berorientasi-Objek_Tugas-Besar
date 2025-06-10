@@ -31,12 +31,12 @@ function LoginPage() {
         if (data.data.role == 'Admin') {
           navigate('/admin/dashboard');
           return;
-        } else if (data.role == 'Client') {
+        } else {
           navigate('/profile');
           return
         }
       } else {
-        setMessage(data.error || "Login gagal");
+        setMessage(data.message);
       }
     } catch (err) {
       setMessage("Terjadi kesalahan saat menghubungi server");

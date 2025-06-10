@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './AdminDashboardStyle.css';
 import { useNavigate } from 'react-router-dom';
 
-function AdminDashboard() {
+function AdminDashboardPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
 useEffect(() => {
   const token = localStorage.getItem('token');
@@ -78,7 +79,7 @@ useEffect(() => {
       return;
     }
 
-    fetch('http://localhost:8080/api/user/profile/change-password', {
+    fetch('http://localhost:8080/api/user/password/change', {
       method: 'PUT', 
       headers: {
         'Content-Type': 'application/json',
@@ -93,9 +94,6 @@ useEffect(() => {
       .then(data => {
         if (data.success) {
           alert("Password berhasil diubah!");
-          setCurrentPassword("");
-          setNewPassword("");
-          setConfirmPassword("");
         } else {
           alert(data.message || "Gagal mengubah password.");
         }
