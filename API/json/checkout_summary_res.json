@@ -1,0 +1,23 @@
+{
+  "status": true,
+  "is_member": true,
+  "subtotal": 300000.00,
+  "diskon_member": 45000.00,
+  "total_harga": 255000.00,
+  "data": [
+    {
+      "order_id": 1,
+      "nama_barang": "Kopi Arabika",
+      "jumlah_barang": 2,
+      "harga_satuan": 75000.00,
+      "subtotal": 150000.00
+    },
+    {
+      "order_id": 2,
+      "nama_barang": "Teh Hijau",
+      "jumlah_barang": 2,
+      "harga_satuan": 75000.00,
+      "subtotal": 150000.00
+    }
+  ]
+}
