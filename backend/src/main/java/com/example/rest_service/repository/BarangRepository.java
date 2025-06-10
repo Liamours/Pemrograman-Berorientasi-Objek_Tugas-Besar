@@ -12,4 +12,6 @@ public interface BarangRepository extends JpaRepository<Barang, Integer> {
     @Query("SELECT b FROM Barang b")
     ArrayList<Barang> findAllBarang();
     // Mengambil semua barang tanpa keranjang atau order
+
+
 }
