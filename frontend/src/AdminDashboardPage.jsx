@@ -146,12 +146,9 @@ useEffect(() => {
                 onChange={(e) => setName(e.target.value)}
               />
               <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div className="hanya info" id="email">
+                {email}
+              </div>
               <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
             </form>
           </div>

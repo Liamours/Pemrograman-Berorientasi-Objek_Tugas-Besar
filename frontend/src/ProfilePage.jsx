@@ -154,13 +154,6 @@ useEffect(() => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
               <label htmlFor="alamat">Alamat</label>
               <input
                 type="alamat"
@@ -168,9 +161,12 @@ useEffect(() => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
+              <label htmlFor="email">Email</label>
+              <div className="hanya info" id="email">
+                {email}
+              </div>
               <label htmlFor="member">Member</label>
-
-              <div className="member info" id="member">
+              <div className="hanya info" id="member">
                 {memberNumber}
               </div>
               <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
