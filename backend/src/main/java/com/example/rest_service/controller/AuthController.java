@@ -87,6 +87,7 @@ public class AuthController {
         responseData.put("token", token);
         responseData.put("userId", user.getId());
         responseData.put("email", user.getEmail());
+        responseData.put("role", user.getPeran());
 
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "Login successful", responseData));
