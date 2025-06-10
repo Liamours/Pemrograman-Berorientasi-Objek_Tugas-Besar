@@ -52,7 +52,7 @@ public class AuthController {
         User user = new User();
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
-        user.setPassword(registerRequest.getPassword()); // plaintext, bro
+        user.setPassword(registerRequest.getPassword());
         userRepository.save(user);
 
         return ResponseEntity.ok(new ApiResponse(true, "Register sukses, silakan login!"));
