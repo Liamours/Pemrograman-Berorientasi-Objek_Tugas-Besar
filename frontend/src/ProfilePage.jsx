@@ -22,7 +22,7 @@ useEffect(() => {
     return;
   }
 
-  fetch('http://localhost:8080/api/user/profile', {
+  fetch('http://localhost:8080/api/user/profile/client', {
   method: 'GET',
   credentials: 'include',  // Essential for cookies
   headers: {
