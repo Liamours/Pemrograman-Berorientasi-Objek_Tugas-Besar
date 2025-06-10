@@ -13,7 +13,10 @@ public class Barang {
     private String namaBarang;
     private String deskripsiBarang;
     private Double harga;
+
+    @Column(name = "tipe_barang")
     private String tipeBarang;
+
     private String imageUrl;
     private Integer stokBarang;
     private LocalDateTime createdAt;

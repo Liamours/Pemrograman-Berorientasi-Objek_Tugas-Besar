@@ -39,7 +39,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").authenticated() // Changed to cover all user endpoints
-                        .requestMatchers("/barang/**").permitAll()
+                        .requestMatchers("/barang/getAll").permitAll()
+                        .requestMatchers("/barang/new").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

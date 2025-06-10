@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rest_service.model.User;
-
+import com.example.rest_service.dto.RequestBarangFilter;
 import java.util.List;
 
 @RestController
@@ -32,13 +32,14 @@ public class BarangController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/product")
-    public ResponseEntity<List<Barang>> getAllBarang() {
-        List<Barang> barangList = barangService.getAllBarang();
+    // Endpoint to get all barang with optional filters
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Barang>> getAllBarang(@RequestBody RequestBarangFilter filter) {
+        List<Barang> barangList = barangService.getBarangWithFilters(filter);
         return ResponseEntity.ok(barangList);
     }
 
-    @PostMapping("/product/new")
+    @PostMapping("/new")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<String> createProduct(@RequestBody Barang product, Authentication authentication) {
         String email = authentication.getName();
