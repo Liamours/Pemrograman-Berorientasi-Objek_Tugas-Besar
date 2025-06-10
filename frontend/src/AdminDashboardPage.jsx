@@ -66,11 +66,7 @@ useEffect(() => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
-          alert("Perubahan akun berhasil disimpan!");
-        } else {
-          alert(data.message || "Gagal menyimpan perubahan akun.");
-        }
+        alert(data.message);
       })
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");

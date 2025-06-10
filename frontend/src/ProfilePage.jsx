@@ -10,7 +10,7 @@ function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [alamat, setAlamat] = useState("");
+  const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
 
@@ -45,7 +45,7 @@ useEffect(() => {
       if (data.name && data.email && data.id) {
         setName(data.name);
         setEmail(data.email);
-        setAlamat(data.address);
+        setAddress(data.address);
         setMemberNumber(data.isMember.toString());
       }
     })
@@ -65,16 +65,13 @@ useEffect(() => {
       },
       body: JSON.stringify({
         name,
-        email
+        email,
+        address
       })
     })
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
-          alert("Perubahan akun berhasil disimpan!");
-        } else {
-          alert(data.message || "Gagal menyimpan perubahan akun.");
-        }
+        alert(data.message);
       })
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
@@ -168,8 +165,8 @@ useEffect(() => {
               <input
                 type="alamat"
                 id="alamat"
-                value={alamat}
-                onChange={(e) => setAlamat(e.target.value)}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
               <label htmlFor="member">Member</label>
 
