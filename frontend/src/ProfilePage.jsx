@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileStyle.css';
 import { useNavigate } from 'react-router-dom';
+import './LogoutStyle.css';
 
 function ProfilePage() {
   const [name, setName] = useState("");
@@ -12,13 +13,18 @@ function ProfilePage() {
   const [alamat, setAlamat] = useState("");
   const navigate = useNavigate();
 
+
+    const openNav = () => {
+    document.getElementById("myNav").style.width = "100%";
+  };
+
+  const closeNav = () => {
+    document.getElementById("myNav").style.width = "0%";
+  };
+
 useEffect(() => {
   const token = localStorage.getItem('token');
   console.log("Token dari localStorage:", token);
-
-  if (!token) {
-    navigate('/login');
-  }
 
   fetch('http://localhost:8080/api/user/profile/client', {
   method: 'GET',
@@ -45,9 +51,7 @@ useEffect(() => {
     })
     .catch((err) => {
       console.error("Fetch error:", err);
-      setName("Token gagal");
-      setEmail("Token gagal");
-      setMemberNumber("Token gagal");
+      navigate('/login');
     });
 }, []);
 
@@ -110,18 +114,35 @@ useEffect(() => {
       });
   };
 
+
   return (
     <div className="account-settings">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
       <header className="header">
         <div className="logo">G & C</div>
         <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <div className="cart">Keranjang: Rp 100.000</div>
       </header>
+      <div id="myNav" class="overlay">
+        <div class="popup-container">
+        <h2>Yakin Ingin Logout?</h2>
+        <p>Anda perlu login lagi jika sudah logout</p>
+        <div class="popup-actions">
+          <button class="btn-confirm" onClick={closeNav}>Batal</button>
+          <button className="btn-cancel" onClick={() => {
+            localStorage.removeItem("token");
+            navigate('/login');
+          }}>Terima</button>
+          
+        </div>
+      </div>
+    </div>
       <div className="content">
         <nav className="sidebar">
-          <ul>
-            <li><a href="#">Shopping Cart</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Log-out</a></li>
+          <ul><h2>Navigation</h2>
+            <li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
+            <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Settings</a></li>
+            <li><a style={{ cursor: "pointer" }} onClick={openNav}><i class="glyphicon glyphicon-log-out"></i> Log-out</a></li>
           </ul>
         </nav>
         <main className="main">
@@ -154,7 +175,6 @@ useEffect(() => {
               <div className="member info" id="member">
                 {memberNumber}
               </div>
-
               <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
             </form>
           </div>
@@ -190,5 +210,6 @@ useEffect(() => {
     </div>
   );
 }
+
 
 export default ProfilePage;

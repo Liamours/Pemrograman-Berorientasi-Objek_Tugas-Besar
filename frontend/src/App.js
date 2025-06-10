@@ -5,6 +5,7 @@ import RegistrationPage from './RegistrationPage';
 import ProfilePage from './ProfilePage';
 import DetailBarang from "./DetailBarangPage"
 import AdminDashboard from './AdminDashboardPage';
+import TambahBarang from './TambahBarangPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="*" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/DetailBarang" element={<DetailBarang/>} />
+        <Route path="/TambahBarang" element={<TambahBarang />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>

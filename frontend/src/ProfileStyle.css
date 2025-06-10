@@ -1,13 +1,11 @@
-/* AccountSettings.css */
-
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 .account-settings {
-  display: flex;
+  display:flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: #C1F3C8;
@@ -23,11 +21,13 @@ body {
 }
 
 .logo {
+  font-family: 'Poppins';
   font-size: 24px;
   font-weight: bold;
 }
 
 .location {
+  font-family: 'Poppins';
   font-size: 14px;
 }
 
@@ -42,9 +42,12 @@ body {
 }
 
 .sidebar {
-  background-color: #e0f7fa;
+  margin: 20px;
+  background-color: white;
   padding: 20px;
   width: 200px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar ul {
@@ -64,10 +67,14 @@ body {
 
 .main {
   flex-grow: 1;
-  padding: 20px;
+  padding-top: 20px;
+  padding-right: 20px;
+  width: 100vh;
 }
 
 .card {
+  position: right;
+  width: auto;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -89,13 +96,6 @@ form label {
   font-weight: bold;
 }
 
-.member.info {
-  margin-bottom: 15px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
 form input {
   margin-bottom: 15px;
   padding: 8px;
@@ -115,4 +115,67 @@ form button {
 
 form button:hover {
   background-color: #45a049;
+}
+
+.popup-container {
+  background-color: #fff;
+  padding: 20px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.popup-container h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.popup-container p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.popup-actions .btn-cancel,
+.popup-actions .btn-confirm {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.popup-actions .btn-cancel {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+.popup-actions .btn-cancel:hover {
+  background-color: #f5f5f5;
+}
+
+.popup-actions .btn-confirm {
+  background-color: #000;
+  color: #fff;
+}
+
+.popup-actions .btn-confirm:hover {
+  background-color: #333;
+}
+
+.member.info {
+  margin-bottom: 15px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
