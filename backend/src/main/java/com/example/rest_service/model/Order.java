@@ -13,8 +13,8 @@ public class Order {
     @JoinColumn(name = "keranjang_id", referencedColumnName = "id")  // Menggunakan kolom id dari Keranjang
     private Keranjang keranjang;
 
-    @ManyToOne
-    @JoinColumn(name = "barang_id")
+    @OneToOne
+    @JoinColumn(name = "barang_id", nullable = false)
     private Barang barang;
 
     private Integer jumlahBarang;

@@ -38,7 +38,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/**").authenticated() // Changed to cover all user endpoints
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/barang").permitAll()
+                        .requestMatchers("/barang").permitAll()
+                        .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
