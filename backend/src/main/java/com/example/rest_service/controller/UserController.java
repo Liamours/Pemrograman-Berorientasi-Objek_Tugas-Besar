@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.rest_service.dto.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +16,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import com.example.rest_service.model.User;
 import com.example.rest_service.model.Client;
+import com.example.rest_service.dto.ChangePasswordRequest;
+import com.example.rest_service.dto.UpdateProfileRequest;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -84,5 +92,79 @@ public class UserController {
         profile.put("updatedAt", user.getUpdatedAt());
 
         return ResponseEntity.ok(profile);
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> updateProfile(
+            Authentication authentication,
+            @Valid @RequestBody UpdateProfileRequest request,
+            BindingResult bindingResult) {
+
+        // Validasi input
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Update data user
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        userRepository.save(user);
+
+        // Jika client, update alamat
+        if (user.getPeran() == User.Role.Client) {
+            Client client = clientRepository.findById(user.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client data not found"));
+            client.setAlamat(request.getAddress());
+            clientRepository.save(client);
+        }
+
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "Berhasil Mengubah"));
+    }
+
+    @PutMapping("/password/change")
+    public ResponseEntity<?> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request,
+            BindingResult bindingResult) {
+
+        // Validasi input
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        // Validasi konfirmasi password
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "New password and confirmation password don't match"));
+        }
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Verifikasi password lama (tanpa encryption)
+        if (!request.getCurrentPassword().equals(user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "Password sekarang salah"));
+        }
+
+        // Update password baru (tanpa encryption)
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
+
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "Berhasil Mengubah"));
     }
 }

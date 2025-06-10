@@ -52,7 +52,7 @@ public class AuthController {
         User user = new User();
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
-        user.setPassword(registerRequest.getPassword()); // plaintext, bro
+        user.setPassword(registerRequest.getPassword());
         userRepository.save(user);
 
         return ResponseEntity.ok(new ApiResponse(true, "Register sukses, silakan login!"));
@@ -87,6 +87,7 @@ public class AuthController {
         responseData.put("token", token);
         responseData.put("userId", user.getId());
         responseData.put("email", user.getEmail());
+        responseData.put("role", user.getPeran());
 
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "Login successful", responseData));

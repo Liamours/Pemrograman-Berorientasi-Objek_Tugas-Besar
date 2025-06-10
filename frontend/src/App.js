@@ -4,6 +4,7 @@ import LoginPage from './LoginPage';
 import RegistrationPage from './RegistrationPage';
 import ProfilePage from './ProfilePage';
 import DetailBarang from "./DetailBarangPage"
+import AdminDashboard from './AdminDashboardPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="*" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/DetailBarang" element={<DetailBarang/>} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
