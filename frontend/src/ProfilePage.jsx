@@ -95,18 +95,19 @@ useEffect(() => {
       },
       body: JSON.stringify({
         currentPassword,
-        newPassword
+        newPassword,
+        confirmPassword
       })
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert("Password berhasil diubah!");
+          alert(data.message);
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
         } else {
-          alert(data.message || "Gagal mengubah password.");
+          alert(data.data.message);
         }
       })
       .catch(() => {
