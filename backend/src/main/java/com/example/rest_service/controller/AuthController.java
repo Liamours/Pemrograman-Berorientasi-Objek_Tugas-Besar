@@ -84,16 +84,16 @@ public class AuthController {
 
         User user = userOptional.get();
 
-        // 2. Verify password with BCrypt
+
         if (!loginRequest.getPassword().equals(user.getPassword())) {
             return ResponseEntity.badRequest()
             .body(new ApiResponse(false, "Invalid email or password"));
         }
 
-        // 3. Load UserDetails
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
 
-        // 4. Generate JWT token
+
         String token = jwtTokenUtil.generateToken(userDetails);
 
         // 5. Prepare response data
