@@ -5,9 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.example.rest_service.dto.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.example.rest_service.repository.OrderRepository;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.repository.ClientRepository;
@@ -20,8 +19,6 @@ import com.example.rest_service.dto.ChangePasswordRequest;
 import com.example.rest_service.dto.UpdateProfileRequest;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -34,10 +31,12 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final OrderRepository orderRepository;
 
-    public UserController(UserRepository userRepository, ClientRepository clientRepository) {
+    public UserController(UserRepository userRepository, ClientRepository clientRepository,OrderRepository orderRepository) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
+        this.orderRepository = orderRepository;
     }
 
     @GetMapping("/profile/admin")
@@ -163,7 +162,32 @@ public class UserController {
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
 
-        return ResponseEntity.ok()
+        return ResponseEntity.ok() 
                 .body(new ApiResponse(true, "Berhasil Mengubah"));
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAccount(
+            Authentication authentication) { // Require password confirmation
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        try {
+            // Delete client record first if exists
+            if (user.getPeran() == User.Role.Client) {
+                clientRepository.deleteById(user.getId());
+                orderRepository.deleteById(user.getId().intValue());
+            }
+
+            // Then delete user
+            userRepository.delete(user);
+
+            return ResponseEntity.ok()
+                    .body(new ApiResponse(true, "Account deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Failed to delete account"));
+        }
     }
 }

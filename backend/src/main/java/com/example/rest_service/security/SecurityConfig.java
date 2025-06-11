@@ -42,7 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/barang").permitAll()
                         .requestMatchers(HttpMethod.POST, "/barang/detail").permitAll()
                         .requestMatchers("/barang").permitAll()
-                        .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
+                        .requestMatchers("/products/new").hasRole("Admin")
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()// Changed to cover all user endpoints
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
