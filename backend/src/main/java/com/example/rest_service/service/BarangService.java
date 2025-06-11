@@ -1,6 +1,7 @@
 package com.example.rest_service.service;
 
 import com.example.rest_service.dto.UpdateBarangRequest;
+import com.example.rest_service.dto.UpdateStockRequest;
 import com.example.rest_service.model.Barang;
 import com.example.rest_service.repository.BarangRepository;
 import java.util.Optional;
@@ -59,6 +60,25 @@ public class BarangService {
             existingBarang.setStokBarang(barang.getStokBarang());
 
             // 3. Save the updated Barang back to the repository
+            return barangRepository.save(existingBarang);
+        } else {
+            return null; // Return null if the Barang with given ID does not exist
+        }
+    }
+
+    // Update only stock
+    public Barang updateStock(@Valid UpdateStockRequest request) {
+        // 1. Find the Barang by ID
+        Optional<Barang> optionalBarang = barangRepository.findById(request.getBarangId());
+
+        // 2. Check if the Barang exists
+        if (optionalBarang.isPresent()) {
+            Barang existingBarang = optionalBarang.get();
+
+            // 3. Update the stock value
+            existingBarang.setStokBarang(request.getStokBarang());
+
+            // 4. Save the updated Barang with the new stock value
             return barangRepository.save(existingBarang);
         } else {
             return null; // Return null if the Barang with given ID does not exist

@@ -46,6 +46,11 @@ public class SecurityConfig {
                         .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
                         .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints
                         .requestMatchers("/products/update").hasRole("Admin")
+                        .requestMatchers("/products/update/stock").hasRole("Admin")
+                        .requestMatchers("/barang/update/stock").hasRole("Admin")
+                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("ADMIN") // Restricting this endpoint to ADMIN role
+                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Use hasRole('ROLE_ADMIN') to match the roles
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
