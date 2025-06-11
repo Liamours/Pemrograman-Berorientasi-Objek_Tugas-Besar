@@ -40,8 +40,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/barang").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/barang/detail").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/barang/detail").permitAll()
                         .requestMatchers("/barang").permitAll()
+                        .requestMatchers("/barang/detail").permitAll()
+                        .requestMatchers("/barang/detail/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()// Changed to cover all user endpoints
                         .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
                         .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints

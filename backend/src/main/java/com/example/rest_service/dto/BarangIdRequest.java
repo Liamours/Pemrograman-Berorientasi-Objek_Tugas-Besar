@@ -1,9 +1,12 @@
 package com.example.rest_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class BarangIdRequest {
+    @JsonProperty("barang_id")
     private Integer barangId;
 
-    // Getters and Setters
+    // Getter and Setter
     public Integer getBarangId() {
         return barangId;
     }

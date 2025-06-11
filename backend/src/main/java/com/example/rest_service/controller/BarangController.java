@@ -79,15 +79,31 @@ public class BarangController {
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
-    @PostMapping("/detail")
-    public ResponseEntity<Barang> getBarangDetail(@Valid @RequestBody BarangIdRequest request) {
+    @GetMapping("/detail")
+    public ResponseEntity<ApiResponse> getBarangDetail(@RequestBody BarangIdRequest request) {
+        // Ambil barang berdasarkan ID
         Barang barang = barangService.getBarangById(request.getBarangId());
-        if (barang == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(barang);
 
+        // Jika barang tidak ditemukan
+        if (barang == null) {
+            ApiResponse response = new ApiResponse(false, "Barang tidak ditemukan", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Jika barang ditemukan, format response sesuai dengan yang diinginkan
+        Map<String, Object> formattedBarang = new HashMap<>();
+        formattedBarang.put("barang_id", barang.getBarangId());
+        formattedBarang.put("nama_barang", barang.getNamaBarang());
+        formattedBarang.put("deskripsi_barang", barang.getDeskripsiBarang());
+        formattedBarang.put("harga", barang.getHarga());
+        formattedBarang.put("tipe_barang_id", barang.getTipeBarang());
+        formattedBarang.put("image_url", barang.getImageUrl());
+        formattedBarang.put("stock", barang.getStokBarang());
+
+        ApiResponse response = new ApiResponse(true, "Data barang berhasil diambil", formattedBarang);
+        return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('Admin')")
