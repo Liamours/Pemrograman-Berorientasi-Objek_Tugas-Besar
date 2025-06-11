@@ -1,8 +1,6 @@
 package com.example.rest_service.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.example.rest_service.dto.BarangIdRequest;
 import com.example.rest_service.model.Barang;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.rest_service.dto.BarangFilterRequest;
 import com.example.rest_service.dto.NewBarangRequest;
 import com.example.rest_service.dto.DeletebyIDRequest;
 import com.example.rest_service.dto.ApiResponse;
@@ -27,7 +26,6 @@ import com.example.rest_service.dto.UpdateStockRequest;
 
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/barang")
@@ -37,10 +35,33 @@ public class BarangController {
     private BarangService barangService;
 
     @GetMapping
-    public ResponseEntity<List<Barang>> getAllBarang() {
-        List<Barang> barangList = barangService.getAllBarang();
-        return ResponseEntity.ok(barangList);
+    public ResponseEntity<ApiResponse> getAllBarang(@RequestBody BarangFilterRequest filterRequest) {
+        List<Barang> filteredBarang = barangService.getFilteredBarang(filterRequest);
+
+        if (filteredBarang.isEmpty()) {
+            // Return empty list if no matching results
+            return ResponseEntity.ok(new ApiResponse(true, "No matching items found", new ArrayList<>()));
+        }
+
+        // Format the filteredBarang response
+        List<Map<String, Object>> formattedData = new ArrayList<>();
+
+        for (Barang barang : filteredBarang) {
+            Map<String, Object> formattedBarang = new HashMap<>();
+            formattedBarang.put("id", barang.getBarangId());
+            formattedBarang.put("name", barang.getNamaBarang());
+            formattedBarang.put("price", barang.getHarga());
+            formattedBarang.put("category", barang.getTipeBarang());
+            formattedBarang.put("image_url", barang.getImageUrl());
+            formattedBarang.put("stock", barang.getStokBarang());
+
+            formattedData.add(formattedBarang);
+        }
+
+        ApiResponse response = new ApiResponse(true, "List barang berhasil diambil", formattedData);
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/new")
     @PreAuthorize("hasRole('Admin')")
@@ -57,6 +78,7 @@ public class BarangController {
         Barang savedProduct = barangService.addProduct(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
+
     @PostMapping("/detail")
     public ResponseEntity<Barang> getBarangDetail(@Valid @RequestBody BarangIdRequest request) {
         Barang barang = barangService.getBarangById(request.getBarangId());
@@ -67,14 +89,11 @@ public class BarangController {
 
     }
 
-
-
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> deleteBarang(@Valid @RequestBody DeletebyIDRequest barangIdRequest) {
         // 1. Check if barang exists
         boolean isDeleted = barangService.deleteBarang(barangIdRequest.getBarangId());
-
         // 2. Handle deletion success or failure
         if (isDeleted) {
             // Prepare additional data if needed (e.g., barangId or related info)
@@ -90,7 +109,7 @@ public class BarangController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/detail")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> updateBarang(@Valid @RequestBody UpdateBarangRequest request) {
         // Pastikan barangId tidak null
