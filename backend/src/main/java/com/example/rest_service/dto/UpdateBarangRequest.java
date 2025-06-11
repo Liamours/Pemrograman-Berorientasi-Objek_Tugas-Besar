@@ -1,27 +1,37 @@
-package com.example.rest_service.model;
+package com.example.rest_service.dto;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
 
-@Entity
-@Table(name = "barang")
-public class Barang {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UpdateBarangRequest {
+    @NotNull(message = "Barang ID cannot be null")
+    @JsonProperty("barang_id")
     private Integer barangId;
 
+    @NotBlank(message = "Nama Barang cannot be blank")
+    @JsonProperty("nama_barang")
     private String namaBarang;
+
+    @JsonProperty("deskripsi_barang")
     private String deskripsiBarang;
+
+    @NotNull(message = "Harga cannot be null")
+    @Min(value = 1, message = "Harga must be greater than 0")
     private Double harga;
-    private String tipeBarang;
+
+    @JsonProperty("tipe_barang_id")
+    private String tipeBarangId;
+
+    @JsonProperty("image_url")
     private String imageUrl;
+
+    @NotNull(message = "Stok Barang cannot be null")
+    @JsonProperty("stok_barang")
     private Integer stokBarang;
-    private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "barang",cascade = CascadeType.ALL)
-    private Order order;
-
-    // Getters and setters
+    // Getters and Setters
     public Integer getBarangId() {
         return barangId;
     }
@@ -54,12 +64,12 @@ public class Barang {
         this.harga = harga;
     }
 
-    public String getTipeBarang() {
-        return tipeBarang;
+    public String getTipeBarangId() {
+        return tipeBarangId;
     }
 
-    public void setTipeBarang(String tipeBarang) {
-        this.tipeBarang = tipeBarang;
+    public void setTipeBarangId(String tipeBarangId) {
+        this.tipeBarangId = tipeBarangId;
     }
 
     public String getImageUrl() {
@@ -76,13 +86,5 @@ public class Barang {
 
     public void setStokBarang(Integer stokBarang) {
         this.stokBarang = stokBarang;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
