@@ -9,9 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.rest_service.model.Client;
+import com.example.rest_service.repository.ClientRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,16 +36,19 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
+    private final ClientRepository clientRepository;
 
     public AuthController(UserRepository userRepository,
                           JwtTokenUtil jwtTokenUtil,
-                          UserDetailsService userDetailsService) {
+                          UserDetailsService userDetailsService,ClientRepository clientRepository) {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
+        this.clientRepository = clientRepository;
     }
 
     // REGISTER
+    @Transactional
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
@@ -53,7 +60,14 @@ public class AuthController {
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(registerRequest.getPassword());
-        userRepository.save(user);
+        user.setPeran(User.Role.Client);
+        User savedUser = userRepository.save(user);
+        Client client = new Client();
+        client.setUser(savedUser);
+        client.setIsmember(false);
+        client.setAlamat(null);
+        clientRepository.save(client);
+
 
         return ResponseEntity.ok(new ApiResponse(true, "Register sukses, silakan login!"));
     }

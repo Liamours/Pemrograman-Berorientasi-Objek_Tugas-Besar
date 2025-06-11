@@ -19,6 +19,7 @@ public class Client {
     private boolean ismember;
 
     @Lob
+    @Column(nullable = true) // Explicitly allow null
     private String alamat;
 
     public Client() {}
