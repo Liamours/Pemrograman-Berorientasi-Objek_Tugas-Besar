@@ -1,31 +1,37 @@
 package com.example.rest_service.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "`order`") // pakai backtick karena 'order' adalah reserved word
+@Table(name = "`order`")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    private int orderId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "keranjang_id", referencedColumnName = "id")
+    private Keranjang keranjang;
+
+    @ManyToOne
+    @JoinColumn(name = "barang_id")
+    private Barang barang;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id") // Tambahan biar bisa pakai findByOrderIdAndUser
     private User user;
 
+    private Integer jumlahBarang;
+    private Double hargaPerUnit;
+    private Double totalHarga; // Tambahan yang kamu pakai di service
     private LocalDateTime tanggalOrder;
-
-    private BigDecimal totalHarga;
-
-    @Lob
     private String alamatTujuan;
 
+    @Column(name = "status_order")
     @Enumerated(EnumType.STRING)
-    private StatusOrder statusOrder = StatusOrder.Pending_Client;
+    private StatusOrder statusOrder;
 
     public enum StatusOrder {
         Pending_Client,
@@ -33,23 +39,84 @@ public class Order {
         Done
     }
 
-    public Order() {}
+    // Getters and Setters
+    public int getOrderId() {
+        return orderId;
+    }
 
-    public Integer getOrderId() { return orderId; }
-    public void setOrderId(Integer orderId) { this.orderId = orderId; }
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Keranjang getKeranjang() {
+        return keranjang;
+    }
 
-    public LocalDateTime getTanggalOrder() { return tanggalOrder; }
-    public void setTanggalOrder(LocalDateTime tanggalOrder) { this.tanggalOrder = tanggalOrder; }
+    public void setKeranjang(Keranjang keranjang) {
+        this.keranjang = keranjang;
+    }
 
-    public BigDecimal getTotalHarga() { return totalHarga; }
-    public void setTotalHarga(BigDecimal totalHarga) { this.totalHarga = totalHarga; }
+    public Barang getBarang() {
+        return barang;
+    }
 
-    public String getAlamatTujuan() { return alamatTujuan; }
-    public void setAlamatTujuan(String alamatTujuan) { this.alamatTujuan = alamatTujuan; }
+    public void setBarang(Barang barang) {
+        this.barang = barang;
+    }
 
-    public StatusOrder getStatusOrder() { return statusOrder; }
-    public void setStatusOrder(StatusOrder statusOrder) { this.statusOrder = statusOrder; }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getJumlahBarang() {
+        return jumlahBarang;
+    }
+
+    public void setJumlahBarang(Integer jumlahBarang) {
+        this.jumlahBarang = jumlahBarang;
+    }
+
+    public Double getHargaPerUnit() {
+        return hargaPerUnit;
+    }
+
+    public void setHargaPerUnit(Double hargaPerUnit) {
+        this.hargaPerUnit = hargaPerUnit;
+    }
+
+    public Double getTotalHarga() {
+        return totalHarga;
+    }
+
+    public void setTotalHarga(Double totalHarga) {
+        this.totalHarga = totalHarga;
+    }
+
+    public LocalDateTime getTanggalOrder() {
+        return tanggalOrder;
+    }
+
+    public void setTanggalOrder(LocalDateTime tanggalOrder) {
+        this.tanggalOrder = tanggalOrder;
+    }
+
+    public String getAlamatTujuan() {
+        return alamatTujuan;
+    }
+
+    public void setAlamatTujuan(String alamatTujuan) {
+        this.alamatTujuan = alamatTujuan;
+    }
+
+    public StatusOrder getStatusOrder() {
+        return statusOrder;
+    }
+
+    public void setStatusOrder(StatusOrder statusOrder) {
+        this.statusOrder = statusOrder;
+    }
 }

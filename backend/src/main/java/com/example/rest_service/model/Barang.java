@@ -1,7 +1,6 @@
 package com.example.rest_service.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,41 +9,95 @@ public class Barang {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "barang_id")
     private Integer barangId;
 
+    @Column(name = "nama_barang")
     private String namaBarang;
 
-    @Lob
+    @Column(name = "deskripsi_barang")
     private String deskripsiBarang;
 
-    private BigDecimal harga;
+    @Column(name = "harga")
+    private Double harga;
 
-    private String tipeBarang;
+    @Column(name = "tipe_barang")
+    private String tipe;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "stok_barang")
+    private Integer stokBarang;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Barang() {}
+    @OneToOne(mappedBy = "barang")
+    private Order order;
 
-    public Integer getBarangId() { return barangId; }
-    public void setBarangId(Integer barangId) { this.barangId = barangId; }
+    // Getters and Setters
+    public Integer getBarangId() {
+        return barangId;
+    }
 
-    public String getNamaBarang() { return namaBarang; }
-    public void setNamaBarang(String namaBarang) { this.namaBarang = namaBarang; }
+    public void setBarangId(Integer barangId) {
+        this.barangId = barangId;
+    }
 
-    public String getDeskripsiBarang() { return deskripsiBarang; }
-    public void setDeskripsiBarang(String deskripsiBarang) { this.deskripsiBarang = deskripsiBarang; }
+    public String getNamaBarang() {
+        return namaBarang;
+    }
 
-    public BigDecimal getHarga() { return harga; }
-    public void setHarga(BigDecimal harga) { this.harga = harga; }
+    public void setNamaBarang(String namaBarang) {
+        this.namaBarang = namaBarang;
+    }
 
-    public String getTipeBarang() { return tipeBarang; }
-    public void setTipeBarang(String tipeBarang) { this.tipeBarang = tipeBarang; }
+    public String getDeskripsiBarang() {
+        return deskripsiBarang;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setDeskripsiBarang(String deskripsiBarang) {
+        this.deskripsiBarang = deskripsiBarang;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Double getHarga() {
+        return harga;
+    }
+
+    public void setHarga(Double harga) {
+        this.harga = harga;
+    }
+
+    public String getTipeBarang() {
+        return tipe;
+    }
+
+    public void setTipeBarang(String tipeBarang) {
+        this.tipe = tipeBarang;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getStokBarang() {
+        return stokBarang;
+    }
+
+    public void setStokBarang(Integer stokBarang) {
+        this.stokBarang = stokBarang;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
