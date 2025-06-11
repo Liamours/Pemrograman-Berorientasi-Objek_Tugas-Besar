@@ -1,9 +1,9 @@
 {
-    "barang_id": "12345",
+    "barang_id": 3,
     "nama_barang": "Nabati Suup",
     "deskripsi_barang": "Nabati Suup adalah snack lezat yang terbuat dari bahan berkualitas tinggi.",
     "harga": 15000.00,
     "tipe_barang_id": "Makanan",
     "image_url": "https://example.com/images/nabati_suup.jpg",
-    "stock": 200
+    "stok_barang": 200
 }
