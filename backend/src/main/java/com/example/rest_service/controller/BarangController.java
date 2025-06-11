@@ -65,7 +65,7 @@ public class BarangController {
 
     @PostMapping("/new")
     @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<Barang> addProduct(@Valid @RequestBody NewBarangRequest dto) {
+    public ResponseEntity<ApiResponse> addProduct(@Valid @RequestBody NewBarangRequest dto) {
         Barang product = new Barang();
         product.setNamaBarang(dto.getNamaBarang());
         product.setDeskripsiBarang(dto.getDeskripsiBarang());
@@ -75,8 +75,21 @@ public class BarangController {
         product.setStokBarang(dto.getStokBarang());
         product.setCreatedAt(LocalDateTime.now());
 
+        // Menyimpan barang baru
         Barang savedProduct = barangService.addProduct(product);
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+
+        // Memformat response menggunakan ApiResponse
+        Map<String, Object> formattedData = new HashMap<>();
+        formattedData.put("barang_id", savedProduct.getBarangId());
+        formattedData.put("nama_barang", savedProduct.getNamaBarang());
+        formattedData.put("deskripsi_barang", savedProduct.getDeskripsiBarang());
+        formattedData.put("harga", savedProduct.getHarga());
+        formattedData.put("tipe_barang_id", savedProduct.getTipeBarang());
+        formattedData.put("image_url", savedProduct.getImageUrl());
+        formattedData.put("stock", savedProduct.getStokBarang());
+
+        ApiResponse response = new ApiResponse(true, "Barang baru berhasil ditambahkan", formattedData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/detail")
