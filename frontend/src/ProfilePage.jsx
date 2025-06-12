@@ -11,8 +11,9 @@ function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-
 
   const logout = () => {
     document.getElementById("myNav").style.width = "100%";
@@ -30,39 +31,38 @@ function ProfilePage() {
     document.getElementById("Hapus").style.width = "0%";
   };
 
-useEffect(() => {
-  const token = localStorage.getItem('token');
-  console.log("Token dari localStorage:", token);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    console.log("Token dari localStorage:", token);
 
-  fetch('http://localhost:8080/api/user/profile/client', {
-  method: 'GET',
-  credentials: 'include',
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
-})
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`Error: ${res.status} ${res.statusText}`);
-      }
-      return res.json();
-    })
-    .then(data => {
-      if (data.name && data.email && data.id) {
-        setName(data.name);
-        setEmail(data.email);
-        setAddress(data.address);
-        setMemberNumber(data.isMember.toString());
+    fetch('http://localhost:8080/api/user/profile/client', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
     })
-    .catch((err) => {
-      console.error("Fetch error:", err);
-      navigate('/login');
-    });
-}, []);
-
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.name && data.email && data.id) {
+          setName(data.name);
+          setEmail(data.email);
+          setAddress(data.address);
+          setMemberNumber(data.isMember.toString());
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        navigate('/login');
+      });
+  }, []);
 
   const handleSaveAccountSettings = () => {
     fetch('http://localhost:8080/api/user/profile/update', {
@@ -93,7 +93,7 @@ useEffect(() => {
     }
 
     fetch('http://localhost:8080/api/user/password/change', {
-      method: 'PUT', 
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -120,7 +120,6 @@ useEffect(() => {
       });
   };
 
-
   return (
     <div className="account-settings">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
@@ -129,39 +128,50 @@ useEffect(() => {
         <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <div className="cart">Keranjang: Rp 100.000</div>
       </header>
-      <div id="LogOut" class="overlay">
-        <div class="popup-container">
+      <div id="LogOut" className="overlay">
+        <div className="popup-container">
           <h2>Yakin Ingin Keluar?</h2>
           <p>Anda perlu login lagi jika sudah keluar</p>
-        <div class="popup-actions">
-          <button class="btn-cancel" onClick={cancelLogout}>Batal</button>
-          <button class="btn-confirm" onClick={() => {
-            localStorage.removeItem("token");
-            navigate('/login');
-          }}>Terima</button>
-          
-        </div>
-      </div>
-      <div id="Hapus" class="overlay">
-        <div class="popup-container">
-          <h2>Yakin Ingin Hapus Akun?</h2>
-          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
-          <div class="popup-actions">
-            <button class="btn-confirm" onClick={cancelHapus}>Batal</button>
-            <button class="btn-cancel" onClick={() => navigate('/login')}>Terima</button>
+          <div className="popup-actions">
+            <button className="btn-cancel" onClick={cancelLogout}>Batal</button>
+            <button className="btn-confirm" onClick={() => {
+              localStorage.removeItem("token");
+              navigate('/login');
+            }}>Terima</button>
           </div>
         </div>
       </div>
-    </div>
-     <div className="content">
+      <div id="Hapus" className="overlay">
+        <div className="popup-container">
+          <h2>Yakin Ingin Hapus Akun?</h2>
+          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
+          <div className="popup-actions">
+            <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
+            <button className="btn-cancel" onClick={() => {
+            fetch('http://localhost:8080/api/user/delete', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({
+                token
+              })
+            })
+              navigate('/login');
+            }}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
-            <li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Settings</a></li>
-            <li><a style={{ cursor: "pointer" }} onClick={logout}><i class="glyphicon glyphicon-log-out"></i> Log-out</a></li>
-            <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i class="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
+            <li><a href="#"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
+            <li><a href="#"><i className="glyphicon glyphicon-cog"></i> Settings</a></li>
+            <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
+            <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
-        </nav> 
+        </nav>
         <main className="main">
           <div className="card">
             <h2>Informasi Akun</h2>
@@ -202,19 +212,31 @@ useEffect(() => {
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
               <label htmlFor="new-password">Password Baru</label>
-              <input
-                type="password"
-                id="new-password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
+              <div className="password-input">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  id="new-password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <i
+                  className={`fas fa-eye${showNewPassword ? "-slash" : ""}`}
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                ></i>
+              </div>
               <label htmlFor="confirm-password">Konfirmasi Password</label>
-              <input
-                type="password"
-                id="confirm-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div className="password-input">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirm-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <i
+                  className={`fas fa-eye${showConfirmPassword ? "-slash" : ""}`}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                ></i>
+              </div>
               <button type="button" onClick={handleChangePassword}>Ubah Password</button>
             </form>
           </div>
@@ -223,6 +245,5 @@ useEffect(() => {
     </div>
   );
 }
-
 
 export default ProfilePage;

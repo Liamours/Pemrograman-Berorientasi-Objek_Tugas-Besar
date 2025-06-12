@@ -1,13 +1,47 @@
-import React, { useState } from 'react';
-import './DetailBarangStyle.css'; // Import the CSS file
+import React, { useState, useEffect } from 'react';
+import './DetailBarangStyle.css';
 
 const ProductCard = () => {
-  const [quantity, setQuantity] = useState(5);
+  const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState(null);
 
-  const handleIncrease = () => setQuantity(quantity + 1);
-  const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
+  useEffect(() => {
+    const id = localStorage.getItem('id_barang');
+    fetch('http://localhost:8080/api/user/profile/update', {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify({
+        id
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status) {
+          setProduct(data.data);
+        } else {
+          console.error("Failed to fetch product details:", data.message);
+        }
+      })
+      .catch(err => console.error("Fetch error:", err));
+  }, []);
 
-  const price = 202000;
+  const handleIncrease = () => {
+    if (product && quantity < product.stokBarang) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
+
+  const price = product.harga;
   const subtotal = price * quantity;
 
   return (
@@ -21,17 +55,15 @@ const ProductCard = () => {
         <div className="product-card">
           <div className="product-info">
             <img 
-              src="/images/grownncheer_logo.png" // Placeholder image for the product image
-              alt="Kapal Api Mix"
+              src={product.imageUrl || "/images/grownncheer_logo.png"}
+              alt={product.namaBarang}
               className="product-image"
             />
             <div className="product-details">
-              <h1 className="product-title">1 Dus Kapal Api Mix</h1>
+              <h1 className="product-title">{product.namaBarang}</h1>
               <p className="product-price">Rp {price.toLocaleString()}</p>
               <p className="product-description">
-                Kopi Kapal Api Special Mix terbuat dari paduan biji kopi berkualitas "special" dan gula, menghasilkan aroma dan rasa yang jelas lebih enak, siap memberikan semangat untuk memulai hari.
-                <br />
-                1 Dus berisi 12 Renteng
+                {product.deskripsiBarang}
               </p>
               <div className="quantity-section">
                 <button className="quantity-btn" onClick={handleDecrease}>-</button>
@@ -42,7 +74,7 @@ const ProductCard = () => {
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
               </div>
               <button className="add-to-cart-btn">Tambah ke Keranjang</button>
-              <p className="category">Kategori: Minuman</p>
+              <p className="category">Kategori: {product.tipeBarang}</p>
             </div>
           </div>
         </div>
