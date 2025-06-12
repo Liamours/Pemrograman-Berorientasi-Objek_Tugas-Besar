@@ -32,4 +32,12 @@ public class KeranjangController {
         orderService.deleteOrder(orderId, userId);
     }
 
+    // PUT /keranjang/order
+    @PutMapping("/order")
+    public void updateOrderJumlah(@RequestParam("order_id") int orderId,
+                                  @RequestParam("user_id") int userId,
+                                  @RequestParam("jumlah") int jumlah) {
+        orderService.updateOrderJumlah(orderId, userId, jumlah);
+    }
+
 }

@@ -106,4 +106,18 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
     }
 
+    @Override
+    public void updateOrderJumlah(int orderId, int userId, int jumlah) {
+        User user = userRepository.findById((long) userId).orElseThrow();
+        Order order = orderRepository.findByOrderIdAndUser(orderId, user).orElseThrow();
+
+        if (order.getStatusOrder() != StatusOrder.Pending_Client) {
+            throw new IllegalStateException("Order sudah diproses, tidak bisa diubah");
+        }
+
+        // Update jumlah dan hitung ulang total harga
+        order.setJumlahBarang(jumlah);
+        order.setTotalHarga(order.getHargaPerUnit() * jumlah);
+        orderRepository.save(order);
+    }
 }
