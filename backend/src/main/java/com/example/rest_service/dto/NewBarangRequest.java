@@ -3,28 +3,35 @@ package com.example.rest_service.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class NewBarangRequest {
 
     @NotBlank(message = "Nama barang tidak boleh kosong")
+    @JsonProperty("nama_barang")  // Added JsonProperty to map the JSON field to Java field
     private String namaBarang;
 
+    @JsonProperty("deskripsi_barang")  // Added JsonProperty to map the JSON field to Java field
     private String deskripsiBarang;
 
     @NotNull(message = "Harga harus diisi")
     @Min(value = 0, message = "Harga tidak boleh negatif")
+    @JsonProperty("harga")  // Added JsonProperty to map the JSON field to Java field
     private Double harga;
 
     @NotBlank(message = "Tipe barang tidak boleh kosong")
+    @JsonProperty("tipe_barang")  // Added JsonProperty to map the JSON field to Java field
     private String tipeBarang;
 
+    @JsonProperty("image_url")  // Added JsonProperty to map the JSON field to Java field
     private String imageUrl;
 
     @NotNull(message = "Stok barang harus diisi")
     @Min(value = 0, message = "Stok barang tidak boleh negatif")
+    @JsonProperty("stok_barang")  // Added JsonProperty to map the JSON field to Java field
     private Integer stokBarang;
 
-    // Getters dan Setters
+    // Getters and Setters
 
     public String getNamaBarang() {
         return namaBarang;
