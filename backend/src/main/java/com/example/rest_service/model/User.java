@@ -10,18 +10,22 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    
+
+    @OneToOne(mappedBy = "user") // The 'user' field in Keranjang is the owning side of the relationship
+    private Keranjang keranjang;
+
     private String nama_user;
-    
+
     @Column(unique = true, nullable = false)
     private String email;
-    
+
     private String password;
-    
+
     @Enumerated(EnumType.STRING)
     private Role peran = Role.Client;
 

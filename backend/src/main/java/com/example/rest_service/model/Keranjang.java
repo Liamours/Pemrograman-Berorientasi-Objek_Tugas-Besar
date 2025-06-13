@@ -13,8 +13,9 @@ public class Keranjang {
     @Column(name = "keranjang_id")
     private Integer keranjangId;
 
+    // Correcting JoinColumn to reference the 'user_id' column
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id") // References the user_id from User entity
     private User user;
 
     @OneToMany(mappedBy = "keranjang")
@@ -22,9 +23,6 @@ public class Keranjang {
 
     @Column(name = "waktu_ditambahkan")
     private LocalDateTime waktuDitambahkan;
-
-    // Default constructor
-    public Keranjang() {}
 
     // Getters and setters
     public Integer getKeranjangId() {

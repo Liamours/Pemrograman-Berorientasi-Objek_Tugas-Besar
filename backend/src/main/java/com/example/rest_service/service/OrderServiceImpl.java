@@ -41,7 +41,6 @@ public class OrderServiceImpl implements OrderService {
             OrderData dto = new OrderData();
             dto.setOrderId(order.getOrderId());
             dto.setJumlahBarang(order.getJumlahBarang());
-            dto.setTotalHarga(order.getTotalHarga());
             dto.setStatusOrder(order.getStatusOrder().name());
             dto.setNamaBarang(order.getBarang().getNamaBarang());
             dto.setStock(order.getBarang().getStokBarang());
@@ -73,7 +72,6 @@ public class OrderServiceImpl implements OrderService {
             CheckoutResponse.CheckoutItemResult result = new CheckoutResponse.CheckoutItemResult();
             result.setNama_barang(order.getBarang().getNamaBarang());
             result.setJumlah_barang(order.getJumlahBarang());
-            result.setHarga(order.getTotalHarga());
 
             Barang barang = order.getBarang();
             if (barang.getStokBarang() >= order.getJumlahBarang()) {
@@ -82,7 +80,6 @@ public class OrderServiceImpl implements OrderService {
                 barangRepository.save(barang);
                 orderRepository.save(order);
                 result.setMessage("Sukses");
-                totalHarga += order.getTotalHarga();
             } else {
                 result.setMessage("Stok tidak cukup");
                 semuaSukses = false;
@@ -117,7 +114,6 @@ public class OrderServiceImpl implements OrderService {
 
         // Update jumlah dan hitung ulang total harga
         order.setJumlahBarang(jumlah);
-        order.setTotalHarga(order.getHargaPerUnit() * jumlah);
         orderRepository.save(order);
     }
 }

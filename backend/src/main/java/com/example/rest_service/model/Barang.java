@@ -37,7 +37,7 @@ public class Barang {
     private LocalDateTime createdAt;
 
 
-    @OneToMany(mappedBy = "barang")
+    @OneToMany(mappedBy = "barang",cascade = CascadeType.ALL)
     private List<Order> orders;
 
 

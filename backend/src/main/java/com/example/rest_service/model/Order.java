@@ -7,18 +7,18 @@ import java.time.LocalDateTime;
 @Table(name = "`order`")
 public class Order {
 
-    public Order(){}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+    @Column(name = "order_id")
+    private Integer orderId;
 
+    // Adding the correct relationship with Keranjang
     @ManyToOne
-    @JoinColumn(name = "keranjang_id", referencedColumnName = "id")
+    @JoinColumn(name = "keranjang_id", referencedColumnName = "keranjang_id")
     private Keranjang keranjang;
 
-    @ManyToOne
-    @JoinColumn(name = "barang_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "barang_id",nullable = false)
     private Barang barang;
 
     @ManyToOne
@@ -27,7 +27,6 @@ public class Order {
 
     private Integer jumlahBarang;
     private Double hargaPerUnit;
-    private Double totalHarga; // Tambahan yang kamu pakai di service
     private LocalDateTime tanggalOrder;
     private String alamatTujuan;
 
@@ -88,14 +87,6 @@ public class Order {
 
     public void setHargaPerUnit(Double hargaPerUnit) {
         this.hargaPerUnit = hargaPerUnit;
-    }
-
-    public Double getTotalHarga() {
-        return totalHarga;
-    }
-
-    public void setTotalHarga(Double totalHarga) {
-        this.totalHarga = totalHarga;
     }
 
     public LocalDateTime getTanggalOrder() {
