@@ -2,16 +2,25 @@ package com.example.rest_service.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -21,25 +30,54 @@ public class SecurityConfig {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
-    // 1. Define security filter chain (replaces configure(HttpSecurity))
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/user/**").permitAll()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/barang").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/barang/detail").permitAll()
+                        .requestMatchers("/barang").permitAll()
+                        .requestMatchers("/barang/detail").permitAll()
+                        .requestMatchers("/barang/detail/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()// Changed to cover all user endpoints
+                        .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
+                        .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints
+                        .requestMatchers("/products/update").hasRole("Admin")
+                        .requestMatchers("/products/update/stock").hasRole("Admin")
+                        .requestMatchers("/barang/update/stock").hasRole("Admin")
+                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("ADMIN") // Restricting this endpoint to ADMIN role
+                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Use hasRole('ROLE_ADMIN') to match the roles
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
 
-
-        // Add JWT filter
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
         return http.build();
     }
 
-    // 2. Configure AuthenticationManager (replaces configure(AuthenticationManagerBuilder))
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setExposedHeaders(Arrays.asList("Authorization"));
+        config.setAllowCredentials(true);  // Critical for cookies
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authConfig) throws Exception {
