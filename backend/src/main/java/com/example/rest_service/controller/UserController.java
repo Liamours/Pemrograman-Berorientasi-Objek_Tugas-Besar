@@ -167,7 +167,7 @@ public class UserController {
     }
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteAccount(
-            Authentication authentication) { // Require password confirmation
+            Authentication authentication) {
 
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
