@@ -104,12 +104,13 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (user.getPeran() == User.Role.Client) {
-            clientRepository.deleteById(user.getId());
-            orderRepository.deleteById(user.getId().intValue());
+            clientRepository.deleteById(user.getId());  // Menghapus Client
+            orderRepository.deleteById(user.getId().intValue());  // Menghapus Order
         }
 
-        userRepository.delete(user);
+        userRepository.delete(user);  // Menghapus User
     }
+
 
     // Upgrade to member
     @Transactional
@@ -167,18 +168,24 @@ public class UserService {
 
         User.Role newRole = (userToUpdate.getPeran() == User.Role.Admin) ? User.Role.Client : User.Role.Admin;
 
+        // Tangani perubahan peran User
         if (userToUpdate.getPeran() == User.Role.Client && newRole == User.Role.Admin) {
+            // Hapus Client jika User berubah dari Client ke Admin
             clientRepository.findById(userToUpdate.getId()).ifPresent(clientRepository::delete);
         } else if (userToUpdate.getPeran() == User.Role.Admin && newRole == User.Role.Client) {
+            // Jika User berubah dari Admin ke Client, pastikan Client ada
             if (!clientRepository.existsById(userToUpdate.getId())) {
+                // Jika Client sudah dihapus, buat Client baru
                 Client newClient = new Client();
-                newClient.setUser(userToUpdate);
-                newClient.setIsmember(false);
-                clientRepository.save(newClient);
+                newClient.setUser(userToUpdate);  // Hubungkan Client dengan User
+                newClient.setIsmember(false);  // Tentukan status membership
+                clientRepository.save(newClient);  // Simpan Client baru
             }
         }
 
+        // Ubah peran User
         userToUpdate.setPeran(newRole);
-        userRepository.save(userToUpdate);
+        userRepository.save(userToUpdate);  // Simpan perubahan User
     }
+
 }

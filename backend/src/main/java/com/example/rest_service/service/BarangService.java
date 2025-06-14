@@ -31,7 +31,6 @@ public class BarangService {
         return barangRepository.findById(barangId).orElse(null);
     }
 
-
     @Transactional
     public boolean deleteBarang(Integer barangId) {
         Barang barang = barangRepository.findById(barangId).orElse(null);
@@ -46,6 +45,7 @@ public class BarangService {
         }
         return false;
     }
+
 
     public Barang updateBarang(@Valid UpdateBarangRequest barang) {
         Optional<Barang> optionalBarang = barangRepository.findById(barang.getBarangId());
