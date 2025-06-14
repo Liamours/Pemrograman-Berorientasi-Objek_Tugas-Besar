@@ -152,16 +152,16 @@ function ProfilePage() {
           <div className="popup-actions">
             <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
             <button className="btn-cancel" onClick={() => {
-            fetch('http://localhost:8080/api/user/delete', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-              },
-              body: JSON.stringify({
-                token
-              })
-            })
+            // fetch('http://localhost:8080/api/user/delete', {
+            //   method: 'PUT',
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //     'Authorization': `Bearer ${localStorage.getItem('token')}`
+            //   },
+            //   body: JSON.stringify({
+            //     token
+            //   })
+            // })
               navigate('/login');
             }}>Terima</button>
           </div>
