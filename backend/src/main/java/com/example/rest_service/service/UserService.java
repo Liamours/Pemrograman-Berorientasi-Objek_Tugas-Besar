@@ -24,6 +24,8 @@ public class UserService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private KeranjangRepository keranjangRepository;
 
     // Get admin profile
     public Map<String, Object> getAdminProfile(String email) {
@@ -105,7 +107,8 @@ public class UserService {
 
         if (user.getPeran() == User.Role.Client) {
             clientRepository.deleteById(user.getId());  // Menghapus Client
-            orderRepository.deleteById(user.getId().intValue());  // Menghapus Order
+            orderRepository.deleteById(user.getId().intValue());
+            keranjangRepository.deleteById(user.getId().intValue());// Menghapus Order
         }
 
         userRepository.delete(user);  // Menghapus User

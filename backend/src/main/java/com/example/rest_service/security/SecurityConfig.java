@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/products/update/stock").hasRole("Admin")
                         .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin") // Restricting this endpoint to ADMIN role
                         .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin")
+                        .requestMatchers("/api/user/changerole").hasRole("Admin")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
