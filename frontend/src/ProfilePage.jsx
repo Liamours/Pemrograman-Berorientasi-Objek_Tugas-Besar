@@ -80,7 +80,7 @@ function ProfilePage() {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        //navigate('/login');
+        navigate('/login');
       });
   }, []);
 
@@ -180,6 +180,7 @@ function ProfilePage() {
                   token
                 })
               })
+              localStorage.removeItem("token");
               navigate('/login');
             }}>Terima</button>
           </div>

@@ -141,6 +141,7 @@ useEffect(() => {
           <div className="popup-actions">
             <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
             <button className="btn-cancel" onClick={() => {
+              const token = localStorage.getItem('token');
               fetch('http://localhost:8080/api/user/delete', {
                 method: 'PUT',
                 headers: {
@@ -160,6 +161,7 @@ useEffect(() => {
       <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
+            <li><a href="#"><i className="glyphicon glyphicon-cog"></i>Edit Barang</a></li>
             <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
             <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
