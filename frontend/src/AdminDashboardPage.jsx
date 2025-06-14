@@ -10,7 +10,8 @@ function AdminDashboardPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
   const logout = () => {
     document.getElementById("myNav").style.width = "100%";
@@ -232,4 +233,4 @@ useEffect(() => {
   );
 }
 
-export default ProfilePage;
+export default AdminDashboardPage;

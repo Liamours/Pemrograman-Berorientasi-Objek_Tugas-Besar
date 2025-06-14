@@ -172,3 +172,34 @@ form button:hover {
 .popup-actions .btn-confirm:hover {
   background-color: #333;
 }
+
+.profile-title-shownewpassword-wrapper {
+  display: table-column;
+  align-items: center;
+}
+
+.profile-toggle-new-password {
+  position: absolute;
+  background: none;
+  padding: 0%;
+  margin-left: 5px; 
+}
+
+.profile-title-showconfirmnewpassword-wrapper {
+  display: table-column;
+  align-items: center;
+}
+
+.profile-toggle-confirm-new-password {
+  position: absolute;
+  background: none;
+  padding: 0%;
+  margin-left: 5px; 
+}
+
+.hanya.info {
+  margin-bottom: 15px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
