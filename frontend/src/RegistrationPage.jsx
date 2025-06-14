@@ -6,11 +6,14 @@ import { useNavigate } from 'react-router-dom';
 function RegistrationPage() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [message, setMessage] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleRegistration = async () => {
@@ -44,7 +47,7 @@ function RegistrationPage() {
       const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ name, email, address, password })
       });
 
       const data = await response.json();
@@ -82,39 +85,56 @@ function RegistrationPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          type="text"
+          type="address"
           placeholder="Alamat"
           className="registration-input-field"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          className="registration-input-field"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Konfirmasi Password"
-          className="registration-input-field"
-          value={confirmPassword}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value);
-            if (e.target.value === password) {
-              setPasswordMatch(true);
-            } else if (e.target.value !== '') {
-              setPasswordMatch(false);
-            } else {
-              setPasswordMatch(null);
-            }
-          }}
-          style={{
-            borderColor: passwordMatch === true ? 'green' : passwordMatch === false ? 'red' : 'initial',
-          }}
-        />
+        <div className="registration-password-wrapper">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            className="registration-input-field"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="registration-toggle-password"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? '🚫' : '👁️'}
+          </button>
+        </div>
+        <div className="registration-confirm-password-wrapper">
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            placeholder="Konfirmasi Password"
+            className="registration-input-field"
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              if (e.target.value === password) {
+                setPasswordMatch(true);
+              } else if (e.target.value !== '') {
+                setPasswordMatch(false);
+              } else {
+                setPasswordMatch(null);
+              }
+            }}
+            style={{
+              borderColor: passwordMatch === true ? 'green' : passwordMatch === false ? 'red' : 'initial',
+            }}
+          />
+          <button
+            type="button"
+            className="registration-toggle-confirm-password"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? '🚫' : '👁️'}
+          </button>
+        </div>
 
         <div className="registration-terms-and-conditions">
           <input

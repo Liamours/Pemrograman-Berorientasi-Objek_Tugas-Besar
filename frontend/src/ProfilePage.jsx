@@ -6,21 +6,37 @@ import './LogoutStyle.css';
 function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMemberNumber] = useState("");
+  const [memberNumber, setMember] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const navigate = useNavigate();
 
+  const confirmChange = () => {
+    document.getElementById("Change").style.width = "100%";
+  };
+
+  const cancelConfirmChange = () => {
+    document.getElementById("Change").style.width = "0%";
+  };
+
+  const confirmSave = () => {
+    document.getElementById("Save").style.width = "100%";
+  };
+
+  const cancelConfirmSave = () => {
+    document.getElementById("Save").style.width = "0%";
+  };
+
   const logout = () => {
-    document.getElementById("myNav").style.width = "100%";
+    document.getElementById("LogOut").style.width = "100%";
   };
 
   const cancelLogout = () => {
-    document.getElementById("myNav").style.width = "0%";
+    document.getElementById("LogOut").style.width = "0%";
   };
 
   const hapus = () => {
@@ -55,12 +71,16 @@ function ProfilePage() {
           setName(data.name);
           setEmail(data.email);
           setAddress(data.address);
-          setMemberNumber(data.isMember.toString());
+          if (data.isMember == true){
+            setMember("Yes");
+          }else {
+            setMember("No")
+          }
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        navigate('/login');
+        //navigate('/login');
       });
   }, []);
 
@@ -84,6 +104,7 @@ function ProfilePage() {
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmSave();
   };
 
   const handleChangePassword = () => {
@@ -118,6 +139,7 @@ function ProfilePage() {
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmChange();
   };
 
   return (
@@ -148,18 +170,38 @@ function ProfilePage() {
           <div className="popup-actions">
             <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
             <button className="btn-cancel" onClick={() => {
-            fetch('http://localhost:8080/api/user/delete', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-              },
-              body: JSON.stringify({
-                token
-              })
-            })
+            // fetch('http://localhost:8080/api/user/delete', {
+            //   method: 'PUT',
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //     'Authorization': `Bearer ${localStorage.getItem('token')}`
+            //   },
+            //   body: JSON.stringify({
+            //     token
+            //   })
+            // })
               navigate('/login');
             }}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Change" class="overlay">
+        <div class="popup-container">
+          <h2>Yakin Ingin Ubah Password?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div class="popup-actions">
+            <button class="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
+            <button class="btn-confirm" onClick={handleChangePassword}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Save" class="overlay">
+        <div class="popup-container">
+          <h2>Yakin Ingin Simpan Perubahan?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div class="popup-actions">
+            <button class="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
+            <button class="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
           </div>
         </div>
       </div>
@@ -198,7 +240,7 @@ function ProfilePage() {
               <div className="hanya info" id="member">
                 {memberNumber}
               </div>
-              <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
+              <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
             </form>
           </div>
           <div className="card">
@@ -211,33 +253,39 @@ function ProfilePage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
-              <label htmlFor="new-password">Password Baru</label>
-              <div className="password-input">
-                <input
-                  type={showNewPassword ? "text" : "password"}
-                  id="new-password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <i
-                  className={`fas fa-eye${showNewPassword ? "-slash" : ""}`}
+              <div className="profile-title-shownewpassword-wrapper">
+                <label htmlFor="new-password">Password Baru</label>
+                <button
+                  type="button"
+                  className="profile-toggle-new-password"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                ></i>
+                >
+                  {showNewPassword ? '🚫' : '👁️'}
+                </button>
               </div>
-              <label htmlFor="confirm-password">Konfirmasi Password</label>
-              <div className="password-input">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  id="confirm-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <i
-                  className={`fas fa-eye${showConfirmPassword ? "-slash" : ""}`}
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                ></i>
+              <input
+                type={showNewPassword ? 'text' : 'password'}
+                id="new-password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <div className="profile-title-showconfirmnewpassword-wrapper">
+                <label htmlFor="confirm-password">Konfirmasi Password</label>
+                <button
+                  type="button"
+                  className="profile-toggle-confirm-new-password"
+                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                >
+                  {showConfirmNewPassword ? '🚫' : '👁️'}
+                </button>
               </div>
-              <button type="button" onClick={handleChangePassword}>Ubah Password</button>
+              <input
+                type={showConfirmNewPassword ? 'text' : 'password'}
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <button type="button" onClick={confirmChange}>Ubah Password</button>
             </form>
           </div>
         </main>
