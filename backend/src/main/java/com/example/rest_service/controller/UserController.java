@@ -1,193 +1,166 @@
 package com.example.rest_service.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import com.example.rest_service.dto.ApiResponse;
-import com.example.rest_service.repository.OrderRepository;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import com.example.rest_service.repository.UserRepository;
-import com.example.rest_service.repository.ClientRepository;
-import com.example.rest_service.security.JwtTokenUtil;
-import org.springframework.security.core.Authentication;
+import com.example.rest_service.dto.*;
+import com.example.rest_service.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import com.example.rest_service.model.User;
-import com.example.rest_service.model.Client;
-import com.example.rest_service.dto.ChangePasswordRequest;
-import com.example.rest_service.dto.UpdateProfileRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final UserRepository userRepository;
-    private final ClientRepository clientRepository;
-    private final OrderRepository orderRepository;
-
-    public UserController(UserRepository userRepository, ClientRepository clientRepository,OrderRepository orderRepository) {
-        this.userRepository = userRepository;
-        this.clientRepository = clientRepository;
-        this.orderRepository = orderRepository;
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/profile/admin")
     @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<?> getAdminProfile(Authentication authentication) {
-        String email = authentication.getName();
-
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    public ResponseEntity<ApiResponse> getAdminProfile(Authentication authentication) {
+        try {
+            Map<String, Object> profile = userService.getAdminProfile(authentication.getName());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Admin profile retrieved successfully", profile)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, e.getMessage()));
         }
-
-        User user = userOptional.get();
-
-        Map<String, Object> profile = new HashMap<>();
-        profile.put("id", user.getId());
-        profile.put("email", user.getEmail());
-        profile.put("name", user.getName());
-        profile.put("role", user.getPeran());
-        profile.put("createdAt", user.getCreatedAt());
-        profile.put("updatedAt", user.getUpdatedAt());
-
-        return ResponseEntity.ok(profile);
     }
 
     @GetMapping("/profile/client")
     @PreAuthorize("hasRole('Client')")
-    public ResponseEntity<?> getClientProfile(Authentication authentication) {
-        String email = authentication.getName();
-
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    public ResponseEntity<ApiResponse> getClientProfile(Authentication authentication) {
+        try {
+            Map<String, Object> profile = userService.getClientProfile(authentication.getName());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Client profile retrieved successfully", profile)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, e.getMessage()));
         }
-
-        User user = userOptional.get();
-        Optional<Client> clientOptional = clientRepository.findById(user.getId());
-        if (clientOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client details not found");
-        }
-
-        Client client = clientOptional.get();
-
-        Map<String, Object> profile = new HashMap<>();
-        profile.put("id", user.getId());
-        profile.put("email", user.getEmail());
-        profile.put("name", user.getName());
-        profile.put("role", user.getPeran());
-        profile.put("isMember", client.isMember());
-        profile.put("address", client.getAlamat());
-        profile.put("createdAt", user.getCreatedAt());
-        profile.put("updatedAt", user.getUpdatedAt());
-
-        return ResponseEntity.ok(profile);
     }
 
     @PutMapping("/profile/update")
-    public ResponseEntity<?> updateProfile(
+    public ResponseEntity<ApiResponse> updateProfile(
             Authentication authentication,
             @Valid @RequestBody UpdateProfileRequest request,
             BindingResult bindingResult) {
 
-        // Validasi input
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
+            FieldError firstError = bindingResult.getFieldErrors().get(0);
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false,
+                            "Validation error: " + firstError.getField() + " " + firstError.getDefaultMessage()));
         }
 
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        // Update data user
-        user.setName(request.getName());
-        userRepository.save(user);
-
-        // Jika client, update alamat
-        if (user.getPeran() == User.Role.Client) {
-            Client client = clientRepository.findById(user.getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client data not found"));
-            client.setAlamat(request.getAddress());
-            clientRepository.save(client);
+        try {
+            userService.updateProfile(authentication.getName(), request);
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Profile updated successfully")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Failed to update profile: " + e.getMessage()));
         }
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true, "Berhasil Mengubah"));
     }
 
     @PutMapping("/password/change")
-    public ResponseEntity<?> changePassword(
+    public ResponseEntity<ApiResponse> changePassword(
             Authentication authentication,
             @Valid @RequestBody ChangePasswordRequest request,
             BindingResult bindingResult) {
 
-        // Validasi input
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
+            FieldError firstError = bindingResult.getFieldErrors().get(0);
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false,
+                            "Validation error: " + firstError.getField() + " " + firstError.getDefaultMessage()));
         }
-
-        // Validasi konfirmasi password
-        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "New password and confirmation password don't match"));
-        }
-
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        // Verifikasi password lama (tanpa encryption)
-        if (!request.getCurrentPassword().equals(user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse(false, "Password sekarang salah"));
-        }
-
-        // Update password baru (tanpa encryption)
-        user.setPassword(request.getNewPassword());
-        userRepository.save(user);
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true, "Berhasil Mengubah"));
-    }
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteAccount(
-            Authentication authentication) { // Require password confirmation
-
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         try {
-            // Delete client record first if exists
-            if (user.getPeran() == User.Role.Client) {
-                clientRepository.deleteById(user.getId());
-                orderRepository.deleteById(user.getId().intValue());
-            }
+            userService.changePassword(authentication.getName(), request);
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Password changed successfully")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "Password change failed: " + e.getMessage()));
+        }
+    }
 
-            // Then delete user
-            userRepository.delete(user);
-
-            return ResponseEntity.ok()
-                    .body(new ApiResponse(true, "Account deleted successfully"));
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse> deleteAccount(Authentication authentication) {
+        try {
+            userService.deleteAccount(authentication.getName());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Account deleted successfully")
+            );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "Failed to delete account"));
+                    .body(new ApiResponse(false, "Failed to delete account: " + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/member")
+    @PreAuthorize("hasRole('Client')")
+    public ResponseEntity<ApiResponse> upgradeToMember(Authentication authentication) {
+        try {
+            userService.upgradeToMember(authentication.getName());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Upgraded to member successfully")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "Upgrade failed: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/alluser")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        try {
+            List<Map<String, Object>> users = userService.getAllUsers();
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Users retrieved successfully", users)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Failed to retrieve users: " + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/changerole")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<ApiResponse> changeUserRole(
+            Authentication authentication,
+            @Valid @RequestBody ChangeRoleRequest request,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            FieldError firstError = bindingResult.getFieldErrors().get(0);
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false,
+                            "Validation error: " + firstError.getField() + " " + firstError.getDefaultMessage()));
+        }
+
+        try {
+            userService.changeUserRole(authentication.getName(), request);
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Role changed successfully")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse(false, "Role change failed: " + e.getMessage()));
         }
     }
 }

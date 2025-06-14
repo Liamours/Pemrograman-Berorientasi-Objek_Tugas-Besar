@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         ListOrderResponse response = new ListOrderResponse();
         response.setStatus(true);
         response.setMessage("Berhasil ambil keranjang");
-        response.setMember(client.isMember());
+        response.setMember(client.isIsmember());
         response.setData(data);
         return response;
     }
