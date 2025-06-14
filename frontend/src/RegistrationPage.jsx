@@ -82,6 +82,13 @@ function RegistrationPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
+          type="text"
+          placeholder="Alamat"
+          className="registration-input-field"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
           type="password"
           placeholder="Password"
           className="registration-input-field"
