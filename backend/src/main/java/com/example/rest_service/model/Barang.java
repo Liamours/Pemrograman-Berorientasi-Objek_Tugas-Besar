@@ -1,28 +1,37 @@
-package com.example.backend.model;
+@PostMapping("/checkout")
+public CheckoutResponse checkout(@RequestBody CheckoutRequest request) {
+    List<CheckoutResponse.ItemDetail> detailList = new ArrayList<>();
+    double total = 0.0;
 
-import jakarta.persistence.*;
+    for (var item : request.getItems()) {
+        Barang barang = barangRepository.findById(item.getBarangId())
+                            .orElseThrow(() -> new RuntimeException("Barang not found"));
 
-@Entity
-@Table(name = "barang")
-public class Barang {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        int jumlah = item.getJumlah();
+        double harga = barang.getHarga();
+        double subtotal = harga * jumlah;
 
-    private String nama;
-    private int stok;
-    private double harga;
+        // Example: apply 10% discount if quantity > 5
+        if (jumlah > 5) {
+            subtotal *= 0.9;
+        }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+        // reduce stock
+        barang.setStok(barang.getStok() - jumlah);
+        barangRepository.save(barang);
 
-    public String getNama() { return nama; }
-    public void setNama(String nama) { this.nama = nama; }
+        CheckoutResponse.ItemDetail detail = new CheckoutResponse.ItemDetail();
+        detail.setNama(barang.getNama());
+        detail.setJumlah(jumlah);
+        detail.setHargaSatuan(harga);
+        detail.setSubtotal(subtotal);
 
-    public int getStok() { return stok; }
-    public void setStok(int stok) { this.stok = stok; }
+        detailList.add(detail);
+        total += subtotal;
+    }
 
-    public double getHarga() { return harga; }
-    public void setHarga(double harga) { this.harga = harga; }
+    CheckoutResponse response = new CheckoutResponse();
+    response.setDetails(detailList);
+    response.setTotalHarga(total);
+    return response;
 }
