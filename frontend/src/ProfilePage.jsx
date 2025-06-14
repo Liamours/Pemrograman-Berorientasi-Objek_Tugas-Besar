@@ -15,12 +15,28 @@ function ProfilePage() {
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const navigate = useNavigate();
 
+  const confirmChange = () => {
+    document.getElementById("Change").style.width = "100%";
+  };
+
+  const cancelConfirmChange = () => {
+    document.getElementById("Change").style.width = "0%";
+  };
+
+  const confirmSave = () => {
+    document.getElementById("Save").style.width = "100%";
+  };
+
+  const cancelConfirmSave = () => {
+    document.getElementById("Save").style.width = "0%";
+  };
+
   const logout = () => {
-    document.getElementById("myNav").style.width = "100%";
+    document.getElementById("LogOut").style.width = "100%";
   };
 
   const cancelLogout = () => {
-    document.getElementById("myNav").style.width = "0%";
+    document.getElementById("LogOut").style.width = "0%";
   };
 
   const hapus = () => {
@@ -64,7 +80,7 @@ function ProfilePage() {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        navigate('/login');
+        //navigate('/login');
       });
   }, []);
 
@@ -88,6 +104,7 @@ function ProfilePage() {
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmSave();
   };
 
   const handleChangePassword = () => {
@@ -122,6 +139,7 @@ function ProfilePage() {
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmChange();
   };
 
   return (
@@ -167,6 +185,26 @@ function ProfilePage() {
           </div>
         </div>
       </div>
+      <div id="Change" class="overlay">
+        <div class="popup-container">
+          <h2>Yakin Ingin Ubah Password?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div class="popup-actions">
+            <button class="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
+            <button class="btn-confirm" onClick={handleChangePassword}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Save" class="overlay">
+        <div class="popup-container">
+          <h2>Yakin Ingin Simpan Perubahan?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div class="popup-actions">
+            <button class="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
+            <button class="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
+          </div>
+        </div>
+      </div>
       <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
@@ -202,7 +240,7 @@ function ProfilePage() {
               <div className="hanya info" id="member">
                 {memberNumber}
               </div>
-              <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
+              <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
             </form>
           </div>
           <div className="card">
@@ -247,7 +285,7 @@ function ProfilePage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <button type="button" onClick={handleChangePassword}>Ubah Password</button>
+              <button type="button" onClick={confirmChange}>Ubah Password</button>
             </form>
           </div>
         </main>
