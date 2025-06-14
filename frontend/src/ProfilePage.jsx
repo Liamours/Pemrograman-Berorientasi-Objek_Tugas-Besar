@@ -6,13 +6,13 @@ import './LogoutStyle.css';
 function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMemberNumber] = useState("");
+  const [memberNumber, setMember] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const navigate = useNavigate();
 
   const logout = () => {
@@ -55,7 +55,11 @@ function ProfilePage() {
           setName(data.name);
           setEmail(data.email);
           setAddress(data.address);
-          setMemberNumber(data.isMember.toString());
+          if (data.isMember == true){
+            setMember("Yes");
+          }else {
+            setMember("No")
+          }
         }
       })
       .catch((err) => {
@@ -211,32 +215,38 @@ function ProfilePage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
-              <label htmlFor="new-password">Password Baru</label>
-              <div className="password-input">
-                <input
-                  type={showNewPassword ? "text" : "password"}
-                  id="new-password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <i
-                  className={`fas fa-eye${showNewPassword ? "-slash" : ""}`}
+              <div className="profile-title-shownewpassword-wrapper">
+                <label htmlFor="new-password">Password Baru</label>
+                <button
+                  type="button"
+                  className="profile-toggle-new-password"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                ></i>
+                >
+                  {showNewPassword ? '🚫' : '👁️'}
+                </button>
               </div>
-              <label htmlFor="confirm-password">Konfirmasi Password</label>
-              <div className="password-input">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  id="confirm-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <i
-                  className={`fas fa-eye${showConfirmPassword ? "-slash" : ""}`}
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                ></i>
+              <input
+                type={showNewPassword ? 'text' : 'password'}
+                id="new-password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <div className="profile-title-showconfirmnewpassword-wrapper">
+                <label htmlFor="confirm-password">Konfirmasi Password</label>
+                <button
+                  type="button"
+                  className="profile-toggle-confirm-new-password"
+                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                >
+                  {showConfirmNewPassword ? '🚫' : '👁️'}
+                </button>
               </div>
+              <input
+                type={showConfirmNewPassword ? 'text' : 'password'}
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
               <button type="button" onClick={handleChangePassword}>Ubah Password</button>
             </form>
           </div>
