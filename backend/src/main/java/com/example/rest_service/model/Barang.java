@@ -1,88 +1,28 @@
-package com.example.rest_service.model;
+package com.example.backend.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "barang")
 public class Barang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer barangId;
+    private Long id;
 
-    private String namaBarang;
-    private String deskripsiBarang;
-    private Double harga;
-    private String tipeBarang;
-    private String imageUrl;
-    private Integer stokBarang;
-    private LocalDateTime createdAt;
+    private String nama;
+    private int stok;
+    private double harga;
 
-    @OneToOne(mappedBy = "barang",cascade = CascadeType.ALL)
-    private Order order;
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // Getters and setters
-    public Integer getBarangId() {
-        return barangId;
-    }
+    public String getNama() { return nama; }
+    public void setNama(String nama) { this.nama = nama; }
 
-    public void setBarangId(Integer barangId) {
-        this.barangId = barangId;
-    }
+    public int getStok() { return stok; }
+    public void setStok(int stok) { this.stok = stok; }
 
-    public String getNamaBarang() {
-        return namaBarang;
-    }
-
-    public void setNamaBarang(String namaBarang) {
-        this.namaBarang = namaBarang;
-    }
-
-    public String getDeskripsiBarang() {
-        return deskripsiBarang;
-    }
-
-    public void setDeskripsiBarang(String deskripsiBarang) {
-        this.deskripsiBarang = deskripsiBarang;
-    }
-
-    public Double getHarga() {
-        return harga;
-    }
-
-    public void setHarga(Double harga) {
-        this.harga = harga;
-    }
-
-    public String getTipeBarang() {
-        return tipeBarang;
-    }
-
-    public void setTipeBarang(String tipeBarang) {
-        this.tipeBarang = tipeBarang;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Integer getStokBarang() {
-        return stokBarang;
-    }
-
-    public void setStokBarang(Integer stokBarang) {
-        this.stokBarang = stokBarang;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public double getHarga() { return harga; }
+    public void setHarga(double harga) { this.harga = harga; }
 }
