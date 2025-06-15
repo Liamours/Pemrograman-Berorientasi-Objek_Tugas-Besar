@@ -85,31 +85,35 @@ const ProductCard = () => {
             <div className="detailbarang-product-details">
               <h1 className="detailbarang-product-title">{product.nama_barang}</h1>
               <p className="detailbarang-product-price">Rp {price.toLocaleString()}</p>
+              <hr/>
               <p className="detailbarang-product-description">
+                Deskripsi:
+                <br />
                 {product.deskripsi_barang}
               </p>
-              <div className="quantity-section">
+              <hr/>
+              <div className="detailbarang-quantity-section">
                 <button 
-                  className="quantity-btn" 
+                  className="detailbarang-quantity-btn" 
                   onClick={handleDecrease}
                   disabled={quantity <= 1}
                 >
                   -
                 </button>
-                <span className="quantity">{quantity}</span>
+                <span className="detailbarang-quantity">{quantity}</span>
                 <button 
-                  className="quantity-btn" 
+                  className="detailbarang-quantity-btn" 
                   onClick={handleIncrease}
                   disabled={quantity >= product.stokBarang}
                 >
                   +
                 </button>
               </div>
-              <div className="subtotal">
+              <div className="detailbarang-subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
               </div>
-              <button className="add-to-cart-btn">Tambah ke Keranjang</button>
-              <p className="category">Kategori: {product.tipe_barang_id}</p>
+              <button className="detailbarang-add-to-cart-btn">Tambah ke Keranjang</button>
+              <p className="detailbarang-category">Kategori: {product.tipe_barang_id}</p>
             </div>
           </div>
         </div>
