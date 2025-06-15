@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 function RegistrationPage() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -47,7 +46,7 @@ function RegistrationPage() {
       const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, address, password })
+        body: JSON.stringify({ name, email, password })
       });
 
       const data = await response.json();
@@ -83,13 +82,6 @@ function RegistrationPage() {
           className="registration-input-field"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="address"
-          placeholder="Alamat"
-          className="registration-input-field"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
         />
         <div className="registration-password-wrapper">
           <input
