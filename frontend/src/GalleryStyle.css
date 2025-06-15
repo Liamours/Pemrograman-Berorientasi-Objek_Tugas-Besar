@@ -1,13 +1,13 @@
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
 }
 
 .gallery-container {
   margin: 0 auto;
   background-color: #C1F3C8;
-  height: auto;
+  background-repeat: repeat;
+  height: 100vh;
 }
 
 .gallery-header {
@@ -20,13 +20,13 @@ body {
 }
 
 .gallery-logo {
-  font-family: 'Poppins';
+  font-family: 'arial';
   font-size: 24px;
   font-weight: bold;
 }
 
 .gallery-location {
-  font-family: 'Poppins';
+  font-family: 'arial';
   font-size: 14px;
 }
 
@@ -43,6 +43,7 @@ body {
 }
 
 .gallery-product-card {
+  justify-self: center;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
   background-color: white;
@@ -50,6 +51,8 @@ body {
   transition: box-shadow 0.2s ease;
   width: 35vh;
   display: flex;
+  justify-content: space-between;
+  height: 150px;
 }
 
 .gallery-product-card:hover {
@@ -59,15 +62,18 @@ body {
 .gallery-product-image {
   width: 100px;
   height: 100px;
-  image-resolution: 1;
   object-fit: cover;
+  border-style: solid;
   align-self: center;
+  margin-left: 10px;
 }
 
 .gallery-product-info {
+  width: 150px;
   display: block;
   padding: 1rem;
   text-align: center;
+  align-content: center;
 }
 
 .gallery-product-name {
@@ -79,4 +85,38 @@ body {
   color: #38a169;
   font-weight: bold;
   font-size: medium;
+}
+
+.gallery-sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  padding-top: 60px;
+  border-style: solid;
+}
+
+.gallery-sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.gallery-sidenav a:hover {
+  color: black;
+  font-style: bold;
+}
+
+.gallery-sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
 }
