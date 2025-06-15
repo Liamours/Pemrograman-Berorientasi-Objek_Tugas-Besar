@@ -11,7 +11,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle validation exceptions (e.g., @Valid on request body)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
@@ -25,7 +24,6 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(false, errorMessage));
     }
 
-    // Handle HttpMessageNotReadableException for type mismatch errors
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         // The exception happens when the request body has an invalid format or type mismatch
@@ -34,7 +32,6 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(false, errorMessage, null));
     }
 
-    // Handle other generic exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

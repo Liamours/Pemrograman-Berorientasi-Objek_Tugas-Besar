@@ -145,7 +145,6 @@ public class BarangController {
         }
     }
 
-
     @PutMapping("/update/detail")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> updateBarang(@Valid @RequestBody UpdateBarangRequest request) {

@@ -2,7 +2,6 @@ package com.example.rest_service.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "barang")
@@ -40,12 +39,11 @@ public class Barang {
     @OneToOne(mappedBy = "barang",cascade = CascadeType.ALL)
     private Order orders;
 
-    public enum TipeBarang {
+    public enum tipe {
         Makanan,
         Minuman,
         Hygine
     }
-
 
     // Getters and Setters
     public Integer getBarangId() {
