@@ -10,7 +10,6 @@ import GalleryPage from './GalleryPage';
 import Checkout from './CheckoutPage';
 import Keranjang from './KeranjangPage';
 import GalleryPageAdmin from './GalleryBarangAdmin';
-import EditBarang from './EditBarangAdminPage';
 
 function App() {
   return (
@@ -28,7 +27,6 @@ function App() {
         <Route path="/Keranjang" element={<Keranjang />} />
         <Route path="/Gallery" element={<GalleryPage />} />
         <Route path="/admin/gallery" element={<GalleryPageAdmin />} />
-        <Route path="/admin/edit" element={<EditBarang />} />
       </Routes>
     </Router>
   );
