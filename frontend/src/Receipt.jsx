@@ -57,20 +57,17 @@ const ReceiptPage = () => {
   return (
     <div className="receipt-container">
       <h1>Receipt</h1>
-      {/* Store Information */}
       <div className="section">
         <h2>{storeInfo.name}</h2>
         <p>{storeInfo.address}</p>
       </div>
 
-      {/* Buyer Information */}
       <div className="section">
         <h3>Informasi Pembeli</h3>
         <p>Nama: {buyerInfo.name}</p>
         <p>Alamat: {buyerInfo.address}</p>
       </div>
 
-      {/* Order Details */}
       <div className="section">
         <h3>Detail Barang</h3>
         <table className="order-table">
@@ -93,13 +90,11 @@ const ReceiptPage = () => {
         </table>
       </div>
 
-      {/* Total Price */}
       <div className="section total-section">
         <h3>Total Harga</h3>
         <p>Rp {totalPrice.toLocaleString()}</p>
       </div>
 
-      {/* Download Button */}
       <button className="btn-download" onClick={generatePDF}>
         Unduh Receipt
       </button>

@@ -6,7 +6,7 @@ const ProductCard = () => {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    // const id = localStorage.getItem('id_barang');
+    const id = localStorage.getItem('id_barang');
     const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',

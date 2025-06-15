@@ -64,7 +64,6 @@ const CheckoutPage = () => {
             </table>
         </div>
 
-        {/* Payment Method */}
         <div className="section">
             <h2>Metode Pembayaran</h2>
             <div className="payment-options">
