@@ -210,7 +210,7 @@ function ProfilePage() {
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
             <li><a href="/keranjang"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
-            <li><a href="/"><i className="glyphicon glyphicon-cog"></i> Home</a></li>
+            <li><a href="/Gallery"><i className="glyphicon glyphicon-cog"></i> Home</a></li>
             <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
             <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
