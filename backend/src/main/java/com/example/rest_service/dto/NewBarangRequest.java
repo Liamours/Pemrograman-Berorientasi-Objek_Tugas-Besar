@@ -4,31 +4,33 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Pattern;
 
 public class NewBarangRequest {
 
     @NotBlank(message = "Nama barang tidak boleh kosong")
-    @JsonProperty("nama_barang")  // Added JsonProperty to map the JSON field to Java field
+    @JsonProperty("nama_barang")
     private String namaBarang;
 
-    @JsonProperty("deskripsi_barang")  // Added JsonProperty to map the JSON field to Java field
+    @JsonProperty("deskripsi_barang")
     private String deskripsiBarang;
 
     @NotNull(message = "Harga harus diisi")
     @Min(value = 0, message = "Harga tidak boleh negatif")
-    @JsonProperty("harga")  // Added JsonProperty to map the JSON field to Java field
+    @JsonProperty("harga")
     private Double harga;
 
     @NotBlank(message = "Tipe barang tidak boleh kosong")
-    @JsonProperty("tipe_barang")  // Added JsonProperty to map the JSON field to Java field
+    @Pattern(regexp = "^(MAKANAN|MINUMAN|HYGENE)$", message = "Tipe barang hanya boleh 'MAKANAN', 'MINUMAN', atau 'HYGIENE'")
+    @JsonProperty("tipe_barang")
     private String tipeBarang;
 
-    @JsonProperty("image_url")  // Added JsonProperty to map the JSON field to Java field
+    @JsonProperty("image_url")
     private String imageUrl;
 
     @NotNull(message = "Stok barang harus diisi")
     @Min(value = 0, message = "Stok barang tidak boleh negatif")
-    @JsonProperty("stok_barang")  // Added JsonProperty to map the JSON field to Java field
+    @JsonProperty("stok_barang")
     private Integer stokBarang;
 
     // Getters and Setters

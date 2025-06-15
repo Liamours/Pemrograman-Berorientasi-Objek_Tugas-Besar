@@ -37,8 +37,14 @@ public class Barang {
     private LocalDateTime createdAt;
 
 
-    @OneToMany(mappedBy = "barang",cascade = CascadeType.ALL)
-    private List<Order> orders;
+    @OneToOne(mappedBy = "barang",cascade = CascadeType.ALL)
+    private Order orders;
+
+    public enum TipeBarang {
+        Makanan,
+        Minuman,
+        Hygine
+    }
 
 
     // Getters and Setters
