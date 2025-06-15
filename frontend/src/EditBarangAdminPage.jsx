@@ -179,7 +179,7 @@ const ProductCardAdmin = () => {
                 Stok Barang:
                 <input
                   type="number"
-                  name="stok_barang"
+                  name="stock"
                   value={editableProduct.stock}
                   onChange={handleChange}
                   placeholder='Masukkan stok barang'
