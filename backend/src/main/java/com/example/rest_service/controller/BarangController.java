@@ -1,30 +1,32 @@
 package com.example.rest_service.controller;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.example.rest_service.dto.BarangIdRequest;
-import com.example.rest_service.model.Barang;
-import com.example.rest_service.service.BarangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.rest_service.dto.BarangFilterRequest;
-import com.example.rest_service.dto.NewBarangRequest;
-import com.example.rest_service.dto.DeletebyIDRequest;
 import com.example.rest_service.dto.ApiResponse;
+import com.example.rest_service.dto.BarangFilterRequest;
+import com.example.rest_service.dto.BarangIdRequest;
+import com.example.rest_service.dto.DeletebyIDRequest;
+import com.example.rest_service.dto.NewBarangRequest;
 import com.example.rest_service.dto.UpdateBarangRequest;
+import com.example.rest_service.model.Barang;
+import com.example.rest_service.service.BarangService;
 
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/barang")
@@ -35,123 +37,140 @@ public class BarangController {
 
     @PostMapping
     public ResponseEntity<ApiResponse> getAllBarang(@RequestBody BarangFilterRequest filterRequest) {
-        List<Barang> filteredBarang = barangService.getFilteredBarang(filterRequest);
+        try {
+            List<Barang> filteredBarang = barangService.getFilteredBarang(filterRequest);
 
-        if (filteredBarang.isEmpty()) {
-            // Return empty list if no matching results
-            return ResponseEntity.ok(new ApiResponse(true, "No matching items found", new ArrayList<>()));
+            if (filteredBarang.isEmpty()) {
+                return ResponseEntity.ok(new ApiResponse(true, "No matching items found", new ArrayList<>()));
+            }
+
+            List<Map<String, Object>> formattedData = new ArrayList<>();
+            for (Barang barang : filteredBarang) {
+                Map<String, Object> formattedBarang = new HashMap<>();
+                formattedBarang.put("id", barang.getBarangId());
+                formattedBarang.put("name", barang.getNamaBarang());
+                formattedBarang.put("price", barang.getHarga());
+                formattedBarang.put("category", barang.getTipeBarang());
+                formattedBarang.put("image_url", barang.getImageUrl());
+                formattedBarang.put("stock", barang.getStokBarang());
+
+                formattedData.add(formattedBarang);
+            }
+
+            ApiResponse response = new ApiResponse(true, "List barang berhasil diambil", formattedData);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error retrieving items: " + e.getMessage(), null));
         }
-
-        // Format the filteredBarang response
-        List<Map<String, Object>> formattedData = new ArrayList<>();
-
-        for (Barang barang : filteredBarang) {
-            Map<String, Object> formattedBarang = new HashMap<>();
-            formattedBarang.put("id", barang.getBarangId());
-            formattedBarang.put("name", barang.getNamaBarang());
-            formattedBarang.put("price", barang.getHarga());
-            formattedBarang.put("category", barang.getTipeBarang());
-            formattedBarang.put("image_url", barang.getImageUrl());
-            formattedBarang.put("stock", barang.getStokBarang());
-
-            formattedData.add(formattedBarang);
-        }
-
-        ApiResponse response = new ApiResponse(true, "List barang berhasil diambil", formattedData);
-        return ResponseEntity.ok(response);
     }
+
 
 
     @PostMapping("/new")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> addProduct(@Valid @RequestBody NewBarangRequest dto) {
-        Barang product = new Barang();
-        product.setNamaBarang(dto.getNamaBarang());
-        product.setDeskripsiBarang(dto.getDeskripsiBarang());
-        product.setHarga(dto.getHarga());
-        product.setTipeBarang(dto.getTipeBarang());
-        product.setImageUrl(dto.getImageUrl());
-        product.setStokBarang(dto.getStokBarang());
-        product.setCreatedAt(LocalDateTime.now());
+        try {
+            Barang product = new Barang();
+            product.setNamaBarang(dto.getNamaBarang());
+            product.setDeskripsiBarang(dto.getDeskripsiBarang());
+            product.setHarga(dto.getHarga());
+            product.setTipeBarang(dto.getTipeBarang());
+            product.setImageUrl(dto.getImageUrl());
+            product.setStokBarang(dto.getStokBarang());
+            product.setCreatedAt(LocalDateTime.now());
 
-        // Menyimpan barang baru
-        Barang savedProduct = barangService.addProduct(product);
+            Barang savedProduct = barangService.addProduct(product);
 
-        // Memformat response menggunakan ApiResponse
-        Map<String, Object> formattedData = new HashMap<>();
-        formattedData.put("barang_id", savedProduct.getBarangId());
-        formattedData.put("nama_barang", savedProduct.getNamaBarang());
-        formattedData.put("deskripsi_barang", savedProduct.getDeskripsiBarang());
-        formattedData.put("harga", savedProduct.getHarga());
-        formattedData.put("tipe_barang_id", savedProduct.getTipeBarang());
-        formattedData.put("image_url", savedProduct.getImageUrl());
-        formattedData.put("stock", savedProduct.getStokBarang());
+            Map<String, Object> formattedData = new HashMap<>();
+            formattedData.put("barang_id", savedProduct.getBarangId());
+            formattedData.put("nama_barang", savedProduct.getNamaBarang());
+            formattedData.put("deskripsi_barang", savedProduct.getDeskripsiBarang());
+            formattedData.put("harga", savedProduct.getHarga());
+            formattedData.put("tipe_barang_id", savedProduct.getTipeBarang());
+            formattedData.put("image_url", savedProduct.getImageUrl());
+            formattedData.put("stock", savedProduct.getStokBarang());
 
-        ApiResponse response = new ApiResponse(true, "Barang baru berhasil ditambahkan", formattedData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            ApiResponse response = new ApiResponse(true, "Barang baru berhasil ditambahkan", formattedData);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error adding product: " + e.getMessage(), null));
+        }
     }
+
 
     @PostMapping("/detail")
     public ResponseEntity<ApiResponse> getBarangDetail(@RequestBody BarangIdRequest request) {
-        // Ambil barang berdasarkan ID
-        Barang barang = barangService.getBarangById(request.getBarangId());
+        try {
+            Barang barang = barangService.getBarangById(request.getBarangId());
 
-        // Jika barang tidak ditemukan
-        if (barang == null) {
-            ApiResponse response = new ApiResponse(false, "Barang tidak ditemukan", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            if (barang == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(false, "Barang tidak ditemukan", null));
+            }
+
+            Map<String, Object> formattedBarang = new HashMap<>();
+            formattedBarang.put("barang_id", barang.getBarangId());
+            formattedBarang.put("nama_barang", barang.getNamaBarang());
+            formattedBarang.put("deskripsi_barang", barang.getDeskripsiBarang());
+            formattedBarang.put("harga", barang.getHarga());
+            formattedBarang.put("tipe_barang_id", barang.getTipeBarang());
+            formattedBarang.put("image_url", barang.getImageUrl());
+            formattedBarang.put("stock", barang.getStokBarang());
+
+            ApiResponse response = new ApiResponse(true, "Data barang berhasil diambil", formattedBarang);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error retrieving item details: " + e.getMessage(), null));
         }
-
-        // Jika barang ditemukan, format response sesuai dengan yang diinginkan
-        Map<String, Object> formattedBarang = new HashMap<>();
-        formattedBarang.put("barang_id", barang.getBarangId());
-        formattedBarang.put("nama_barang", barang.getNamaBarang());
-        formattedBarang.put("deskripsi_barang", barang.getDeskripsiBarang());
-        formattedBarang.put("harga", barang.getHarga());
-        formattedBarang.put("tipe_barang_id", barang.getTipeBarang());
-        formattedBarang.put("image_url", barang.getImageUrl());
-        formattedBarang.put("stock", barang.getStokBarang());
-
-        ApiResponse response = new ApiResponse(true, "Data barang berhasil diambil", formattedBarang);
-        return ResponseEntity.ok(response);
     }
+
 
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> deleteBarang(@Valid @RequestBody DeletebyIDRequest barangIdRequest) {
-        // 1. Check if barang exists
-        boolean isDeleted = barangService.deleteBarang(barangIdRequest.getBarangId());
-        // 2. Handle deletion success or failure
-        if (isDeleted) {
-            // Prepare additional data if needed (e.g., barangId or related info)
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("barangId", barangIdRequest.getBarangId());
+        try {
+            boolean isDeleted = barangService.deleteBarang(barangIdRequest.getBarangId());
 
-            return ResponseEntity.ok()
-                    .body(new ApiResponse(true, "Barang telah dihapus", responseData));
-        } else {
-            // Handle failure case, e.g., Barang not found
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, "Barang tidak ditemukan"));
+            if (isDeleted) {
+                Map<String, Object> responseData = new HashMap<>();
+                responseData.put("barangId", barangIdRequest.getBarangId());
+
+                return ResponseEntity.ok()
+                        .body(new ApiResponse(true, "Barang telah dihapus", responseData));
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse(false, "Barang tidak ditemukan"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error deleting product: " + e.getMessage(), null));
         }
     }
+
 
     @PutMapping("/update/detail")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ApiResponse> updateBarang(@Valid @RequestBody UpdateBarangRequest request) {
-        // Pastikan barangId tidak null
-        if (request.getBarangId() == null) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, "Barang ID cannot be null"));
-        }
+        try {
+            if (request.getBarangId() == null) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse(false, "Barang ID cannot be null"));
+            }
 
-        Barang updatedBarang = barangService.updateBarang(request);
-        if (updatedBarang != null) {
-            return ResponseEntity.ok(new ApiResponse(true, "Data barang berhasil diubah", updatedBarang));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse(false, "Barang tidak ditemukan"));
+            Barang updatedBarang = barangService.updateBarang(request);
+            if (updatedBarang != null) {
+                return ResponseEntity.ok(new ApiResponse(true, "Data barang berhasil diubah", updatedBarang));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(false, "Barang tidak ditemukan"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error updating product: " + e.getMessage(), null));
         }
     }
 }
