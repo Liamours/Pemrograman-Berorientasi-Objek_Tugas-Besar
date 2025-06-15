@@ -1,31 +1,34 @@
 package com.example.rest_service.controller;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.example.rest_service.dto.BarangIdRequest;
-import com.example.rest_service.model.Barang;
-import com.example.rest_service.service.BarangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.rest_service.dto.BarangFilterRequest;
-import com.example.rest_service.dto.NewBarangRequest;
-import com.example.rest_service.dto.DeletebyIDRequest;
 import com.example.rest_service.dto.ApiResponse;
+import com.example.rest_service.dto.BarangFilterRequest;
+import com.example.rest_service.dto.BarangIdRequest;
+import com.example.rest_service.dto.DeletebyIDRequest;
+import com.example.rest_service.dto.NewBarangRequest;
 import com.example.rest_service.dto.UpdateBarangRequest;
 import com.example.rest_service.dto.UpdateStockRequest;
+import com.example.rest_service.model.Barang;
+import com.example.rest_service.service.BarangService;
 
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/barang")
@@ -99,7 +102,7 @@ public class BarangController {
     }
 
 
-    @GetMapping("/detail")
+    @PostMapping("/detail")
     public ResponseEntity<ApiResponse> getBarangDetail(@RequestBody BarangIdRequest request) {
         try {
             Barang barang = barangService.getBarangById(request.getBarangId());
