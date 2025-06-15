@@ -1,30 +1,50 @@
 import React, { useState } from 'react';
 import './TambahBarangStyle.css';
 import { useNavigate } from 'react-router-dom';
-import { Link, Navigate } from 'react-router-dom';
 
 const TambahBarang = () => {
   const [namaBarang, setNamaBarang] = useState('');
   const [kategori, setKategori] = useState('');
   const [harga, setHarga] = useState('');
   const [stok, setStok] = useState('');
-  const [error, setError] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
+  const [image, setImage] = useState('');
+  const [backendMessage, setBackendMessage] = useState('');
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!namaBarang || !kategori || !harga || !stok) {
-      setError('Semua kolom harus diisi!');
-      return;
+
+    try {
+      const response = await fetch('http://localhost:8080/barang/new', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          nama_barang: namaBarang,
+          deskripsi_barang: deskripsi,
+          harga: harga,
+          tipe_barang: kategori,
+          stok_barang: stok,
+          image_url: "/images/" + image
+        })
+      });
+
+      const data = await response.json();
+      console.log(data);
+      if (data.success) {
+        navigate('/admin/gallery');
+      } else if (data.message) {
+        setBackendMessage(data.message);
+      }
+
+    } catch (err) {
+      setBackendMessage('Terjadi kesalahan saat menghubungi server.');
     }
-    setError('');
-    // Logic untuk menyimpan data barang
-    console.log({ namaBarang, kategori, harga, stok });
-    // Reset form setelah submit
-    setNamaBarang('');
-    setKategori('');
-    setHarga('');
-    setStok('');
   };
 
   return (
@@ -41,16 +61,21 @@ const TambahBarang = () => {
             placeholder="Masukkan nama barang"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="kategori">Kategori</label>
-          <input
-            type="text"
+          <select
             id="kategori"
             value={kategori}
             onChange={(e) => setKategori(e.target.value)}
-            placeholder="Masukkan kategori"
-          />
+          >
+            <option value="">Pilih Kategori</option>
+            <option value="Makanan">Makanan</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Hygine">Hygine</option>
+          </select>
         </div>
+
         <div className="form-group">
           <label htmlFor="harga">Harga</label>
           <input
@@ -61,6 +86,7 @@ const TambahBarang = () => {
             placeholder="Masukkan harga"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="stok">Stok</label>
           <input
@@ -71,9 +97,32 @@ const TambahBarang = () => {
             placeholder="Masukkan stok"
           />
         </div>
-        {error && <p className="error-message">{error}</p>}
+
+        <div className="form-group">
+          <label htmlFor="deskripsi">Deskripsi Barang</label>
+          <textarea
+            id="deskripsi"
+            value={deskripsi}
+            onChange={(e) => setDeskripsi(e.target.value)}
+            placeholder="Masukkan deskripsi barang"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="image">Nama File Gambar</label>
+          <input
+            type="text"
+            id="image"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            placeholder="Masukkan nama file gambar"
+          />
+        </div>
+
         <button type="submit" className="submit-button">Tambah Barang</button>
       </form>
+
+      {backendMessage && <p className="backend-message">{backendMessage}</p>}
     </div>
   );
 };
