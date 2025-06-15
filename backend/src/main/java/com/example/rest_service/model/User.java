@@ -6,7 +6,6 @@ package com.example.rest_service.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -16,13 +15,7 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Client client;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Order> orders;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user") // The 'user' field in Keranjang is the owning side of the relationship
     private Keranjang keranjang;
 
     private String nama_user;

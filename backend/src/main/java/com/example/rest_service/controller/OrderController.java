@@ -3,6 +3,7 @@ package com.example.rest_service.controller;
 
 import com.example.rest_service.dto.OrderDTO;
 import com.example.rest_service.service.OrderService;
+import com.example.rest_service.security.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,17 +11,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/order")
 public class OrderController {
 
-    @Autowired private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/add")
     public OrderDTO addOrder(
-            @RequestHeader("Authorization") String token,
-            @RequestParam Integer barangId,
-            @RequestParam Integer jumlahBarang,
-            @RequestParam String alamatTujuan
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody OrderRequest request
     ) {
-        Integer userId = validateToken(token);
-        return orderService.addOrder(Long.valueOf(userId), barangId, jumlahBarang, alamatTujuan);
+        Long userId = validateTokenAndGetUserId(authHeader);
+        return orderService.addOrder(
+                userId,
+                request.getBarangId(),
+                request.getJumlahBarang(),
+                request.getAlamatTujuan()
+        );
     }
 
     @GetMapping("/{orderId}")
@@ -28,8 +36,92 @@ public class OrderController {
         return orderService.getOrderById(orderId);
     }
 
-    private Integer validateToken(String token) {
-        // TODO: Ganti dengan validasi token sesungguhnya
-        return Integer.parseInt(token);
+    // Tambahan: POST method untuk get order by ID via request body
+    @PostMapping("/get")
+    public OrderDTO getOrderByIdFromBody(@RequestBody GetOrderRequest request) {
+        return orderService.getOrderById(request.getOrderId());
+    }
+
+    private Long validateTokenAndGetUserId(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7); // Remove "Bearer " prefix
+
+            try {
+                // Coba extract userId dari claims dulu
+                Long userId = jwtTokenUtil.extractUserId(token);
+
+                // Jika userId ada di claims, langsung return
+                if (userId != null) {
+                    return userId;
+                }
+
+                // Fallback: Jika tidak ada userId di claims, extract username
+                String username = jwtTokenUtil.extractUsername(token);
+
+                if (username != null) {
+                    // Sementara return hardcoded user ID untuk testing
+                    // TODO: Ganti dengan query ke database untuk cari user by email
+                    System.out.println("Token username: " + username);
+                    return 1L; // Hardcoded sementara
+                }
+
+                throw new RuntimeException("Username not found in token");
+
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid JWT token: " + e.getMessage());
+            }
+        }
+
+        throw new RuntimeException("Authorization header must start with Bearer");
+    }
+
+    // Inner class untuk request body
+    public static class OrderRequest {
+        private Integer barangId;
+        private Integer jumlahBarang;
+        private String alamatTujuan;
+
+        // Default constructor
+        public OrderRequest() {}
+
+        // Getters dan Setters
+        public Integer getBarangId() {
+            return barangId;
+        }
+
+        public void setBarangId(Integer barangId) {
+            this.barangId = barangId;
+        }
+
+        public Integer getJumlahBarang() {
+            return jumlahBarang;
+        }
+
+        public void setJumlahBarang(Integer jumlahBarang) {
+            this.jumlahBarang = jumlahBarang;
+        }
+
+        public String getAlamatTujuan() {
+            return alamatTujuan;
+        }
+
+        public void setAlamatTujuan(String alamatTujuan) {
+            this.alamatTujuan = alamatTujuan;
+        }
+    }
+
+    // DTO untuk get order request
+    public static class GetOrderRequest {
+        private Integer orderId;
+
+        public GetOrderRequest() {}
+
+        public Integer getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(Integer orderId) {
+            this.orderId = orderId;
+        }
     }
 }

@@ -20,9 +20,6 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private KeranjangRepository keranjangRepository;
-
-    @Autowired
     private ClientRepository clientRepository;
 
     @Autowired
@@ -118,7 +115,6 @@ public class UserService {
         if (user.getPeran() == User.Role.Client) {
             clientRepository.deleteById(user.getId());
             orderRepository.deleteById(user.getId().intValue());
-            keranjangRepository.deleteById(user.getId().intValue());
         }
 
         userRepository.delete(user);

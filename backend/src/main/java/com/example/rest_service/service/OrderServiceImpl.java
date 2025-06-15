@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
         order.setHargaPerUnit(barang.getHarga());
         order.setTanggalOrder(LocalDateTime.now());
         order.setAlamatTujuan(alamatTujuan);
-        order.setStatusOrder(StatusOrder.Pending_Client); // Status awal: Pending_Client
+        order.setStatusOrder(StatusOrder.Pending); // Status awal: Pending_Client
         order.setUser(user);
         order.setKeranjang(keranjang);
 

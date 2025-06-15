@@ -33,7 +33,7 @@ public class KeranjangServiceImpl implements KeranjangService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         CartDTO cart = new CartDTO();
         cart.setOrders(dtos);
-        cart.setTotalPrice(total);
+
         return cart;
     }
 
@@ -57,7 +57,7 @@ public class KeranjangServiceImpl implements KeranjangService {
                 .filter(o -> orderIds.contains(o.getOrderId()))
                 .forEach(o -> {
                     Order m = orRepo.getOne(o.getOrderId());
-                    m.setStatusOrder(StatusOrder.Pending_Admin); // Ubah status menjadi Pending_Admin
+                    m.setStatusOrder(StatusOrder.Done); // Otomatis Done
                     orRepo.save(m);
                 });
         return getCartByUser(userId);

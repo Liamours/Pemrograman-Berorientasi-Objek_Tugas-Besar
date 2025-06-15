@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CartDTO {
     private List<OrderDTO> orders;
-    private BigDecimal totalPrice;
+
 
     // Getter dan Setter untuk orders
     public List<OrderDTO> getOrders() {
@@ -17,11 +17,5 @@ public class CartDTO {
     }
 
     // Getter dan Setter untuk totalPrice
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 }

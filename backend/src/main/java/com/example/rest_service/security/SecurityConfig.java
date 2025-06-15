@@ -35,37 +35,37 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight requests
-                        .requestMatchers("/api/auth/**").permitAll() // Authentication-related endpoints
-                        .requestMatchers(HttpMethod.GET, "/barang").permitAll() // Public product listing
-                        .requestMatchers(HttpMethod.GET, "/barang/detail").permitAll() // Public product details
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight
+                        .requestMatchers("/api/auth/**").permitAll() // Login, Register
+                        .requestMatchers(HttpMethod.GET, "/barang").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/barang/detail").permitAll()
                         .requestMatchers("/barang").permitAll()
-                        .requestMatchers("/barang/detail").permitAll()
                         .requestMatchers("/barang/detail/**").permitAll()
 
-                        // Client-specific endpoints
-                        .requestMatchers("/api/user/**").authenticated() // Authenticated user endpoints
-                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated() // Delete user account
+                        // 🛒 Client/cart features
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/checkout").authenticated()
 
-                        // Admin-specific endpoints
-                        .requestMatchers("/products/new").hasRole("Admin") // Add new product
-                        .requestMatchers("/products/delete").hasRole("Admin") // Delete product
-                        .requestMatchers("/products/update").hasRole("Admin") // Update product
-                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin") // Update stock
-                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin") // Update stock
+                        // 👤 User-only endpoints
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()
 
-                        // Admin order management
-                        .requestMatchers("/admin/orders/pending").hasRole("Admin") // View pending orders
-                        .requestMatchers(HttpMethod.POST, "/admin/orders/approve/**").hasRole("Admin") // Approve orders
+                        // 🛠 Admin-only endpoints
+                        .requestMatchers("/products/new").hasRole("Admin")
+                        .requestMatchers("/products/delete").hasRole("Admin")
+                        .requestMatchers("/products/update").hasRole("Admin")
+                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin")
+                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin")
+                        .requestMatchers("/admin/orders/pending").hasRole("Admin")
+                        .requestMatchers(HttpMethod.POST, "/admin/orders/approve/**").hasRole("Admin")
 
-                        // Default: All other requests require authentication
+                        // Anything else must be authenticated
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session for JWT
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT is stateless
                 );
 
-        // Add JWT filter before the UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -73,15 +73,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Allow frontend origin
-        config.setAllowedMethods(Arrays.asList("*")); // Allow all HTTP methods
-        config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
-        config.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header for JWT
-        config.setAllowCredentials(true); // Allow cookies (if needed)
-        config.setMaxAge(3600L); // Cache CORS configuration for 1 hour
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // frontend origin
+        config.setAllowedMethods(Arrays.asList("*")); // all HTTP methods
+        config.setAllowedHeaders(Arrays.asList("*")); // all headers
+        config.setExposedHeaders(Arrays.asList("Authorization")); // expose JWT
+        config.setAllowCredentials(true); // allow cookies if needed
+        config.setMaxAge(3600L); // cache duration
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply to all endpoints
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
