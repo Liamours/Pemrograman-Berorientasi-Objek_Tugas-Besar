@@ -1,43 +1,60 @@
+// src/main/java/com/example/rest_service/controller/CartController.java
 package com.example.rest_service.controller;
 
-import com.example.rest_service.dto.CheckoutRequest;
-import com.example.rest_service.dto.CheckoutResponse;
-import com.example.rest_service.dto.ListOrderResponse;
-import com.example.rest_service.service.OrderService;
+import com.example.rest_service.dto.CartDTO;
+import com.example.rest_service.dto.OrderDTO;
+import com.example.rest_service.service.KeranjangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
-@RequestMapping("/keranjang")
+@RequestMapping("/api")
 public class KeranjangController {
+    @Autowired private KeranjangService cartService;
 
-    @Autowired
-    private OrderService orderService;
-
-    // 1. GET /keranjang?user_id=1
-    @GetMapping
-    public ListOrderResponse getKeranjang(@RequestParam("user_id") int userId) {
-        return orderService.getKeranjangByUserId(userId);
+    @GetMapping("/cart/orders")
+    public List<OrderDTO> getCartOrders(@RequestHeader("Authorization") String token) {
+        Long userId = validateToken(token);
+        return cartService.getOrdersInCart(userId);
     }
 
-    // 2. POST /keranjang/checkout
+    @GetMapping("/cart")
+    public CartDTO getCart(@RequestHeader("Authorization") String token) {
+        Long userId = validateToken(token);
+        return cartService.getCartByUser(userId);
+    }
+
+    @PutMapping("/cart/orders/{orderId}")
+    public OrderDTO updateOrder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Integer orderId,
+            @RequestParam Integer jumlahBarang
+    ) {
+        validateToken(token); // kalau validasi doang, gak usah pakai hasilnya
+        return cartService.updateOrder(orderId, jumlahBarang);
+    }
+
+    @DeleteMapping("/cart/orders/{orderId}")
+    public void deleteOrder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Integer orderId
+    ) {
+        validateToken(token);
+        cartService.removeOrder(orderId);
+    }
+
     @PostMapping("/checkout")
-    public CheckoutResponse checkout(@RequestBody CheckoutRequest request, @RequestParam("user_id") int userId) {
-        return orderService.checkout(request, userId);
+    public CartDTO checkout(
+            @RequestHeader("Authorization") String token,
+            @RequestBody List<Integer> orderIds
+    ) {
+        Long userId = validateToken(token);
+        return cartService.checkout(userId, orderIds);
     }
 
-    // 3. DELETE /keranjang/order?order_id=1&user_id=1
-    @DeleteMapping("/order")
-    public void deleteOrder(@RequestParam("order_id") int orderId, @RequestParam("user_id") int userId) {
-        orderService.deleteOrder(orderId, userId);
+    private Long validateToken(String token) {
+        // TODO: nanti lo ganti sama JWT decoder beneran
+        return Long.parseLong(token);
     }
-
-    // PUT /keranjang/order
-    @PutMapping("/order")
-    public void updateOrderJumlah(@RequestParam("order_id") int orderId,
-                                  @RequestParam("user_id") int userId,
-                                  @RequestParam("jumlah") int jumlah) {
-        orderService.updateOrderJumlah(orderId, userId, jumlah);
-    }
-
 }
