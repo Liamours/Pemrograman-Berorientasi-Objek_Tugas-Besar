@@ -255,7 +255,6 @@ function ProfilePage() {
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                  token: localStorage.getItem('token'),
                   password: password
                 })
               });
