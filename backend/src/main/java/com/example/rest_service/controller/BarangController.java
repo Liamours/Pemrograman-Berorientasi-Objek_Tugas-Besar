@@ -43,7 +43,6 @@ public class BarangController {
             if (filteredBarang.isEmpty()) {
                 return ResponseEntity.ok(new ApiResponse(true, "No matching items found", new ArrayList<>()));
             }
-
             List<Map<String, Object>> formattedData = new ArrayList<>();
             for (Barang barang : filteredBarang) {
                 Map<String, Object> formattedBarang = new HashMap<>();
@@ -64,8 +63,6 @@ public class BarangController {
                     .body(new ApiResponse(false, "Error retrieving items: " + e.getMessage(), null));
         }
     }
-
-
 
     @PostMapping("/new")
     @PreAuthorize("hasRole('Admin')")
@@ -99,7 +96,6 @@ public class BarangController {
         }
     }
 
-
     @PostMapping("/detail")
     public ResponseEntity<ApiResponse> getBarangDetail(@RequestBody BarangIdRequest request) {
         try {
@@ -126,8 +122,6 @@ public class BarangController {
                     .body(new ApiResponse(false, "Error retrieving item details: " + e.getMessage(), null));
         }
     }
-
-
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('Admin')")
@@ -160,7 +154,6 @@ public class BarangController {
                 return ResponseEntity.badRequest()
                         .body(new ApiResponse(false, "Barang ID cannot be null"));
             }
-
             Barang updatedBarang = barangService.updateBarang(request);
             if (updatedBarang != null) {
                 return ResponseEntity.ok(new ApiResponse(true, "Data barang berhasil diubah", updatedBarang));
