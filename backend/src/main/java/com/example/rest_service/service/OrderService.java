@@ -1,17 +1,9 @@
+// src/main/java/com/example/rest_service/service/OrderService.java
 package com.example.rest_service.service;
 
-import com.example.rest_service.dto.CheckoutRequest;
-import com.example.rest_service.dto.CheckoutResponse;
-import com.example.rest_service.dto.ListOrderResponse;
-
+import com.example.rest_service.dto.OrderDTO;
 
 public interface OrderService {
-
-    ListOrderResponse getKeranjangByUserId(int userId);
-
-    CheckoutResponse checkout(CheckoutRequest request, int userId);
-
-    void deleteOrder(int orderId, int userId);
-
-    void updateOrderJumlah(int orderId, int userId, int jumlah);
+    OrderDTO addOrder(Long userId, Integer barangId, Integer jumlahBarang, String alamatTujuan);
+    OrderDTO getOrderById(Integer orderId);
 }

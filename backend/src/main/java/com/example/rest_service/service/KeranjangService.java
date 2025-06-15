@@ -1,8 +1,15 @@
+// src/main/java/com/example/rest_service/service/CartService.java
 package com.example.rest_service.service;
 
-import com.example.rest_service.model.Keranjang;
-import com.example.rest_service.model.User;
+import com.example.rest_service.dto.CartDTO;
+import com.example.rest_service.dto.OrderDTO;
+import java.util.List;
 
 public interface KeranjangService {
-    Keranjang getKeranjangByUser(User user);
+    CartDTO getCartByUser(Long userId);
+    OrderDTO updateOrder(Integer orderId, Integer jumlahBarang);
+    void removeOrder(Integer orderId);
+    CartDTO checkout(Long userId, List<Integer> orderIds);
+    List<OrderDTO> getOrdersInCart(Long userId);
+
 }
