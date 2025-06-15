@@ -88,12 +88,17 @@ const GalleryAdminPage = () => {
   };
 
   return (
-    <div className="gallery-admin-container">
+    <div className="gallery-admin-container" id="main">
       <div id="Sidebar" className="gallery-admin-sidenav">
         <a style={{ cursor: "pointer" }} className="closebtn" onClick={closeSidebar}>&times;</a>
-        <a onClick={() => navigate('/gallery-admin')}>Gallery Barang</a>
+        <a onClick={closeSidebar}>Daftar Barang</a>
+        <hr></hr>
         <a onClick={() => navigate('/tambahBarang')}>Tambah Barang</a>
-        <a onClick={() => navigate('/profile')}>Profil</a>
+        <hr></hr>
+        <a onClick={() => navigate('/admin/receipt')}>Nota</a>
+        <hr></hr>
+        <a onClick={() => navigate('/admin/dashboard')}>Profil</a>
+        <hr></hr>
       </div>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
       <header className="gallery-admin-header">
@@ -119,7 +124,7 @@ const GalleryAdminPage = () => {
           <option value="Hygine">Hygine</option>
         </select>
       </div>
-      <main className="gallery-admin-grid-container" id="main">
+      <main className="gallery-admin-grid-container">
         {products.length === 0 ? (
           <p>Produk tidak tersedia.</p>
         ) : (

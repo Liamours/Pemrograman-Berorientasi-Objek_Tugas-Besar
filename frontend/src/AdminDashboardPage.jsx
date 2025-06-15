@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AdminDashboardStyle.css';
 import { useNavigate } from 'react-router-dom';
-import './LogoutStyle.css';
 
 function AdminDashboardPage() {
   const [name, setName] = useState("");
@@ -12,7 +11,37 @@ function AdminDashboardPage() {
   const navigate = useNavigate();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: ''
+  });
   const token = localStorage.getItem('token');
+
+  const showNotification = (message) => {
+    setNotification({ show: true, message });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 2000); 
+  };
+
+  const Notification = ({ message, onClose }) => {
+    return (
+      <div style={{ backgroundColor:"#dca42b", border:"solid" }}className="notification">
+        <span>{message}</span>
+        <span className="close-btn" onClick={onClose}>×</span>
+      </div>
+    );
+  };
+
+  const adminSidebar = () => {
+    document.getElementById("Sidebar").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+  };
+
+  const adminCloseSidebar = () => {
+    document.getElementById("Sidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+  };
 
   const confirmChange = () => {
     document.getElementById("Change").style.width = "100%";
@@ -91,16 +120,17 @@ useEffect(() => {
     })
       .then(res => res.json())
       .then(data => {
-        alert(data.message);
+        showNotification(data.message);
       })
       .catch(() => {
-        alert("Terjadi kesalahan saat menghubungi server.");
+        showNotification("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmSave();
   };
 
   const handleChangePassword = () => {
     if (newPassword !== confirmPassword) {
-      alert("Password baru dan konfirmasi password tidak cocok!");
+      showNotification("Password baru dan konfirmasi password tidak cocok!");
       return;
     }
 
@@ -119,24 +149,37 @@ useEffect(() => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert("Password berhasil diubah!");
+          showNotification("Password berhasil diubah!");
         } else {
-          alert(data.message || "Gagal mengubah password.");
+          showNotification(data.message || "Gagal mengubah password.");
         }
       })
       .catch(() => {
-        alert("Terjadi kesalahan saat menghubungi server.");
+        showNotification("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmChange();
   };
 
   return (
     <div className="profile-admin-page">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
-      <header className="profile-admin-header">
-        <div className="profile-admin-logo">G & C</div>
-        <div className="profile-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
-        <div className="profile-admin-cart">Keranjang: Rp 100.000</div>
-      </header>
+      {notification.show && (
+        <Notification 
+          message={notification.message} 
+          onClose={() => setNotification({ show: false, message: '' })}
+        />
+      )}
+      <div id="Sidebar" className="profile-admin-sidenav">
+        <a style={{ cursor: "pointer" }} className="closebtn" onClick={adminCloseSidebar}>&times;</a>
+        <a onClick={() => navigate('/admin/gallery')}>Daftar Barang</a>
+        <hr></hr>
+        <a onClick={() => navigate('/tambahBarang')}>Tambah Barang</a>
+        <hr></hr>
+        <a onClick={() => navigate('/admin/receipt')}>Nota</a>
+        <hr></hr>
+        <a onClick={adminCloseSidebar}>Profil</a>
+        <hr></hr>
+      </div>
       <div id="LogOut" className="profile-admin-overlay">
         <div className="profile-admin-popup-container">
           <h2>Yakin Ingin Keluar?</h2>
@@ -174,6 +217,11 @@ useEffect(() => {
           </div>
         </div>
       </div>
+      <header className="profile-admin-header">
+        <span style={{ cursor:"pointer",fontSize:"40px" }} class="glyphicon glyphicon-list" onClick={adminSidebar}></span>
+        <div className="profile-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <img style={{ width:"100px" }} src="/images/logogncmin.png" alt="Logo" />
+      </header>
       <div className="profile-admin-content">
         <main className="profile-admin-main">
           <div className="profile-admin-card">
