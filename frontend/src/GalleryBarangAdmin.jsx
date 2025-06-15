@@ -7,6 +7,7 @@ const GalleryAdminPage = () => {
   const [namaBarang, setNamaBarang] = useState('');
   const [kategori, setKategori] = useState('');
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   const sidebar = () => {
     document.getElementById("Sidebar").style.width = "200px";
@@ -50,6 +51,26 @@ const GalleryAdminPage = () => {
   };
 
   useEffect(() => {
+      console.log("Token dari localStorage:", token);
+    
+      const response = fetch('http://localhost:8080/api/user/profile/admin', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    if (response.ok) {
+      const data = response.json();
+      if (data.data.role != 'client') {
+        navigate('/login');
+      }
+    }
+    if (!token) {
+      navigate('/login');
+    }
     handleSearch();
   }, [namaBarang, kategori]);
 

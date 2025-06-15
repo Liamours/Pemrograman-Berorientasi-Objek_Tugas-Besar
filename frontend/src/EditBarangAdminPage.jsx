@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './EditBarangAdminStyle.css';
 
-const ProductCard = () => {
-  const [quantity, setQuantity] = useState(1);
+const ProductCardAdmin = () => {
   const [product, setProduct] = useState(null);
   const [editableProduct, setEditableProduct] = useState(null);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
+    // if (!token) {
+    //   window.location.href = '/login';
+    //   return;
+    // }
     const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',
@@ -46,9 +50,13 @@ const ProductCard = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch('http://localhost:8080/barang/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch('http://localhost:8080/barang/update/detail', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({
           barang_id: editableProduct.barang_id,
           nama_barang: editableProduct.nama_barang,
@@ -56,29 +64,32 @@ const ProductCard = () => {
           harga: editableProduct.harga,
           tipe_barang_id: editableProduct.tipe_barang_id,
           image_url: editableProduct.image_url,
-          stok_barang: editableProduct.stok_barang
+          stok_barang: editableProduct.stock
         })
       });
 
-      const data = await response.json();
+      const data = await response.text(); // Use text() instead of json() to check if the response body is empty
+      let jsonData = {};
+      try {
+        jsonData = JSON.parse(data); // Attempt to parse the response as JSON
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
 
       if (response.ok) {
         alert("Product updated successfully!");
       } else {
-        alert("Error: " + (data.message || 'Failed to update product'));
+        alert("Error: " + (jsonData.message || 'Failed to update product'));
       }
     } catch (error) {
       console.error('Error updating product:', error);
-      alert("An error occurred while updating the product.");
+      alert("Error");
     }
   };
 
   if (!product) {
     return <div>Loading...</div>;
   }
-
-  const price = editableProduct.harga;
-  const subtotal = price * quantity;
 
   return (
     <div className='detail-barang-admin'>
@@ -99,6 +110,7 @@ const ProductCard = () => {
                 <input
                   type="text"
                   name="nama_barang"
+                  className="detailbarang-admin-product-name"
                   value={editableProduct.nama_barang}
                   onChange={handleChange}
                 />
@@ -112,12 +124,14 @@ const ProductCard = () => {
                 />
               </p>
               <p className="detailbarang-admin-product-description">
-                Deskripsi:
-                <br />
+                <label htmlFor="deskripsi_barang">Deskripsi:</label>
                 <textarea
                   name="deskripsi_barang"
+                  id="deskripsi_barang"
                   value={editableProduct.deskripsi_barang}
                   onChange={handleChange}
+                  className="detailbarang-admin-textarea"
+                  placeholder="Masukkan deskripsi barang di sini"
                 />
               </p>
               <p className="detailbarang-admin-category">
@@ -133,12 +147,23 @@ const ProductCard = () => {
                 </select>
               </p>
               <p className="detailbarang-admin-stock">
-                Stok Barang: <span>{editableProduct.stok_barang}</span>
+                Stok Barang:
                 <input
                   type="number"
                   name="stok_barang"
-                  value={editableProduct.stok_barang}
+                  value={editableProduct.stock}
                   onChange={handleChange}
+                  placeholder='Masukkan stok barang'
+                />
+              </p>
+              <p className="detailbarang-admin-image-url">
+                Nama File Gambar (/images/NamaFile.jpg atau .png):
+                <input
+                  type="text"
+                  name="image_url"
+                  value={editableProduct.image_url}
+                  onChange={handleChange}
+                  placeholder="Masukkan nama file gambar"
                 />
               </p>
               <button className="detailbarang-admin-update-btn" onClick={handleUpdate}>
@@ -152,4 +177,4 @@ const ProductCard = () => {
   );
 };
 
-export default ProductCard;
+export default ProductCardAdmin;
