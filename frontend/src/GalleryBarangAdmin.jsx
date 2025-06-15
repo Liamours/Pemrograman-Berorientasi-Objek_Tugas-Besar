@@ -20,7 +20,6 @@ const GalleryAdminPage = () => {
   };
 
   const handleSearch = async () => {
-
     try {
       const response = await fetch('http://localhost:8080/barang', {
         method: 'POST',
@@ -40,8 +39,7 @@ const GalleryAdminPage = () => {
       const data = await response.json();
 
       if (data.success && Array.isArray(data.data)) {
-        const availableProducts = data.data
-        setProducts(availableProducts);
+        setProducts(data.data);
       } else {
         console.error("Data tidak valid atau tidak ada produk yang ditemukan");
       }
@@ -50,30 +48,40 @@ const GalleryAdminPage = () => {
     }
   };
 
-  useEffect(() => {
-      console.log("Token dari localStorage:", token);
-    
-      const response = fetch('http://localhost:8080/api/user/profile/admin', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
-    if (response.ok) {
-      const data = response.json();
-      if (data.data.role != 'client') {
-        navigate('/login');
-      }
-    }
+  const checkAdminStatus = async () => {
     if (!token) {
       navigate('/login');
+      return;
     }
-    handleSearch();
-  }, [namaBarang, kategori]);
+    try {
+      const response = await fetch('http://localhost:8080/api/user/profile/admin', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
 
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data.role !== 'Admin') {
+          navigate('/login');
+        }
+      } else {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error("Error checking admin status", error);
+      navigate('/login');
+    }
+  };
+
+  useEffect(() => {
+    checkAdminStatus();
+    handleSearch();
+  }, []);
   const handleProductClick = (productId) => {
     localStorage.setItem('selectedProductId', productId);
     navigate('/admin/edit');
@@ -101,7 +109,6 @@ const GalleryAdminPage = () => {
           value={namaBarang}
           onChange={(e) => setNamaBarang(e.target.value)}
         />
-
         <select
           value={kategori}
           onChange={(e) => setKategori(e.target.value)}
@@ -111,7 +118,6 @@ const GalleryAdminPage = () => {
           <option value="Minuman">Minuman</option>
           <option value="Hygine">Hygine</option>
         </select>
-
         <button onClick={handleSearch}>Cari</button>
       </div>
 
