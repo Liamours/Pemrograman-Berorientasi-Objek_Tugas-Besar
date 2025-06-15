@@ -22,15 +22,24 @@ function ProfilePage() {
   const navigate = useNavigate();
 
   const openBeliMemberPopup = () => {
-    document.getElementById("BeliMemberPopup").style.width = "100%";
+    const isMember = localStorage.getItem('isMember') === 'true'; 
+    if (isMember) {
+      document.getElementById("SudahMemberPopup").style.width = "100%";
+    } else {
+      document.getElementById("BeliMemberPopup").style.width = "100%";
+    }
   };
 
   const cancelBeliMember = () => {
     document.getElementById("BeliMemberPopup").style.width = "0%";
   };
 
+  const closeSudahMemberPopup = () => {
+    document.getElementById("SudahMemberPopup").style.width = "0%";
+  };
+
   const handleBeliMember = () => {
-      fetch('http://localhost:8080/api/user/member', {
+    fetch('http://localhost:8080/api/user/member', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -39,11 +48,13 @@ function ProfilePage() {
       body: JSON.stringify({
         token: localStorage.getItem('token')
       })
-    })
+    });
+
     setMember("Yes");
     document.getElementById("BeliMemberPopup").style.width = "0%";
     showNotification("Anda telah menjadi member!");
   };
+
 
   const showNotification = (message) => {
     setNotification({ show: true, message });
@@ -126,10 +137,12 @@ function ProfilePage() {
           setName(data.data.name);
           setEmail(data.data.email);
           setAddress(data.data.address);
-          if (data.isMember == true){
+          if (data.data.isMember == true){
             setMember("Yes");
+            localStorage.setItem('isMember', 'true');
           }else {
             setMember("No")
+            localStorage.setItem('isMember', 'false');
           }
         }
       })
@@ -219,13 +232,23 @@ function ProfilePage() {
         <div id="BeliMemberPopup" className="profile-overlay">
           <div className="profile-popup-container">
             <h2>Beli Member</h2>
-            <p>Rp. 1000000 untuk seumur hidup</p>
+            <p>Rp. 10.000.000 untuk seumur hidup</p>
             <div className="profile-popup-actions">
               <button className="profile-btn-cancel" onClick={cancelBeliMember}>Batal</button>
               <button className="profile-btn-confirm" onClick={handleBeliMember}>Terima</button>
             </div>
           </div>
         </div>
+        <div id="SudahMemberPopup" className="profile-overlay">
+          <div className="profile-popup-container">
+            <h2>Anda Sudah Member</h2>
+            <p>Anda Tidak Perlu Lagi Membeli Member</p>
+            <div className="profile-popup-actions">
+              <button className="profile-btn-confirm" onClick={closeSudahMemberPopup}>Tutup</button>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div id="LogOut" className="profile-overlay">
         <div className="profile-popup-container">
@@ -317,19 +340,13 @@ function ProfilePage() {
                 onChange={(e) => setAddress(e.target.value)}
               />
               <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div className="hanya info" id="email">
+                {email}
+              </div>
               <label htmlFor="member">Member</label>
-              <input
-                type="text"
-                id="member"
-                value={member}
-                onChange={(e) => setMember(e.target.value)}
-              />
+              <div className="hanya info" id="member">
+                {member}
+              </div>
               <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
             </form>
           </div>
