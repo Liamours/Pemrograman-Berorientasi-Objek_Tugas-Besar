@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         // The exception happens when the request body has an invalid format or type mismatch
-        String errorMessage = "Invalid input type or format.";
+        String errorMessage = "Terdapat input yang error.";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(false, errorMessage, null));
     }
