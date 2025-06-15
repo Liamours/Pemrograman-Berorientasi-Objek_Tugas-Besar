@@ -22,6 +22,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Keranjang keranjang;
+
     private String nama_user;
 
     @Column(unique = true, nullable = false)
