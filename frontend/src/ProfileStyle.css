@@ -216,3 +216,10 @@ form button:hover {
   padding: 0%;
   margin-left: 5px; 
 }
+
+.hanya.info {
+  margin-bottom: 15px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
