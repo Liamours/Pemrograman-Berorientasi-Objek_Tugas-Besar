@@ -21,6 +21,30 @@ function ProfilePage() {
   });
   const navigate = useNavigate();
 
+  const openBeliMemberPopup = () => {
+    document.getElementById("BeliMemberPopup").style.width = "100%";
+  };
+
+  const cancelBeliMember = () => {
+    document.getElementById("BeliMemberPopup").style.width = "0%";
+  };
+
+  const handleBeliMember = () => {
+      fetch('http://localhost:8080/api/user/member', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('token')
+      })
+    })
+    setMember("Yes");
+    document.getElementById("BeliMemberPopup").style.width = "0%";
+    showNotification("Anda telah menjadi member!");
+  };
+
   const showNotification = (message) => {
     setNotification({ show: true, message });
     setTimeout(() => {
@@ -191,7 +215,17 @@ function ProfilePage() {
         <a onClick={() => navigate('/gallery')}>Home</a>
         <a onClick={() => navigate('/keranjang')}>Keranjang</a>
         <a onClick={() => navigate('/profile')}>Profil</a>
-        <a onClick={() => navigate('/gallery-admin')}>Beli Member</a>
+        <a style={{ cursor: "pointer" }} onClick={openBeliMemberPopup}>Beli Member</a>
+        <div id="BeliMemberPopup" className="profile-overlay">
+          <div className="profile-popup-container">
+            <h2>Beli Member</h2>
+            <p>Rp. 1000000 untuk seumur hidup</p>
+            <div className="profile-popup-actions">
+              <button className="profile-btn-cancel" onClick={cancelBeliMember}>Batal</button>
+              <button className="profile-btn-confirm" onClick={handleBeliMember}>Terima</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="LogOut" className="profile-overlay">
         <div className="profile-popup-container">
