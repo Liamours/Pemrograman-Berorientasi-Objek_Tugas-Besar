@@ -214,7 +214,6 @@ function ProfilePage() {
             <input type="password" placeholder='Password akun anda' value={password} onChange={(e) => setPassword(e.target.value)}></input>
             <button className="profile-btn-cancel" onClick={cancelHapus}>Batal</button>
             <button className="profile-btn-confirm" onClick={async () => {
-              console.log(password, data.password)
               const response = await fetch('http://localhost:8080/api/user/delete', {
                 method: 'DELETE',
                 headers: {
