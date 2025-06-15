@@ -2,7 +2,6 @@ package com.example.rest_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 public class UpdateStockRequest {
 
@@ -10,7 +9,6 @@ public class UpdateStockRequest {
     private Integer barang_id;
 
     @NotNull(message = "Stock barang tidak boleh kosong")
-    @Positive(message = "Stok barang harus lebih besar dari 0")
     @JsonProperty("stok_barang")
     private Integer stok_barang;
 

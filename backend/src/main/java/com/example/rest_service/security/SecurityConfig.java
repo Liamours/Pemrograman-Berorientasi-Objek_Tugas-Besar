@@ -42,14 +42,23 @@ public class SecurityConfig {
                         .requestMatchers("/barang").permitAll()
                         .requestMatchers("/barang/detail").permitAll()
                         .requestMatchers("/barang/detail/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()// Changed to cover all user endpoints
-                        .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
-                        .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints
-                        .requestMatchers("/products/update").hasRole("Admin")
-                        .requestMatchers("/products/update/stock").hasRole("Admin")
-                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin") // Restricting this endpoint to ADMIN role
-                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin")
-                        .requestMatchers("/api/user/changerole").hasRole("Admin")
+
+                        // Client-specific endpoints
+                        .requestMatchers("/api/user/**").authenticated() // Authenticated user endpoints
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated() // Delete user account
+
+                        // Admin-specific endpoints
+                        .requestMatchers("/products/new").hasRole("Admin") // Add new product
+                        .requestMatchers("/products/delete").hasRole("Admin") // Delete product
+                        .requestMatchers("/products/update").hasRole("Admin") // Update product
+                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin") // Update stock
+                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin") // Update stock
+
+                        // Admin order management
+                        .requestMatchers("/admin/orders/pending").hasRole("Admin") // View pending orders
+                        .requestMatchers(HttpMethod.POST, "/admin/orders/approve/**").hasRole("Admin") // Approve orders
+
+                        // Default: All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

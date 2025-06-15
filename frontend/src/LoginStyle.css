@@ -20,20 +20,21 @@
 }
 
 body, html {
+  background-image: url(gambar/birubackgroundtengah.png), url(gambar/warungkananblur.png), url(gambar/warungkiriblur.png);
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: center, right, left;
+  background-size: contain, contain, contain;
   margin: 0;
   padding: 0;
   height: 100%;
+  background-color: #271D83;
+  font-family: Arial, sans-serif;
 }
 
 .login-page {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url(gambar/warungkananblur.png), url(gambar/warungkiriblur.png), url(gambar/birubackgroundtengah.png);
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-position: right, left, center;
-  background-size: contain, contain, cover;
 }
 
 .login-container {

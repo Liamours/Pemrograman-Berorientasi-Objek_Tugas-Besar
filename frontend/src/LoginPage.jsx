@@ -27,16 +27,10 @@ function LoginPage() {
       const data = await response.json();
   
       if (response.ok) {
-        localStorage.setItem("token", data.data.token);
-        if (data.data.role == 'Admin') {
-          navigate('/admin/dashboard');
-          return;
-        } else {
-          navigate('/profile');
-          return
-        }
+        localStorage.setItem('token', data.token); 
+        navigate('/profile');
       } else {
-        setMessage(data.message);
+        setMessage(data.error || "Login gagal");
       }
     } catch (err) {
       setMessage("Terjadi kesalahan saat menghubungi server");
@@ -73,7 +67,7 @@ function LoginPage() {
             className="login-toggle-password"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? '🚫' : '👁️'}
+            {showPassword ? '🙈' : '👁️'}
           </button>
         </div>
 

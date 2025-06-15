@@ -4,12 +4,7 @@ import LoginPage from './LoginPage';
 import RegistrationPage from './RegistrationPage';
 import ProfilePage from './ProfilePage';
 import DetailBarang from "./DetailBarangPage"
-import AdminDashboard from './AdminDashboardPage';
-import TambahBarang from './TambahBarangPage';
-import GalleryPage from './GalleryPage';
-import Checkout from './CheckoutPage';
-import Keranjang from './KeranjangPage';
-import GalleryPageAdmin from './GalleryBarangAdmin';
+import Logout from "./LogoutPopup"
 
 function App() {
   return (
@@ -20,13 +15,7 @@ function App() {
         <Route path="*" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/DetailBarang" element={<DetailBarang/>} />
-        <Route path="/TambahBarang" element={<TambahBarang />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/Home" element={<GalleryPage />} />
-        <Route path="/Checkout" element={<Checkout />} />
-        <Route path="/Keranjang" element={<Keranjang />} />
-        <Route path="/Gallery" element={<GalleryPage />} />
-        <Route path="/admin/gallery" element={<GalleryPageAdmin />} />
+        <Route path="/Logout" element={<Logout/>} />
       </Routes>
     </Router>
   );

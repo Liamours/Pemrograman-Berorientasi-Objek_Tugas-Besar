@@ -1,88 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileStyle.css';
 import { useNavigate } from 'react-router-dom';
-import './LogoutStyle.css';
 
 function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMember] = useState("");
+  const [memberNumber, setMemberNumber] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [address, setAddress] = useState("");
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
-  const confirmChange = () => {
-    document.getElementById("Change").style.width = "100%";
-  };
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  console.log("Token dari localStorage:", token);
 
-  const cancelConfirmChange = () => {
-    document.getElementById("Change").style.width = "0%";
-  };
+  if (!token) {
+    setName("Token tidak ditemukan");
+    setEmail("Token tidak ditemukan");
+    setMemberNumber("Token tidak ditemukan");
+    return;
+  }
 
-  const confirmSave = () => {
-    document.getElementById("Save").style.width = "100%";
-  };
-
-  const cancelConfirmSave = () => {
-    document.getElementById("Save").style.width = "0%";
-  };
-
-  const logout = () => {
-    document.getElementById("LogOut").style.width = "100%";
-  };
-
-  const cancelLogout = () => {
-    document.getElementById("LogOut").style.width = "0%";
-  };
-
-  const hapus = () => {
-    document.getElementById("Hapus").style.width = "100%";
-  };
-
-  const cancelHapus = () => {
-    document.getElementById("Hapus").style.width = "0%";
-  };
-
-  useEffect(() => {
-    console.log("Token dari localStorage:", token);
-
-    fetch('http://localhost:8080/api/user/profile/client', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+  fetch('http://localhost:8080/api/user/profile', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data.name && data.email && data.id) {
+        setName(data.name);
+        setEmail(data.email);
+        setMemberNumber(data.id.toString());
+      } else {
+        setName("data tidak ditemukan");
+        setEmail("data tidak ditemukan");
+        setMemberNumber("data tidak ditemukan");
       }
     })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error: ${res.status} ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (data.data.name && data.data.email && data.data.id) {
-          setName(data.data.name);
-          setEmail(data.data.email);
-          setAddress(data.data.address);
-          if (data.isMember == true){
-            setMember("Yes");
-          }else {
-            setMember("No")
-          }
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        navigate('/login');
-      });
-  }, []);
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      setName("Token gagal");
+      setEmail("Token gagal");
+      setMemberNumber("Token gagal");
+    });
+}, []);
+
 
   const handleSaveAccountSettings = () => {
     fetch('http://localhost:8080/api/user/profile/update', {
@@ -93,18 +63,20 @@ function ProfilePage() {
       },
       body: JSON.stringify({
         name,
-        email,
-        address
+        email
       })
     })
       .then(res => res.json())
       .then(data => {
-        alert(data.message);
+        if (data.success) {
+          alert("Perubahan akun berhasil disimpan!");
+        } else {
+          alert(data.message || "Gagal menyimpan perubahan akun.");
+        }
       })
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
-    cancelConfirmSave();
   };
 
   const handleChangePassword = () => {
@@ -113,111 +85,51 @@ function ProfilePage() {
       return;
     }
 
-    fetch('http://localhost:8080/api/user/password/change', {
-      method: 'PUT',
+    fetch('http://localhost:8080/api/user/profile/change-password', {
+      method: 'PUT', // ganti dari PUSH ke PUT
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({
         currentPassword,
-        newPassword,
-        confirmPassword
+        newPassword
       })
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert(data.message);
+          alert("Password berhasil diubah!");
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
         } else {
-          alert(data.data.message);
+          alert(data.message || "Gagal mengubah password.");
         }
       })
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
-    cancelConfirmChange();
   };
 
   return (
     <div className="account-settings">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
       <header className="header">
         <div className="logo">G & C</div>
         <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <div className="cart">Keranjang: Rp 100.000</div>
       </header>
-      <div id="LogOut" className="overlay">
-        <div className="popup-container">
-          <h2>Yakin Ingin Keluar?</h2>
-          <p>Anda perlu login lagi jika sudah keluar</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelLogout}>Batal</button>
-            <button className="btn-confirm" onClick={() => {
-              localStorage.removeItem("token");
-              navigate('/login');
-            }}>Terima</button>
-          </div>
-        </div>
-      </div>
-      <div id="Hapus" className="overlay">
-        <div className="popup-container">
-          <h2>Yakin Ingin Hapus Akun?</h2>
-          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
-          <div className="popup-actions">
-            <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
-            <button className="btn-cancel" onClick={() => {
-              fetch('http://localhost:8080/api/user/delete', {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({
-                  token
-                })
-              })
-              localStorage.removeItem("token");
-              navigate('/login');
-            }}>Terima</button>
-          </div>
-        </div>
-      </div>
-      <div id="Change" className="overlay">
-        <div className="popup-container">
-          <h2>Yakin Ingin Ubah Password?</h2>
-          <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
-            <button className="btn-confirm" onClick={handleChangePassword}>Terima</button>
-          </div>
-        </div>
-      </div>
-      <div id="Save" className="overlay">
-        <div className="popup-container">
-          <h2>Yakin Ingin Simpan Perubahan?</h2>
-          <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
-            <button className="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
-          </div>
-        </div>
-      </div>
       <div className="content">
         <nav className="sidebar">
-          <ul><h2>Navigation</h2>
-            <li><a href="/keranjang"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
-            <li><a href="/Gallery"><i className="glyphicon glyphicon-cog"></i> Home</a></li>
-            <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
-            <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
+          <ul>
+            <li><a href="#">Shopping Cart</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Log-out</a></li>
           </ul>
         </nav>
         <main className="main">
           <div className="card">
-            <h2>Informasi Akun</h2>
+            <h2>Setting Akun</h2>
             <form>
               <label htmlFor="name">Nama</label>
               <input
@@ -226,22 +138,21 @@ function ProfilePage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="alamat">Alamat</label>
-              <input
-                type="alamat"
-                id="alamat"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
               <label htmlFor="email">Email</label>
-              <div className="hanya info" id="email">
-                {email}
-              </div>
-              <label htmlFor="member">Member</label>
-              <div className="hanya info" id="member">
-                {memberNumber}
-              </div>
-              <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <label htmlFor="member-number">Nomor Member</label>
+              <input
+                type="text"
+                id="member-number"
+                value={memberNumber}
+                onChange={(e) => setMemberNumber(e.target.value)}
+              />
+              <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
             </form>
           </div>
           <div className="card">
@@ -254,39 +165,21 @@ function ProfilePage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
-              <div className="profile-title-shownewpassword-wrapper">
-                <label htmlFor="new-password">Password Baru</label>
-                <button
-                  type="button"
-                  className="profile-toggle-new-password"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                >
-                  {showNewPassword ? '🚫' : '👁️'}
-                </button>
-              </div>
+              <label htmlFor="new-password">Password Baru</label>
               <input
-                type={showNewPassword ? 'text' : 'password'}
+                type="password"
                 id="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
-              <div className="profile-title-showconfirmnewpassword-wrapper">
-                <label htmlFor="confirm-password">Konfirmasi Password</label>
-                <button
-                  type="button"
-                  className="profile-toggle-confirm-new-password"
-                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
-                >
-                  {showConfirmNewPassword ? '🚫' : '👁️'}
-                </button>
-              </div>
+              <label htmlFor="confirm-password">Konfirmasi Password</label>
               <input
-                type={showConfirmNewPassword ? 'text' : 'password'}
+                type="password"
                 id="confirm-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <button type="button" onClick={confirmChange}>Ubah Password</button>
+              <button type="button" onClick={handleChangePassword}>Ubah Password</button>
             </form>
           </div>
         </main>
