@@ -48,7 +48,8 @@ body {
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s ease;
-  width: auto;
+  width: 35vh;
+  display: flex;
 }
 
 .product-card:hover {
@@ -56,14 +57,15 @@ body {
 }
 
 .product-image {
-  width: 100%;
-  height: 10rem;
+  width: 100px;
+  height: 100px;
+  image-resolution: 1;
   object-fit: cover;
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+  align-self: center;
 }
 
 .product-info {
+  display: block;
   padding: 1rem;
   text-align: center;
 }
@@ -76,4 +78,5 @@ body {
 .product-price {
   color: #38a169;
   font-weight: bold;
+  font-size: medium;
 }
