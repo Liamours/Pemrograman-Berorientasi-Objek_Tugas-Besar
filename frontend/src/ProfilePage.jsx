@@ -6,7 +6,8 @@ import './LogoutStyle.css';
 function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMember] = useState("");
+  const [member, setMember] = useState("");
+  const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,7 +15,37 @@ function ProfilePage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const token = localStorage.getItem('token');
+  const [notification, setNotification] = useState({
+    show: false,
+    message: ''
+  });
   const navigate = useNavigate();
+
+  const showNotification = (message) => {
+    setNotification({ show: true, message });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 2000); 
+  };
+
+  const Notification = ({ message, onClose }) => {
+    return (
+      <div style={{ backgroundColor:"#dca42b", border:"solid" }}className="notification">
+        <span>{message}</span>
+        <span className="close-btn" onClick={onClose}>×</span>
+      </div>
+    );
+  };
+
+  const sidebar = () => {
+    document.getElementById("Sidebar").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+  };
+
+  const closeSidebar = () => {
+    document.getElementById("Sidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+  };
 
   const confirmChange = () => {
     document.getElementById("Change").style.width = "100%";
@@ -80,7 +111,7 @@ function ProfilePage() {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        navigate('/login');
+        // navigate('/login');
       });
   }, []);
 
@@ -99,10 +130,14 @@ function ProfilePage() {
     })
       .then(res => res.json())
       .then(data => {
-        alert(data.message);
+        if (data.success) {
+          showNotification("Perubahan akun berhasil disimpan!");
+        } else {
+          showNotification(data.message || "Gagal menyimpan perubahan akun.");
+        }
       })
       .catch(() => {
-        alert("Terjadi kesalahan saat menghubungi server.");
+        showNotification("Terjadi kesalahan saat menghubungi server.");
       });
     cancelConfirmSave();
   };
@@ -128,95 +163,111 @@ function ProfilePage() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert(data.message);
+          showNotification("Password berhasil diubah!");
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
         } else {
-          alert(data.data.message);
+          showNotification(data.message || "Gagal mengubah password.");
         }
       })
       .catch(() => {
-        alert("Terjadi kesalahan saat menghubungi server.");
+        showNotification("Terjadi kesalahan saat menghubungi server.");
       });
     cancelConfirmChange();
   };
 
   return (
-    <div className="account-settings">
+    <div className="profile-page">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
-      <header className="header">
-        <div className="logo">G & C</div>
-        <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
-        <div className="cart">Keranjang: Rp 100.000</div>
-      </header>
-      <div id="LogOut" className="overlay">
-        <div className="popup-container">
+      {notification.show && (
+        <Notification 
+          message={notification.message} 
+          onClose={() => setNotification({ show: false, message: '' })}
+        />
+      )}
+      <div id="Sidebar" class="profile-sidenav">
+        <a style={{ cursor:"pointer" }} class= "closebtn" onClick={closeSidebar}>&times;</a>
+        <a onClick={() => navigate('/gallery')}>Home</a>
+        <a onClick={() => navigate('/keranjang')}>Keranjang</a>
+        <a onClick={() => navigate('/profile')}>Profil</a>
+        <a onClick={() => navigate('/gallery-admin')}>Beli Member</a>
+      </div>
+      <div id="LogOut" className="profile-overlay">
+        <div className="profile-popup-container">
           <h2>Yakin Ingin Keluar?</h2>
           <p>Anda perlu login lagi jika sudah keluar</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelLogout}>Batal</button>
-            <button className="btn-confirm" onClick={() => {
+          <div className="profile-popup-actions">
+            <button className="profile-btn-cancel" onClick={cancelLogout}>Batal</button>
+            <button className="profile-btn-confirm" onClick={() => {
               localStorage.removeItem("token");
               navigate('/login');
             }}>Terima</button>
           </div>
         </div>
       </div>
-      <div id="Hapus" className="overlay">
-        <div className="popup-container">
+      <div id="Hapus" className="profile-overlay">
+        <div className="profile-popup-container">
           <h2>Yakin Ingin Hapus Akun?</h2>
-          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
-          <div className="popup-actions">
-            <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
-            <button className="btn-cancel" onClick={() => {
-              fetch('http://localhost:8080/api/user/delete', {
+          <p>Akun anda akan dihapus sepenuhnya</p>
+          <div className="profile-popup-actions">
+            <input type="password" placeholder='Password akun anda' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <button className="profile-btn-cancel" onClick={cancelHapus}>Batal</button>
+            <button className="profile-btn-confirm" onClick={async () => {
+              console.log(password, data.password)
+              const response = await fetch('http://localhost:8080/api/user/delete', {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                  token
+                  token: localStorage.getItem('token'),
+                  password: password
                 })
-              })
-              localStorage.removeItem("token");
-              navigate('/login');
+              });
+              const data = await response.json();
+              if (response.ok) {
+                if (data.success) {
+                  localStorage.removeItem("token");
+                  navigate('/login');
+                }else {
+                  alert(data.message);
+                }
+              }
             }}>Terima</button>
           </div>
+
         </div>
       </div>
-      <div id="Change" className="overlay">
-        <div className="popup-container">
+      <div id="Change" className="profile-overlay">
+        <div className="profile-popup-container">
           <h2>Yakin Ingin Ubah Password?</h2>
           <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
-            <button className="btn-confirm" onClick={handleChangePassword}>Terima</button>
+          <div className="profile-popup-actions">
+            <button className="profile-btn-cancel" onClick={cancelConfirmChange}>Batal</button>
+            <button className="profile-btn-confirm" onClick={handleChangePassword}>Terima</button>
           </div>
         </div>
       </div>
-      <div id="Save" className="overlay">
-        <div className="popup-container">
+      <div id="Save" className="profile-overlay">
+        <div className="profile-popup-container">
           <h2>Yakin Ingin Simpan Perubahan?</h2>
           <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
-            <button className="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
+          <div className="profile-popup-actions">
+            <button className="profile-btn-cancel" onClick={cancelConfirmSave}>Batal</button>
+            <button className="profile-btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
           </div>
         </div>
       </div>
-      <div className="content">
-        <nav className="sidebar">
-          <ul><h2>Navigation</h2>
-            <li><a href="/keranjang"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
-            <li><a href="/Gallery"><i className="glyphicon glyphicon-cog"></i> Home</a></li>
-            <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
-            <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
-          </ul>
-        </nav>
-        <main className="main">
-          <div className="card">
+      <header className="profile-header">
+        <span style={{ cursor:"pointer",fontSize:"40px" }} class="glyphicon glyphicon-list" onClick={sidebar}></span>
+        <div className="profile-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <img style={{ width:"100px" }} src="/images/logogncmin.png" alt="Logo" />
+      </header>
+      <div className="profile-content">
+        <main id="main" className="profile-main">
+          <div className="profile-card">
             <h2>Informasi Akun</h2>
             <form>
               <label htmlFor="name">Nama</label>
@@ -226,25 +277,31 @@ function ProfilePage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="alamat">Alamat</label>
+              <label htmlFor="email">Email</label>
               <input
-                type="alamat"
-                id="alamat"
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <address htmlFor="address">Alamat</address>
+              <input
+                type="text"
+                id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
-              <label htmlFor="email">Email</label>
-              <div className="hanya info" id="email">
-                {email}
-              </div>
               <label htmlFor="member">Member</label>
-              <div className="hanya info" id="member">
-                {memberNumber}
-              </div>
+              <input
+                type="text"
+                id="member"
+                value={member}
+                onChange={(e) => setMember(e.target.value)}
+              />
               <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
             </form>
           </div>
-          <div className="card">
+          <div className="profile-card">
             <h2>Ubah Password</h2>
             <form>
               <label htmlFor="current-password">Password Sekarang</label>
@@ -288,6 +345,10 @@ function ProfilePage() {
               />
               <button type="button" onClick={confirmChange}>Ubah Password</button>
             </form>
+          </div>
+          <div className='profile-bottom'>
+            <button className='profile-bottom-button' onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Logout</button>
+            <button className='profile-bottom-button' onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</button>
           </div>
         </main>
       </div>
