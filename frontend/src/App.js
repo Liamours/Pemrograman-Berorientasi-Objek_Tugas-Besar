@@ -6,6 +6,9 @@ import ProfilePage from './ProfilePage';
 import DetailBarang from "./DetailBarangPage"
 import AdminDashboard from './AdminDashboardPage';
 import TambahBarang from './TambahBarangPage';
+import GalleryPage from './GalleryPage';
+import Checkout from './CheckoutPage';
+import Keranjang from './KeranjangPage';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/DetailBarang" element={<DetailBarang/>} />
         <Route path="/TambahBarang" element={<TambahBarang />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/Home" element={<GalleryPage />} />
+        <Route path="/Checkout" element={<Checkout />} />
+        <Route path="/Keranjang" element={<Keranjang />} />
       </Routes>
     </Router>
   );

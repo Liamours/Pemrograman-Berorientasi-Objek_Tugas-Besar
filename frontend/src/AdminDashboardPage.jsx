@@ -12,6 +12,7 @@ function AdminDashboardPage() {
   const navigate = useNavigate();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const token = localStorage.getItem('token');
 
   const logout = () => {
     document.getElementById("myNav").style.width = "100%";
@@ -30,7 +31,6 @@ function AdminDashboardPage() {
   };
 
 useEffect(() => {
-  const token = localStorage.getItem('token');
   console.log("Token dari localStorage:", token);
 
   fetch('http://localhost:8080/api/user/profile/admin', {

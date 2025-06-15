@@ -13,6 +13,7 @@ function ProfilePage() {
   const [address, setAddress] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   const confirmChange = () => {
@@ -48,7 +49,6 @@ function ProfilePage() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     console.log("Token dari localStorage:", token);
 
     fetch('http://localhost:8080/api/user/profile/client', {
@@ -209,8 +209,8 @@ function ProfilePage() {
       <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
-            <li><a href="#"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
-            <li><a href="#"><i className="glyphicon glyphicon-cog"></i> Settings</a></li>
+            <li><a href="/keranjang"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
+            <li><a href="/"><i className="glyphicon glyphicon-cog"></i> Home</a></li>
             <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
             <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
