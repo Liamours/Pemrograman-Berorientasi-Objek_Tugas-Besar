@@ -9,6 +9,16 @@ const ProductCardAdmin = () => {
   const navigate = useNavigate();
   const barang_id = localStorage.getItem('selectedProductId');
 
+  const sidebar = () => {
+    document.getElementById("Sidebar").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+  };
+
+  const closeSidebar = () => {
+    document.getElementById("Sidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+  };
+
   const hapus = () => {
     document.getElementById("Hapus").style.width = "100%";
   };
@@ -147,10 +157,23 @@ const ProductCardAdmin = () => {
   }
 
   return (
-    <div className='detail-barang-admin'>
-      <header className="detailbarang-admin-header">
-        <div className="detailbarang-admin-logo">G & C</div>
-        <div className="detailbarang-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+    <div className="gallery-admin-container" id="main">
+      <div id="Sidebar" className="gallery-admin-sidenav">
+        <a style={{ cursor: "pointer" }} className="closebtn" onClick={closeSidebar}>&times;</a>
+        <a onClick={closeSidebar}>Daftar Barang</a>
+        <hr></hr>
+        <a onClick={() => navigate('/tambahBarang')}>Tambah Barang</a>
+        <hr></hr>
+        <a onClick={() => navigate('/admin/receipt')}>Nota</a>
+        <hr></hr>
+        <a onClick={() => navigate('/admin/dashboard')}>Profil</a>
+        <hr></hr>
+      </div>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+      <header className="gallery-admin-header">
+        <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
+        <div className="gallery-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
       <div className='detailbarang-admin-detail-content'>
         <div className="detailbarang-admin-product-card">

@@ -34,13 +34,19 @@ function AdminDashboardPage() {
   };
 
   const adminSidebar = () => {
-    document.getElementById("Sidebar").style.width = "200px";
-    document.getElementById("main").style.marginLeft = "200px";
+    const sidebar = document.getElementById("Sidebar");
+    if (sidebar) sidebar.style.width = "200px";
+
+    const main = document.getElementById("main");
+    if (main) main.style.marginLeft = "200px";
   };
 
   const adminCloseSidebar = () => {
-    document.getElementById("Sidebar").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
+    const sidebar = document.getElementById("Sidebar");
+    if (sidebar) sidebar.style.width = "0px";
+
+    const main = document.getElementById("main");
+    if (main) main.style.marginLeft = "0px";
   };
 
   const confirmChange = () => {
