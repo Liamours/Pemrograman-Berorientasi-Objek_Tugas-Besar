@@ -5,51 +5,47 @@ body {
 }
 
 .detail-barang {
-  
   display:flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: #C1F3C8;
 }
 
-.header {
+.detailbarang-header {
   display: flex;
-  
   justify-content: space-between;
   background-color: #4caf50;
   color: white;
-  padding: 5px 10px;
-  
+  padding: 5px 10px;  
+  align-items: center;
 }
 
-.logo {
+.detailbarang-logo {
   font-family: 'Poppins';
   font-size: 24px;
   font-weight: bold;
 }
 
-.location {
+.detailbarang-location {
   font-family: 'Poppins';
   font-size: 14px;
 }
 
-.cart {
+.detailbarang-cart {
   font-size: 14px;
 }
 
-.content {
-  
+.detailbarang-content {
   display: flex;
   flex-grow: 1;
   width: 100%;
-  
 }
 
-.product-card {
+.detailbarang-product-card {
   justify-self: center;
   background-color: white;
-  width: 150vh;
-  height: auto;
+  width: 75%;
+  height: 80vh;
   padding: 20px;
   margin: 20px;;
   border-radius: 10px;
@@ -57,47 +53,52 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-.product-info {
+.detailbarang-product-info {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.product-image {
+.detailbarang-product-image {
+  min-width: min-content;
+  min-height: min-content;
+  width: 300px;
+  height: 300px;
   border-style:solid;
-  width: 33%;
-  margin-right: 50px;
+  margin-right: 100px;
 }
 
-.product-details {
+.detailbarang-product-details {
+  width: 50%;
   display: block;
   flex: 1;
 }
 
-.product-title {
+.detailbarang-product-title {
   font-size: 40px;
   font-weight: bold;
   margin: 0;
 }
 
-.product-price {
+.detailbarang-product-price {
   font-size: 30px;
   color: #e40017;
   margin: 10px 0;
 }
 
-.product-description {
+.detailbarang-product-description {
   font-size: 20px;
   color: #444;
+  height: 250px;
 }
 
-.quantity-section {
+.detailbarang-quantity-section {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.quantity-btn {
+.detailbarang-quantity-btn {
   background-color: #a3a4a4;
   color: white;
   border: none;
@@ -108,17 +109,18 @@ body {
   margin: 0 10px;
 }
 
-.quantity {
+.detailbarang-quantity {
   font-size: 18px;
 }
 
-.subtotal {
+.detailbarang-subtotal {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
-.add-to-cart-btn {
+.detailbarang-add-to-cart-btn {
+  justify-self: center;
   background-color: #6ecb3c;
   color: white;
   padding: 10px 20px;
@@ -126,12 +128,12 @@ body {
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
-  width: 100%;
+  width: 50%;
 }
 
-.category {
+.detailbarang-category {
   font-size: 14px;
-  text-align: center;
+  text-align: left;
   margin-top: 20px;
   color: #888;
 }

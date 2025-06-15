@@ -67,10 +67,10 @@ function ProfilePage() {
         return res.json();
       })
       .then(data => {
-        if (data.name && data.email && data.id) {
-          setName(data.name);
-          setEmail(data.email);
-          setAddress(data.address);
+        if (data.data.name && data.data.email && data.data.id) {
+          setName(data.data.name);
+          setEmail(data.data.email);
+          setAddress(data.data.address);
           if (data.isMember == true){
             setMember("Yes");
           }else {

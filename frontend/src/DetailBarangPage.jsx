@@ -19,7 +19,7 @@ const ProductCard = () => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
-        return res.json(); // Parse the response as JSON
+        return res.json();
       })
       .then(data => {
         if (data && data.success) {
@@ -30,7 +30,6 @@ const ProductCard = () => {
         }
       })
       .catch(err => {
-        // Log any errors, such as network issues or unexpected response format
         console.error("Fetch error:", err);
         alert("An error occurred while fetching product details.");
       });
@@ -71,23 +70,22 @@ const ProductCard = () => {
 
   return (
     <div className='detail-barang'>
-      <header className="header">
-        <div className="logo">G & C</div>
-        <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
-        <div className="cart">Keranjang: Rp 100.000</div>
+      <header className="detailbarang-header">
+        <div className="detailbarang-logo">G & C</div>
+        <div className="detailbarang-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
       </header>
-      <div className='detail-content'>
-        <div className="product-card">
-          <div className="product-info">
+      <div className='detailbarang-detail-content'>
+        <div className="detailbarang-product-card">
+          <div className="detailbarang-product-info">
             <img 
               src={product.image_url || "/images/grownncheer_logo.png"}
               alt={product.nama_barang}
-              className="product-image"
+              className="detailbarang-product-image"
             />
-            <div className="product-details">
-              <h1 className="product-title">{product.nama_barang}</h1>
-              <p className="product-price">Rp {price.toLocaleString()}</p>
-              <p className="product-description">
+            <div className="detailbarang-product-details">
+              <h1 className="detailbarang-product-title">{product.nama_barang}</h1>
+              <p className="detailbarang-product-price">Rp {price.toLocaleString()}</p>
+              <p className="detailbarang-product-description">
                 {product.deskripsi_barang}
               </p>
               <div className="quantity-section">
