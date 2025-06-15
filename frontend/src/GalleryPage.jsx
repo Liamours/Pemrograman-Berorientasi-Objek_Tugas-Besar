@@ -19,6 +19,7 @@ const GalleryPage = () => {
   };
 
   const handleSearch = async () => {
+
     try {
       const response = await fetch('http://localhost:8080/barang', {
         method: 'POST',
@@ -26,8 +27,8 @@ const GalleryPage = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: namaBarang,
-          category: kategori,
+          nama_barang: namaBarang,
+          tipe_barang: kategori,
         })
       });
 
@@ -50,7 +51,7 @@ const GalleryPage = () => {
 
   useEffect(() => {
     handleSearch();
-  }, []);
+  }, [namaBarang, kategori]);
 
   return (
     <div className="gallery-container">
@@ -79,7 +80,7 @@ const GalleryPage = () => {
           value={kategori}
           onChange={(e) => setKategori(e.target.value)}
         >
-          <option value="">Pilih Kategori</option>
+          <option value="">Semua Kategori</option>
           <option value="Makanan">Makanan</option>
           <option value="Minuman">Minuman</option>
           <option value="Hygine">Hygine</option>
