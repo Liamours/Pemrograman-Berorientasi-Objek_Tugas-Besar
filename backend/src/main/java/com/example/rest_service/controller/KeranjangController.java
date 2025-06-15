@@ -2,6 +2,7 @@ package com.example.rest_service.controller;
 
 import com.example.rest_service.dto.CartDTO;
 import com.example.rest_service.dto.OrderDTO;
+import com.example.rest_service.dto.UpdateOrderRequest;
 import com.example.rest_service.service.KeranjangService;
 import com.example.rest_service.service.UserService;
 import com.example.rest_service.security.JwtTokenUtil;
@@ -39,11 +40,12 @@ public class KeranjangController {
     public OrderDTO updateOrder(
             @RequestHeader("Authorization") String token,
             @PathVariable Integer orderId,
-            @RequestParam Integer jumlahBarang
+            @RequestBody UpdateOrderRequest request // ✅ ganti jadi DTO
     ) {
         validateToken(token);
-        return cartService.updateOrder(orderId, jumlahBarang);
+        return cartService.updateOrder(orderId, request.getJumlahBarang());
     }
+
 
     @DeleteMapping("/cart/orders/{orderId}")
     public void deleteOrder(

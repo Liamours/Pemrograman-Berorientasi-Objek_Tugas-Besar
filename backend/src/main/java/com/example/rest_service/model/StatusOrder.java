@@ -2,7 +2,6 @@
 package com.example.rest_service.model;
 
 public enum StatusOrder {
-    Pending_Client,
-    Pending_Admin,
+    Pending,
     Done
 }
