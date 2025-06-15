@@ -37,16 +37,18 @@ public class AuthController {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
     private final ClientRepository clientRepository;
-
+    private final KeranjangRepository keranjangRepository;
     public AuthController(UserRepository userRepository,
                           JwtTokenUtil jwtTokenUtil,
-                          UserDetailsService userDetailsService,ClientRepository clientRepository) {
+                          UserDetailsService userDetailsService,
+                          ClientRepository clientRepository,
+                          KeranjangRepository keranjangRepository) {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
         this.clientRepository = clientRepository;
+        this.keranjangRepository = keranjangRepository;
     }
-
     // REGISTER
     @Transactional
     @PostMapping("/register")
@@ -56,22 +58,30 @@ public class AuthController {
                     .body(new ApiResponse(false, "Email udah dipake"));
         }
 
+        // 1. Buat user
         User user = new User();
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
-        user.setPassword(registerRequest.getPassword());
+        user.setPassword(registerRequest.getPassword()); // Encrypt kalau udah setup PasswordEncoder
         user.setPeran(User.Role.Client);
+        user.setCreatedAt(java.time.LocalDateTime.now());
+        user.setUpdatedAt(java.time.LocalDateTime.now());
         User savedUser = userRepository.save(user);
+
+        // 2. Buat client profile
         Client client = new Client();
         client.setUser(savedUser);
         client.setIsmember(false);
-        client.setAlamat(null);
+        client.setAlamat(null); // Atau bisa dari registerRequest kalau mau
         clientRepository.save(client);
 
+        // 3. Buat keranjang
+        Keranjang keranjang = new Keranjang();
+        keranjang.setUser(savedUser);
+        keranjangRepository.save(keranjang);
 
         return ResponseEntity.ok(new ApiResponse(true, "Register sukses, silakan login!"));
     }
-
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         // 1. Find user by email
