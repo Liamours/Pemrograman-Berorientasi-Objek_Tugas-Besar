@@ -135,7 +135,7 @@ function ProfilePage() {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        // navigate('/login');
+        navigate('/login');
       });
   }, []);
 
