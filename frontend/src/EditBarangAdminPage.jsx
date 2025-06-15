@@ -27,24 +27,6 @@ const ProductCardAdmin = () => {
     document.getElementById("Hapus").style.width = "0%";
   };
 
-  const handle = () => {
-    fetch('http://localhost:8080/api/user/member', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem('token')
-      })
-    });
-
-    setMember("Yes");
-    localStorage.setItem('isMember', 'true');
-    document.getElementById("BeliMemberPopup").style.width = "0%";
-    showNotification("Anda telah menjadi member!");
-  };
-
   const checkStatusAdmin = async () => {
     if (!token) {
       navigate('/login');
