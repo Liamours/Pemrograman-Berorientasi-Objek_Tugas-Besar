@@ -59,7 +59,7 @@ const GalleryPage = () => {
   };
 
   return (
-    <div className="gallery-container">
+    <div className="gallery-container" id="main">
       <div id="Sidebar" className="gallery-sidenav">
         <a style={{ cursor: "pointer" }} className="closebtn" onClick={closeSidebar}>&times;</a>
         <a onClick={() => navigate('/gallery')}>Home</a>
@@ -80,7 +80,6 @@ const GalleryPage = () => {
           value={namaBarang}
           onChange={(e) => setNamaBarang(e.target.value)}
         />
-
         <select
           value={kategori}
           onChange={(e) => setKategori(e.target.value)}
@@ -90,11 +89,8 @@ const GalleryPage = () => {
           <option value="Minuman">Minuman</option>
           <option value="Hygine">Hygine</option>
         </select>
-
-        <button onClick={handleSearch}>Cari</button>
       </div>
-
-      <main className="gallery-grid-container" id="main">
+      <main className="gallery-grid-container">
         {products.length === 0 ? (
           <p>Produk tidak tersedia.</p>
         ) : (
