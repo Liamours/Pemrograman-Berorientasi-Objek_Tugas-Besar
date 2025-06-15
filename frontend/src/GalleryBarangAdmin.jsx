@@ -55,7 +55,7 @@ const GalleryAdminPage = () => {
 
   const handleProductClick = (productId) => {
     localStorage.setItem('selectedProductId', productId);
-    navigate(`/admin/editBarang`);
+    navigate('/admin/edit');
   };
 
   return (

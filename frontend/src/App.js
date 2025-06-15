@@ -28,7 +28,7 @@ function App() {
         <Route path="/Keranjang" element={<Keranjang />} />
         <Route path="/Gallery" element={<GalleryPage />} />
         <Route path="/admin/gallery" element={<GalleryPageAdmin />} />
-        <route path="/admin/edit" element={<EditBarang />} />
+        <Route path="/admin/edit" element={<EditBarang />} />
       </Routes>
     </Router>
   );
