@@ -36,10 +36,8 @@ public class Barang {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-
-    @OneToMany(mappedBy = "barang",cascade = CascadeType.ALL)
-    private List<Order> orders;
-
+    @OneToOne(mappedBy = "barang", cascade = CascadeType.ALL)
+    private Order order;
 
     // Getters and Setters
     public Integer getBarangId() {

@@ -12,4 +12,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByKeranjangKeranjangId(Integer keranjangId);
 
     List<Order> findByStatusOrder(StatusOrder statusOrder);
+
+    List<Order> findByUserId(Long userId);
 }

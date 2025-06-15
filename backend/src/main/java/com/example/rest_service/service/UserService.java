@@ -111,6 +111,7 @@ public class UserService {
         if (user.getPeran() == User.Role.Client) {
             clientRepository.deleteById(user.getId());
             orderRepository.deleteById(user.getId().intValue());
+            keranjangRepository.deleteById(user.getId().intValue());
         }
 
         userRepository.delete(user);
@@ -171,18 +172,40 @@ public class UserService {
         }
 
         User.Role newRole = (userToUpdate.getPeran() == User.Role.Admin) ? User.Role.Client : User.Role.Admin;
-
+        // Handle role change from Client to Admin
         if (userToUpdate.getPeran() == User.Role.Client && newRole == User.Role.Admin) {
-            clientRepository.findById(userToUpdate.getId()).ifPresent(clientRepository::delete);
-        } else if (userToUpdate.getPeran() == User.Role.Admin && newRole == User.Role.Client) {
+            // Delete all related data
+            Long userId = userToUpdate.getId();
+
+            // 1. Delete client
+            clientRepository.findById(userId).ifPresent(client -> {
+                clientRepository.delete(client);
+                userToUpdate.setClient(null);
+            });
+
+            // 2. Delete all orders
+            List<Order> userOrders = orderRepository.findByUserId(userId);
+            orderRepository.deleteAll(userOrders);
+
+            // 3. Delete keranjang if exists
+            keranjangRepository.findById(userId.intValue()).ifPresent(keranjang -> {
+                keranjangRepository.delete(keranjang);
+            });
+        }
+        // Handle role change from Admin to Client
+        else if (userToUpdate.getPeran() == User.Role.Admin && newRole == User.Role.Client) {
+            // Create new Client if not exists
             if (!clientRepository.existsById(userToUpdate.getId())) {
                 Client newClient = new Client();
+                newClient.setId(userToUpdate.getId());
                 newClient.setUser(userToUpdate);
                 newClient.setIsmember(false);
                 clientRepository.save(newClient);
+                userToUpdate.setClient(newClient);
             }
         }
 
+        // Update user role
         userToUpdate.setPeran(newRole);
         userRepository.save(userToUpdate);
     }
