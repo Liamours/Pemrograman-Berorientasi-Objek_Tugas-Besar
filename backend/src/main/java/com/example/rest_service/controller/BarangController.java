@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,7 +22,6 @@ import com.example.rest_service.dto.NewBarangRequest;
 import com.example.rest_service.dto.DeletebyIDRequest;
 import com.example.rest_service.dto.ApiResponse;
 import com.example.rest_service.dto.UpdateBarangRequest;
-import com.example.rest_service.dto.UpdateStockRequest;
 
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
@@ -154,18 +152,6 @@ public class BarangController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(false, "Barang tidak ditemukan"));
-        }
-    }
-
-    @PutMapping("/update/stock")
-    @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<ApiResponse> updateStock(@Valid @RequestBody UpdateStockRequest request) {
-        Barang updatedBarang = barangService.updateStock(request);
-
-        if (updatedBarang != null) {
-            return ResponseEntity.ok(new ApiResponse(true, "Stock updated successfully", updatedBarang));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Barang not found"));
         }
     }
 }
