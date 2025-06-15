@@ -31,7 +31,6 @@ public class BarangService {
         return barangRepository.findById(barangId).orElse(null);
     }
 
-
     @Transactional
     public boolean deleteBarang(Integer barangId) {
         Barang barang = barangRepository.findById(barangId).orElse(null);
@@ -47,14 +46,12 @@ public class BarangService {
         return false;
     }
 
+
     public Barang updateBarang(@Valid UpdateBarangRequest barang) {
-        // 1. Find the Barang by ID
         Optional<Barang> optionalBarang = barangRepository.findById(barang.getBarangId());
 
         if (optionalBarang.isPresent()) {
             Barang existingBarang = optionalBarang.get();
-
-            // 2. Update the fields of Barang based on the input entity
             existingBarang.setNamaBarang(barang.getNamaBarang());
             existingBarang.setDeskripsiBarang(barang.getDeskripsiBarang());
             existingBarang.setHarga(barang.getHarga());
@@ -71,22 +68,20 @@ public class BarangService {
 
     // Update only stock
     public Barang updateStock(@Valid UpdateStockRequest request) {
-        // 1. Find the Barang by ID
         Optional<Barang> optionalBarang = barangRepository.findById(request.getBarangId());
 
-        // 2. Check if the Barang exists
         if (optionalBarang.isPresent()) {
             Barang existingBarang = optionalBarang.get();
-
-            // 3. Update the stock value
+            if (existingBarang.getStokBarang() == 0 && request.getStokBarang() < 0) {
+                throw new IllegalArgumentException("Stok barang tidak bisa negatif jika stok awal adalah 0");
+            }
             existingBarang.setStokBarang(request.getStokBarang());
-
-            // 4. Save the updated Barang with the new stock value
             return barangRepository.save(existingBarang);
         } else {
-            return null; // Return null if the Barang with given ID does not exist
+            return null;
         }
     }
+
 
     public List<Barang> getFilteredBarang(BarangFilterRequest filterRequest) {
         // Ambil semua barang dari database
