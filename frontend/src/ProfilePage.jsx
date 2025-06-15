@@ -51,6 +51,7 @@ function ProfilePage() {
     });
 
     setMember("Yes");
+    localStorage.setItem('isMember', 'true');
     document.getElementById("BeliMemberPopup").style.width = "0%";
     showNotification("Anda telah menjadi member!");
   };

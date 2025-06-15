@@ -37,7 +37,7 @@ const TambahBarang = () => {
       const data = await response.json();
       console.log(data);
       if (data.success) {
-        navigate('/gallery');
+        navigate('/admin/gallery');
       } else if (data.message) {
         setBackendMessage(data.message);
       }

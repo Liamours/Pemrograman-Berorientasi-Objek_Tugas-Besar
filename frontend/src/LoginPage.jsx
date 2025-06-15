@@ -26,7 +26,7 @@ function LoginPage() {
           navigate('/admin/dashboard');
           return;
         } else {
-          navigate('/profile');
+          navigate('/gallery');
           return
         }
       } else {
