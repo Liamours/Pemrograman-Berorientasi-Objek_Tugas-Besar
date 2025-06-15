@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 public class UpdateBarangRequest {
     @NotNull(message = "Barang ID cannot be null")
@@ -21,7 +22,9 @@ public class UpdateBarangRequest {
     @Min(value = 1, message = "Harga must be greater than 0")
     private Double harga;
 
-    @JsonProperty("tipe_barang_id")
+    @NotBlank(message = "Tipe barang tidak boleh kosong")
+    @Pattern(regexp = "^(Makanan|Minuman|Hygine)$", message = "Tipe barang hanya boleh 'Makanan', 'Minuman', atau 'Hygine'")
+    @JsonProperty("tipe_barang")
     private String tipeBarangId;
 
     @JsonProperty("image_url")
