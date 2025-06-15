@@ -38,6 +38,10 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     public enum Role {
         Client,
         Admin

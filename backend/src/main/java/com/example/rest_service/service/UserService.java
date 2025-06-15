@@ -171,24 +171,41 @@ public class UserService {
 
         User.Role newRole = (userToUpdate.getPeran() == User.Role.Admin) ? User.Role.Client : User.Role.Admin;
 
-        // Tangani perubahan peran User
+        // Handle role change from Client to Admin
         if (userToUpdate.getPeran() == User.Role.Client && newRole == User.Role.Admin) {
-            // Hapus Client jika User berubah dari Client ke Admin
-            clientRepository.findById(userToUpdate.getId()).ifPresent(clientRepository::delete);
-        } else if (userToUpdate.getPeran() == User.Role.Admin && newRole == User.Role.Client) {
-            // Jika User berubah dari Admin ke Client, pastikan Client ada
+            // Delete all related data
+            Long userId = userToUpdate.getId();
+
+            // 1. Delete client
+            clientRepository.findById(userId).ifPresent(client -> {
+                clientRepository.delete(client);
+                userToUpdate.setClient(null);
+            });
+
+            // 2. Delete all orders
+            List<Order> userOrders = orderRepository.findByUserId(userId);
+            orderRepository.deleteAll(userOrders);
+
+            // 3. Delete keranjang if exists
+            keranjangRepository.findById(userId.intValue()).ifPresent(keranjang -> {
+                keranjangRepository.delete(keranjang);
+            });
+        }
+        // Handle role change from Admin to Client
+        else if (userToUpdate.getPeran() == User.Role.Admin && newRole == User.Role.Client) {
+            // Create new Client if not exists
             if (!clientRepository.existsById(userToUpdate.getId())) {
-                // Jika Client sudah dihapus, buat Client baru
                 Client newClient = new Client();
-                newClient.setUser(userToUpdate);  // Hubungkan Client dengan User
-                newClient.setIsmember(false);  // Tentukan status membership
-                clientRepository.save(newClient);  // Simpan Client baru
+                newClient.setId(userToUpdate.getId());
+                newClient.setUser(userToUpdate);
+                newClient.setIsmember(false);
+                clientRepository.save(newClient);
+                userToUpdate.setClient(newClient);
             }
         }
 
-        // Ubah peran User
+        // Update user role
         userToUpdate.setPeran(newRole);
-        userRepository.save(userToUpdate);  // Simpan perubahan User
+        userRepository.save(userToUpdate);
     }
-
 }
