@@ -65,9 +65,9 @@ useEffect(() => {
       return res.json();
     })
     .then(data => {
-      if (data.data.name && data.data.email) {
-        setName(data.data.name);
-        setEmail(data.data.email);
+      if (data.name && data.email && data.id) {
+        setName(data.name);
+        setEmail(data.email);
       }
     })
     .catch((err) => {
