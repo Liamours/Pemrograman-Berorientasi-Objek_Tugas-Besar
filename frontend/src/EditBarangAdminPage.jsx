@@ -166,16 +166,20 @@ const ProductCardAdmin = () => {
               className="detailbarang-admin-product-image"
             />
             <div className="detailbarang-admin-product-details">
-              <h1 className="detailbarang-admin-product-title">
-                <input
-                  type="text"
-                  name="nama_barang"
-                  className="detailbarang-admin-product-name"
-                  value={editableProduct.nama_barang}
-                  onChange={handleChange}
-                />
-              </h1>
+              <div className='detailbarang-admin-nama'>
+                <label>Nama:</label>
+                <h1 className="detailbarang-admin-product-title">
+                  <input
+                    type="text"
+                    name="nama_barang"
+                    className="detailbarang-admin-product-name"
+                    value={editableProduct.nama_barang}
+                    onChange={handleChange}
+                  />
+                </h1>
+              </div>
               <p className="detailbarang-admin-product-price">
+                <label style={{ color:"black"}}>Harga:</label>
                 <input
                   type="number"
                   name="harga"

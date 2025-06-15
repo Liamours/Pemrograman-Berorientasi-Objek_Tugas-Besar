@@ -44,6 +44,7 @@ const ShoppingCart = () => {
         <table className="cart-table">
           <thead>
             <tr>
+              <th>Pilih</th>
               <th>Produk</th>
               <th>Harga Satuan</th>
               <th>Kuantitas</th>

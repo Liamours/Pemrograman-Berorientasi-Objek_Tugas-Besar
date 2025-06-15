@@ -45,7 +45,7 @@ body {
   justify-self: center;
   background-color: white;
   width: 75%;
-  height: 80vh;
+  height: 100%;
   padding: 20px;
   margin: 20px;;
   border-radius: 10px;
@@ -78,6 +78,7 @@ body {
   font-size: 40px;
   font-weight: bold;
   margin: 0;
+  align-self: baseline;
 }
 
 .detailbarang-admin-product-price {
@@ -172,4 +173,9 @@ body {
   color: #333;
   display: block;
   margin-bottom: 5px;
+}
+
+.detailbarang-admin-nama {
+  display: flex;
+  font-size: 35px;
 }
