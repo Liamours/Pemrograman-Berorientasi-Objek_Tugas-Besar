@@ -122,3 +122,33 @@ body {
   font-size: 36px;
   margin-left: 50px;
 }
+
+.gallery-admin-search-container {
+  margin-left: 20px;
+  width: 100vh;
+  justify-self: left;
+  height: 75px;
+  align-content: center;
+}
+
+.gallery-admin-search-container input{
+  background-color: white;
+  border: solid;
+  border-color: black;
+  color: black;
+  padding: 5px;
+  text-align: left;
+  display: inline-block;
+  font-size: 16px;
+}
+.gallery-admin-search-container select{
+  background-color: white;
+  border: solid;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  height: 37px;
+  margin: 5px;
+}

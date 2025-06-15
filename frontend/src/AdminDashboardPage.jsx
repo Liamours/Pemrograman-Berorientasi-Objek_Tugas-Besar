@@ -65,9 +65,9 @@ useEffect(() => {
       return res.json();
     })
     .then(data => {
-      if (data.name && data.email && data.id) {
-        setName(data.name);
-        setEmail(data.email);
+      if (data.data.name && data.data.email && data.data.id) {
+        setName(data.data.name);
+        setEmail(data.data.email);
       }
     })
     .catch((err) => {
@@ -130,33 +130,33 @@ useEffect(() => {
   };
 
   return (
-    <div className="account-settings">
+    <div className="profile-admin-page">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
-      <header className="header">
-        <div className="logo">G & C</div>
-        <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
-        <div className="cart">Keranjang: Rp 100.000</div>
+      <header className="profile-admin-header">
+        <div className="profile-admin-logo">G & C</div>
+        <div className="profile-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <div className="profile-admin-cart">Keranjang: Rp 100.000</div>
       </header>
-      <div id="LogOut" className="overlay">
-        <div className="popup-container">
+      <div id="LogOut" className="profile-admin-overlay">
+        <div className="profile-admin-popup-container">
           <h2>Yakin Ingin Keluar?</h2>
           <p>Anda perlu login lagi jika sudah keluar</p>
-          <div className="popup-actions">
-            <button className="btn-cancel" onClick={cancelLogout}>Batal</button>
-            <button className="btn-confirm" onClick={() => {
+          <div className="profile-admin-popup-actions">
+            <button className="profile-admin-btn-cancel" onClick={cancelLogout}>Batal</button>
+            <button className="profile-admin-btn-confirm" onClick={() => {
               localStorage.removeItem("token");
               navigate('/login');
             }}>Terima</button>
           </div>
         </div>
       </div>
-      <div id="Hapus" className="overlay">
-        <div className="popup-container">
+      <div id="Hapus" className="profile-admin-overlay">
+        <div className="profile-admin-popup-container">
           <h2>Yakin Ingin Hapus Akun?</h2>
           <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
-          <div className="popup-actions">
-            <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
-            <button className="btn-cancel" onClick={() => {
+          <div className="profile-admin-popup-actions">
+            <button className="profile-admin-btn-confirm" onClick={cancelHapus}>Batal</button>
+            <button className="profile-admin-btn-cancel" onClick={() => {
               const token = localStorage.getItem('token');
               fetch('http://localhost:8080/api/user/delete', {
                 method: 'DELETE',
@@ -174,16 +174,9 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      <div className="content">
-        <nav className="sidebar">
-          <ul><h2>Navigation</h2>
-            <li><a href="/admin/gallery"><i className="glyphicon glyphicon-cog"></i>Edit Barang</a></li>
-            <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
-            <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
-          </ul>
-        </nav>
-        <main className="main">
-          <div className="card">
+      <div className="profile-admin-content">
+        <main className="profile-admin-main">
+          <div className="profile-admin-card">
             <h2>Informasi Akun</h2>
             <form>
               <label htmlFor="name">Nama</label>
@@ -194,13 +187,13 @@ useEffect(() => {
                 onChange={(e) => setName(e.target.value)}
               />
               <label htmlFor="email">Email</label>
-              <div className="hanya info" id="email">
+              <div className="admin-hanya-info" id="email">
                 {email}
               </div>
               <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
             </form>
           </div>
-          <div className="card">
+          <div className="profile-admin-card">
             <h2>Ubah Password</h2>
             <form>
               <label htmlFor="current-password">Password Sekarang</label>
@@ -210,11 +203,11 @@ useEffect(() => {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
-              <div className="profile-title-shownewpassword-wrapper">
+              <div className="profile-admin-title-shownewpassword-wrapper">
                 <label htmlFor="new-password">Password Baru</label>
                 <button
                   type="button"
-                  className="profile-toggle-new-password"
+                  className="profile-admin-toggle-new-password"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                 >
                   {showNewPassword ? '🚫' : '👁️'}
@@ -226,11 +219,11 @@ useEffect(() => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
-              <div className="profile-title-showconfirmnewpassword-wrapper">
+              <div className="profile-admin-title-showconfirmnewpassword-wrapper">
                 <label htmlFor="confirm-password">Konfirmasi Password</label>
                 <button
                   type="button"
-                  className="profile-toggle-confirm-new-password"
+                  className="profile-admin-toggle-confirm-new-password"
                   onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
                 >
                   {showConfirmNewPassword ? '🚫' : '👁️'}
@@ -244,6 +237,10 @@ useEffect(() => {
               />
               <button type="button" onClick={handleChangePassword}>Ubah Password</button>
             </form>
+          </div>
+          <div className='profile-admin-bottom'>
+            <button className='profile-admin-bottom-button' onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Logout</button>
+            <button className='profile-admin-bottom-button' onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</button>
           </div>
         </main>
       </div>

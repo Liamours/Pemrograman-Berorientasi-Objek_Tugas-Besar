@@ -118,9 +118,7 @@ const GalleryAdminPage = () => {
           <option value="Minuman">Minuman</option>
           <option value="Hygine">Hygine</option>
         </select>
-        <button onClick={handleSearch}>Cari</button>
       </div>
-
       <main className="gallery-admin-grid-container" id="main">
         {products.length === 0 ? (
           <p>Produk tidak tersedia.</p>
