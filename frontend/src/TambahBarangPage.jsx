@@ -7,94 +7,43 @@ const TambahBarang = () => {
   const [kategori, setKategori] = useState('');
   const [harga, setHarga] = useState('');
   const [stok, setStok] = useState('');
-  const [image, setImage] = useState(null); // For storing image
-  const [error, setError] = useState('');
-  const [errorMessages, setErrorMessages] = useState({
-    namaBarang: '',
-    kategori: '',
-    harga: '',
-    stok: '',
-    image: ''
-  });
+  const [deskripsi, setDeskripsi] = useState('');
+  const [image, setImage] = useState('');
+  const [backendMessage, setBackendMessage] = useState('');
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let valid = true;
-    const newErrorMessages = {
-      namaBarang: '',
-      kategori: '',
-      harga: '',
-      stok: '',
-      image: ''
-    };
 
-    // Validate fields individually
-    if (!namaBarang) {
-      newErrorMessages.namaBarang = 'Nama Barang harus diisi!';
-      valid = false;
-    }
-    if (!kategori) {
-      newErrorMessages.kategori = 'Kategori harus diisi!';
-      valid = false;
-    }
-    if (!harga) {
-      newErrorMessages.harga = 'Harga harus diisi!';
-      valid = false;
-    }
-    if (!stok) {
-      newErrorMessages.stok = 'Stok harus diisi!';
-      valid = false;
-    }
-    if (!image) {
-      newErrorMessages.image = 'Foto barang harus diupload!';
-      valid = false;
-    }
+    try {
+      const response = await fetch('http://localhost:8080/barang/new', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          nama_barang: namaBarang,
+          deskripsi_barang: deskripsi,
+          harga: harga,
+          tipe_barang: kategori,
+          stok_barang: stok,
+          image_url: image
+        })
+      });
 
-    // If validation fails, update the error messages state
-    if (!valid) {
-      setErrorMessages(newErrorMessages);
-      return;
-    }
+      const data = await response.json();
+      console.log(data);
+      if (data.success) {
+        navigate('/gallery');
+      } else if (data.message) {
+        setBackendMessage(data.message);
+      }
 
-    setErrorMessages({
-      namaBarang: '',
-      kategori: '',
-      harga: '',
-      stok: '',
-      image: ''
-    });
-
-    // Logic for saving the data
-    console.log({ namaBarang, kategori, harga, stok, image });
-
-    // Here you would typically send the image to the backend to be stored in the server's public directory.
-    // For example, if you have a backend API, you could send it like this:
-
-    // const formData = new FormData();
-    // formData.append('image', image);
-    // formData.append('namaBarang', namaBarang);
-    // formData.append('kategori', kategori);
-    // formData.append('harga', harga);
-    // formData.append('stok', stok);
-
-    // fetch('/upload-endpoint', { method: 'POST', body: formData })
-    //   .then(response => response.json())
-    //   .then(data => console.log(data))
-    //   .catch(err => console.error('Error uploading image:', err));
-
-    // Reset the form
-    setNamaBarang('');
-    setKategori('');
-    setHarga('');
-    setStok('');
-    setImage(null); // Reset image after submit
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
+    } catch (err) {
+      setBackendMessage('Terjadi kesalahan saat menghubungi server.');
     }
   };
 
@@ -111,19 +60,20 @@ const TambahBarang = () => {
             onChange={(e) => setNamaBarang(e.target.value)}
             placeholder="Masukkan nama barang"
           />
-          {errorMessages.namaBarang && <p className="error-message">{errorMessages.namaBarang}</p>}
         </div>
 
         <div className="form-group">
           <label htmlFor="kategori">Kategori</label>
-          <input
-            type="text"
+          <select
             id="kategori"
             value={kategori}
             onChange={(e) => setKategori(e.target.value)}
-            placeholder="Masukkan kategori"
-          />
-          {errorMessages.kategori && <p className="error-message">{errorMessages.kategori}</p>}
+          >
+            <option value="">Pilih Kategori</option>
+            <option value="Makanan">Makanan</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Hygine">Hygine</option>
+          </select>
         </div>
 
         <div className="form-group">
@@ -135,7 +85,6 @@ const TambahBarang = () => {
             onChange={(e) => setHarga(e.target.value)}
             placeholder="Masukkan harga"
           />
-          {errorMessages.harga && <p className="error-message">{errorMessages.harga}</p>}
         </div>
 
         <div className="form-group">
@@ -147,23 +96,33 @@ const TambahBarang = () => {
             onChange={(e) => setStok(e.target.value)}
             placeholder="Masukkan stok"
           />
-          {errorMessages.stok && <p className="error-message">{errorMessages.stok}</p>}
         </div>
 
-        {/* File upload input */}
         <div className="form-group">
-          <label htmlFor="image">Upload Foto</label>
-          <input
-            type="file"
-            id="image"
-            onChange={handleImageChange}
-            accept="image/*"
+          <label htmlFor="deskripsi">Deskripsi Barang</label>
+          <textarea
+            id="deskripsi"
+            value={deskripsi}
+            onChange={(e) => setDeskripsi(e.target.value)}
+            placeholder="Masukkan deskripsi barang"
           />
-          {errorMessages.image && <p className="error-message">{errorMessages.image}</p>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="image">Nama File Gambar</label>
+          <input
+            type="text"
+            id="image"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            placeholder="Masukkan nama file gambar"
+          />
         </div>
 
         <button type="submit" className="submit-button">Tambah Barang</button>
       </form>
+
+      {backendMessage && <p className="backend-message">{backendMessage}</p>}
     </div>
   );
 };
