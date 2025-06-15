@@ -309,19 +309,19 @@ function ProfilePage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
               <address htmlFor="address">Alamat</address>
               <input
                 type="text"
                 id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+              />
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <label htmlFor="member">Member</label>
               <input

@@ -7,7 +7,6 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -16,7 +15,7 @@ function LoginPage() {
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, rememberMe}),
+        body: JSON.stringify({ email, password}),
       });
   
       const data = await response.json();
@@ -70,16 +69,6 @@ function LoginPage() {
           >
             {showPassword ? '🚫' : '👁️'}
           </button>
-        </div>
-
-        <div className="login-remember-me">
-          <input
-            type="checkbox"
-            id="remember"
-            checked={rememberMe}
-            onChange={() => setRememberMe(!rememberMe)}
-          />
-          <label htmlFor="remember">Ingat saya</label>
         </div>
 
         <button className="login-button" onClick={handleLogin}>Login</button>
