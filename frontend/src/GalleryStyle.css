@@ -6,6 +6,8 @@ body {
 
 .container {
   margin: 0 auto;
+  background-color: #C1F3C8;
+  height: auto;
 }
 
 .header {
@@ -36,7 +38,6 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  background-color: #f0fff4;
   padding: 1rem;
   border-radius: 0.5rem;
 }
