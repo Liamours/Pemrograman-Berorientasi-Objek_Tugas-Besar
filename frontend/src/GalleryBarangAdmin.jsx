@@ -55,7 +55,7 @@ const GalleryAdminPage = () => {
 
   const handleProductClick = (productId) => {
     localStorage.setItem('selectedProductId', productId);
-    navigate(`/DetailBarang`);
+    navigate(`/admin/editBarang`);
   };
 
   return (
@@ -108,6 +108,7 @@ const GalleryAdminPage = () => {
               <div className="gallery-admin-product-info">
                 <p className="gallery-admin-product-name">{product.name}</p>
                 <p className="gallery-admin-product-price">{`Rp ${product.price.toLocaleString()}`}</p>
+                <p className="gallery-product-stock">Stok: {product.stock}</p>
               </div>
             </div>
           ))

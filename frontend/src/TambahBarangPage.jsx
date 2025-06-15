@@ -30,7 +30,7 @@ const TambahBarang = () => {
           harga: harga,
           tipe_barang: kategori,
           stok_barang: stok,
-          image_url: image
+          image_url: "/images/" + image
         })
       });
 
