@@ -293,7 +293,6 @@ function ProfilePage() {
               }
             }}>Terima</button>
           </div>
-
         </div>
       </div>
       <div id="Change" className="profile-overlay">

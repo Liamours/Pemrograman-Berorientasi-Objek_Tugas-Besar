@@ -7,6 +7,33 @@ const ProductCardAdmin = () => {
   const [editableProduct, setEditableProduct] = useState(null);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const barang_id = localStorage.getItem('selectedProductId');
+
+  const hapus = () => {
+    document.getElementById("Hapus").style.width = "100%";
+  };
+
+  const cancelHapus = () => {
+    document.getElementById("Hapus").style.width = "0%";
+  };
+
+  const handle = () => {
+    fetch('http://localhost:8080/api/user/member', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('token')
+      })
+    });
+
+    setMember("Yes");
+    localStorage.setItem('isMember', 'true');
+    document.getElementById("BeliMemberPopup").style.width = "0%";
+    showNotification("Anda telah menjadi member!");
+  };
 
   const checkStatusAdmin = async () => {
     if (!token) {
@@ -40,7 +67,6 @@ const ProductCardAdmin = () => {
 
   useEffect(() => {
     checkStatusAdmin();
-    const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -195,9 +221,42 @@ const ProductCardAdmin = () => {
                   placeholder="Masukkan nama file gambar"
                 />
               </p>
+              <div id="Hapus" className="profile-overlay">
+                <div className="profile-popup-container">
+                  <h2>Yakin Ingin Hapus Barang?</h2>
+                  <p>Barang akan dihapus sepenuhnya</p>
+                  <div className="profile-popup-actions">
+                    <button className="profile-btn-cancel" onClick={cancelHapus}>Batal</button>
+                    <button className="profile-btn-confirm" onClick={async () => {
+                      const response = await fetch('http://localhost:8080/barang/delete', {
+                        method: 'DELETE',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                          barang_id
+                        })
+                      });
+                      const data = await response.json();
+                      if (response.ok) {
+                        if (data.success) {
+                          localStorage.removeItem('selectedProductId');
+                          navigate('/admin/gallery');
+                        }else {
+                          alert(data.message);
+                        }
+                      }
+                    }}>Terima</button>
+                  </div>
+                </div>
+              </div>
               <button className="detailbarang-admin-update-btn" onClick={handleUpdate}>
                 Update Product
               </button>
+              <br />
+              <br />
+              <button className="detailbarang-admin-delete-btn" onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</button>
             </div>
           </div>
         </div>
