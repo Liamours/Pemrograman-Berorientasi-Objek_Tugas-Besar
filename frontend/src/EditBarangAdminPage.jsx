@@ -1,16 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import './EditBarangAdminStyle.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCardAdmin = () => {
   const [product, setProduct] = useState(null);
   const [editableProduct, setEditableProduct] = useState(null);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
+  const checkStatusAdmin = async () => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:8080/api/user/profile/admin', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data.role !== 'Admin') {
+          navigate('/login');
+        }
+      } else {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error("Error checking admin status", error);
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
-    // if (!token) {
-    //   window.location.href = '/login';
-    //   return;
-    // }
+    checkStatusAdmin();
     const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',
@@ -68,10 +97,10 @@ const ProductCardAdmin = () => {
         })
       });
 
-      const data = await response.text(); // Use text() instead of json() to check if the response body is empty
+      const data = await response.json();
       let jsonData = {};
       try {
-        jsonData = JSON.parse(data); // Attempt to parse the response as JSON
+        jsonData = JSON.parse(data);
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
