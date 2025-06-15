@@ -99,9 +99,12 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse> deleteAccount(Authentication authentication) {
+    public ResponseEntity<ApiResponse> deleteAccount(
+            Authentication authentication,
+            @Valid @RequestBody DeleteAccountRequest request) {
+
         try {
-            userService.deleteAccount(authentication.getName());
+            userService.deleteAccount(authentication.getName(),request);
             return ResponseEntity.ok(
                     new ApiResponse(true, "Account deleted successfully")
             );

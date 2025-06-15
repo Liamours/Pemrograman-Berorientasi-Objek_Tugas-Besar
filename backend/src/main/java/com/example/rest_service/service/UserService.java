@@ -104,9 +104,13 @@ public class UserService {
 
     // Delete account
     @Transactional
-    public void deleteAccount(String email) {
+    public void deleteAccount(String email, DeleteAccountRequest request) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if(!user.getPassword().equals(request.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
+        }
 
         if (user.getPeran() == User.Role.Client) {
             clientRepository.deleteById(user.getId());
