@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import './ProfileStyle.css';
+import './AdminDashboardStyle.css';
 import { useNavigate } from 'react-router-dom';
 import './LogoutStyle.css';
 
-function ProfilePage() {
+function AdminDashboardPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMember] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [address, setAddress] = useState("");
+  const navigate = useNavigate();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
 
   const confirmChange = () => {
     document.getElementById("Change").style.width = "100%";
@@ -48,41 +46,36 @@ function ProfilePage() {
     document.getElementById("Hapus").style.width = "0%";
   };
 
-  useEffect(() => {
-    console.log("Token dari localStorage:", token);
+useEffect(() => {
+  console.log("Token dari localStorage:", token);
 
-    fetch('http://localhost:8080/api/user/profile/client', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+  fetch('http://localhost:8080/api/user/profile/admin', {
+  method: 'GET',
+  credentials: 'include',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+})
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data.name && data.email && data.id) {
+        setName(data.name);
+        setEmail(data.email);
       }
     })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error: ${res.status} ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (data.name && data.email && data.id) {
-          setName(data.name);
-          setEmail(data.email);
-          setAddress(data.address);
-          if (data.isMember == true){
-            setMember("Yes");
-          }else {
-            setMember("No")
-          }
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        navigate('/login');
-      });
-  }, []);
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      navigate('/login');
+    });
+}, []);
+
 
   const handleSaveAccountSettings = () => {
     fetch('http://localhost:8080/api/user/profile/update', {
@@ -93,8 +86,7 @@ function ProfilePage() {
       },
       body: JSON.stringify({
         name,
-        email,
-        address
+        email
       })
     })
       .then(res => res.json())
@@ -104,7 +96,6 @@ function ProfilePage() {
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
-    cancelConfirmSave();
   };
 
   const handleChangePassword = () => {
@@ -114,7 +105,7 @@ function ProfilePage() {
     }
 
     fetch('http://localhost:8080/api/user/password/change', {
-      method: 'PUT',
+      method: 'PUT', 
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -128,18 +119,14 @@ function ProfilePage() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert(data.message);
-          setCurrentPassword("");
-          setNewPassword("");
-          setConfirmPassword("");
+          alert("Password berhasil diubah!");
         } else {
-          alert(data.data.message);
+          alert(data.message || "Gagal mengubah password.");
         }
       })
       .catch(() => {
         alert("Terjadi kesalahan saat menghubungi server.");
       });
-    cancelConfirmChange();
   };
 
   return (
@@ -170,6 +157,7 @@ function ProfilePage() {
           <div className="popup-actions">
             <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
             <button className="btn-cancel" onClick={() => {
+              const token = localStorage.getItem('token');
               fetch('http://localhost:8080/api/user/delete', {
                 method: 'DELETE',
                 headers: {
@@ -186,31 +174,10 @@ function ProfilePage() {
           </div>
         </div>
       </div>
-      <div id="Change" class="overlay">
-        <div class="popup-container">
-          <h2>Yakin Ingin Ubah Password?</h2>
-          <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div class="popup-actions">
-            <button class="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
-            <button class="btn-confirm" onClick={handleChangePassword}>Terima</button>
-          </div>
-        </div>
-      </div>
-      <div id="Save" class="overlay">
-        <div class="popup-container">
-          <h2>Yakin Ingin Simpan Perubahan?</h2>
-          <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div class="popup-actions">
-            <button class="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
-            <button class="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
-          </div>
-        </div>
-      </div>
       <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
-            <li><a href="/keranjang"><i className="glyphicon glyphicon-shopping-cart"></i> Shopping Cart</a></li>
-            <li><a href="/Gallery"><i className="glyphicon glyphicon-cog"></i> Home</a></li>
+            <li><a href="/admin/gallery"><i className="glyphicon glyphicon-cog"></i>Edit Barang</a></li>
             <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
             <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
@@ -226,22 +193,11 @@ function ProfilePage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="alamat">Alamat</label>
-              <input
-                type="alamat"
-                id="alamat"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
               <label htmlFor="email">Email</label>
               <div className="hanya info" id="email">
                 {email}
               </div>
-              <label htmlFor="member">Member</label>
-              <div className="hanya info" id="member">
-                {memberNumber}
-              </div>
-              <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
+              <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
             </form>
           </div>
           <div className="card">
@@ -286,7 +242,7 @@ function ProfilePage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <button type="button" onClick={confirmChange}>Ubah Password</button>
+              <button type="button" onClick={handleChangePassword}>Ubah Password</button>
             </form>
           </div>
         </main>
@@ -295,4 +251,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default AdminDashboardPage;
