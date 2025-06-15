@@ -186,23 +186,23 @@ function ProfilePage() {
           </div>
         </div>
       </div>
-      <div id="Change" class="overlay">
-        <div class="popup-container">
+      <div id="Change" className="overlay">
+        <div className="popup-container">
           <h2>Yakin Ingin Ubah Password?</h2>
           <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div class="popup-actions">
-            <button class="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
-            <button class="btn-confirm" onClick={handleChangePassword}>Terima</button>
+          <div className="popup-actions">
+            <button className="btn-cancel" onClick={cancelConfirmChange}>Batal</button>
+            <button className="btn-confirm" onClick={handleChangePassword}>Terima</button>
           </div>
         </div>
       </div>
-      <div id="Save" class="overlay">
-        <div class="popup-container">
+      <div id="Save" className="overlay">
+        <div className="popup-container">
           <h2>Yakin Ingin Simpan Perubahan?</h2>
           <p>Perubahan tidak akan bisa dikembalikan</p>
-          <div class="popup-actions">
-            <button class="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
-            <button class="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
+          <div className="popup-actions">
+            <button className="btn-cancel" onClick={cancelConfirmSave}>Batal</button>
+            <button className="btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
           </div>
         </div>
       </div>
