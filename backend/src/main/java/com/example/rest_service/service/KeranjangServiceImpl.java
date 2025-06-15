@@ -1,4 +1,4 @@
-// src/main/java/com/example/rest_service/service/impl/CartServiceImpl.java
+// src/main/java/com/example/rest_service/service/impl/KeranjangServiceImpl.java
 package com.example.rest_service.service;
 
 import com.example.rest_service.dto.CartDTO;
@@ -8,15 +8,16 @@ import com.example.rest_service.model.Order;
 import com.example.rest_service.model.StatusOrder;
 import com.example.rest_service.repository.KeranjangRepository;
 import com.example.rest_service.repository.OrderRepository;
-import com.example.rest_service.service.KeranjangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class KeranjangServiceImpl implements KeranjangService {
+
     @Autowired private KeranjangRepository krRepo;
     @Autowired private OrderRepository orRepo;
 
@@ -52,16 +53,25 @@ public class KeranjangServiceImpl implements KeranjangService {
     @Override
     public CartDTO checkout(Long userId, List<Integer> orderIds) {
         CartDTO cart = getCartByUser(userId);
-        // tandai yang dicentang
         cart.getOrders().stream()
                 .filter(o -> orderIds.contains(o.getOrderId()))
                 .forEach(o -> {
                     Order m = orRepo.getOne(o.getOrderId());
-                    m.setStatusOrder(StatusOrder.Done);
+                    m.setStatusOrder(StatusOrder.Pending_Admin); // Ubah status menjadi Pending_Admin
                     orRepo.save(m);
-                    // update stok barang dsb...
                 });
         return getCartByUser(userId);
+    }
+
+    @Override
+    public List<OrderDTO> getOrdersInCart(Long userId) {
+        Keranjang k = krRepo.findByUser_Id(userId)
+                .orElseThrow(() -> new RuntimeException("Keranjang not found"));
+
+        return orRepo.findByKeranjangKeranjangId(k.getKeranjangId())
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     private OrderDTO toDTO(Order o) {
@@ -74,14 +84,5 @@ public class KeranjangServiceImpl implements KeranjangService {
         d.setAlamatTujuan(o.getAlamatTujuan());
         d.setStatusOrder(o.getStatusOrder().name());
         return d;
-    }
-
-    @Override
-    public List<OrderDTO> getOrdersInCart(Long userId) {
-        Keranjang k = krRepo.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Keranjang not found"));
-
-        return orRepo.findByKeranjangKeranjangId(k.getKeranjangId())
-                .stream().map(this::toDTO).collect(Collectors.toList());
     }
 }

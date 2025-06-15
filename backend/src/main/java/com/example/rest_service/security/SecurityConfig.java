@@ -9,8 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -36,27 +34,38 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/barang").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/barang/detail").permitAll()
+                        // Public endpoints
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight requests
+                        .requestMatchers("/api/auth/**").permitAll() // Authentication-related endpoints
+                        .requestMatchers(HttpMethod.GET, "/barang").permitAll() // Public product listing
+                        .requestMatchers(HttpMethod.GET, "/barang/detail").permitAll() // Public product details
                         .requestMatchers("/barang").permitAll()
                         .requestMatchers("/barang/detail").permitAll()
                         .requestMatchers("/barang/detail/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()// Changed to cover all user endpoints
-                        .requestMatchers("/products/new").hasRole("Admin")// Changed to cover all user endpoints
-                        .requestMatchers("/products/delete").hasRole("Admin")// Changed to cover all user endpoints
-                        .requestMatchers("/products/update").hasRole("Admin")
-                        .requestMatchers("/products/update/stock").hasRole("Admin")
-                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin") // Restricting this endpoint to ADMIN role
-                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin")
+
+                        // Client-specific endpoints
+                        .requestMatchers("/api/user/**").authenticated() // Authenticated user endpoints
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated() // Delete user account
+
+                        // Admin-specific endpoints
+                        .requestMatchers("/products/new").hasRole("Admin") // Add new product
+                        .requestMatchers("/products/delete").hasRole("Admin") // Delete product
+                        .requestMatchers("/products/update").hasRole("Admin") // Update product
+                        .requestMatchers(HttpMethod.PUT, "/product/update/stock").hasRole("Admin") // Update stock
+                        .requestMatchers(HttpMethod.PUT, "/barang/update/stock").hasRole("Admin") // Update stock
+
+                        // Admin order management
+                        .requestMatchers("/admin/orders/pending").hasRole("Admin") // View pending orders
+                        .requestMatchers(HttpMethod.POST, "/admin/orders/approve/**").hasRole("Admin") // Approve orders
+
+                        // Default: All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session for JWT
                 );
 
+        // Add JWT filter before the UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -64,42 +73,20 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("*"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setExposedHeaders(Arrays.asList("Authorization"));
-        config.setAllowCredentials(true);  // Critical for cookies
-        config.setMaxAge(3600L);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Allow frontend origin
+        config.setAllowedMethods(Arrays.asList("*")); // Allow all HTTP methods
+        config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
+        config.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header for JWT
+        config.setAllowCredentials(true); // Allow cookies (if needed)
+        config.setMaxAge(3600L); // Cache CORS configuration for 1 hour
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", config); // Apply to all endpoints
         return source;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
-    // // 3. Password encoder
-    // @Bean
-    // public BCryptPasswordEncoder passwordEncoder() {
-    //     return new BCryptPasswordEncoder();
-    // }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword.toString();
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return rawPassword.toString().equals(encodedPassword);
-            }
-        };
-    }
-
 }
