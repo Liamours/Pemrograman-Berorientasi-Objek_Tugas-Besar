@@ -21,7 +21,7 @@ public class NewBarangRequest {
     private Double harga;
 
     @NotBlank(message = "Tipe barang tidak boleh kosong")
-    @Pattern(regexp = "^(MAKANAN|MINUMAN|HYGENE)$", message = "Tipe barang hanya boleh 'MAKANAN', 'MINUMAN', atau 'HYGIENE'")
+    @Pattern(regexp = "^(Makanan|Minuman|Hygine)$", message = "Tipe barang hanya boleh 'Makanan', 'Minuman', atau 'Hygine'")
     @JsonProperty("tipe_barang")
     private String tipeBarang;
 
