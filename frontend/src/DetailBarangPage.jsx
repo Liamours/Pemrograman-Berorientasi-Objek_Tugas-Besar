@@ -7,7 +7,7 @@ const ProductCard = () => {
 
   useEffect(() => {
     // const id = localStorage.getItem('id_barang');
-    const barang_id = 8;
+    const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

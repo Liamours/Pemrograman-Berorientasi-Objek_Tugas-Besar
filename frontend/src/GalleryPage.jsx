@@ -53,6 +53,11 @@ const GalleryPage = () => {
     handleSearch();
   }, [namaBarang, kategori]);
 
+  const handleProductClick = (productId) => {
+    localStorage.setItem('selectedProductId', productId);
+    navigate(`/DetailBarang`);
+  };
+
   return (
     <div className="gallery-container">
       <div id="Sidebar" className="gallery-sidenav">
@@ -94,9 +99,9 @@ const GalleryPage = () => {
           <p>Produk tidak tersedia.</p>
         ) : (
           products.map((product, index) => (
-            <div key={index} className="gallery-product-card">
+            <div key={index} className="gallery-product-card" onClick={() => handleProductClick(product.id)}>
               <img
-                src={product.image_url || "/path/to/default-image.jpg"}
+                src={product.image_url}
                 alt={product.name}
                 className="gallery-product-image"
               />
