@@ -53,7 +53,7 @@ public class KeranjangController {
             @PathVariable Integer orderId
     ) {
         validateToken(token);
-        return cartService.removeOrder(orderId);
+        cartService.removeOrder(orderId);
     }
 
     @PostMapping("/checkout")
