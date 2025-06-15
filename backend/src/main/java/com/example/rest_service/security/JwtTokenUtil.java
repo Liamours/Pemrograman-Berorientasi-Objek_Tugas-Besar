@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import com.example.rest_service.model.User;
 
 import java.security.Key;
 import java.util.Date;
@@ -25,6 +26,14 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
+    // Method untuk generate token dengan user ID
+    public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId()); // Tambahkan user ID ke claims
+        return createToken(claims, user.getEmail());
+    }
+
+    // Method lama untuk backward compatibility
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
@@ -49,11 +58,16 @@ public class JwtTokenUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
+    // Method baru untuk extract user ID
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }

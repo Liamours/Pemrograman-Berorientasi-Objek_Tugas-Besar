@@ -30,6 +30,7 @@ public class BarangService {
         return barangRepository.findById(barangId).orElse(null);
     }
 
+
     @Transactional
     public boolean deleteBarang(Integer barangId) {
         Barang barang = barangRepository.findById(barangId).orElse(null);
@@ -45,12 +46,14 @@ public class BarangService {
         return false;
     }
 
-
     public Barang updateBarang(@Valid UpdateBarangRequest barang) {
+        // 1. Find the Barang by ID
         Optional<Barang> optionalBarang = barangRepository.findById(barang.getBarangId());
 
         if (optionalBarang.isPresent()) {
             Barang existingBarang = optionalBarang.get();
+
+            // 2. Update the fields of Barang based on the input entity
             existingBarang.setNamaBarang(barang.getNamaBarang());
             existingBarang.setDeskripsiBarang(barang.getDeskripsiBarang());
             existingBarang.setHarga(barang.getHarga());

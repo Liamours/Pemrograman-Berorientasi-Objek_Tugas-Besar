@@ -24,8 +24,11 @@ public class UserService {
 
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private KeranjangRepository keranjangRepository;
+
+    // Tambahkan method ini untuk controller
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
 
     // Get admin profile
     public Map<String, Object> getAdminProfile(String email) {
@@ -106,14 +109,13 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (user.getPeran() == User.Role.Client) {
-            clientRepository.deleteById(user.getId());  // Menghapus Client
+            clientRepository.deleteById(user.getId());
             orderRepository.deleteById(user.getId().intValue());
             keranjangRepository.deleteById(user.getId().intValue());
         }
 
-        userRepository.delete(user);  // Menghapus User
+        userRepository.delete(user);
     }
-
 
     // Upgrade to member
     @Transactional
@@ -170,7 +172,6 @@ public class UserService {
         }
 
         User.Role newRole = (userToUpdate.getPeran() == User.Role.Admin) ? User.Role.Client : User.Role.Admin;
-
         // Handle role change from Client to Admin
         if (userToUpdate.getPeran() == User.Role.Client && newRole == User.Role.Admin) {
             // Delete all related data
