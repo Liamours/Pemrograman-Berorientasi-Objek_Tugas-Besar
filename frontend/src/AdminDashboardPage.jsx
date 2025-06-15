@@ -14,12 +14,28 @@ function AdminDashboardPage() {
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const token = localStorage.getItem('token');
 
+  const confirmChange = () => {
+    document.getElementById("Change").style.width = "100%";
+  };
+
+  const cancelConfirmChange = () => {
+    document.getElementById("Change").style.width = "0%";
+  };
+
+  const confirmSave = () => {
+    document.getElementById("Save").style.width = "100%";
+  };
+
+  const cancelConfirmSave = () => {
+    document.getElementById("Save").style.width = "0%";
+  };
+
   const logout = () => {
-    document.getElementById("myNav").style.width = "100%";
+    document.getElementById("LogOut").style.width = "100%";
   };
 
   const cancelLogout = () => {
-    document.getElementById("myNav").style.width = "0%";
+    document.getElementById("LogOut").style.width = "0%";
   };
 
   const hapus = () => {
@@ -161,7 +177,7 @@ useEffect(() => {
       <div className="content">
         <nav className="sidebar">
           <ul><h2>Navigation</h2>
-            <li><a href="#"><i className="glyphicon glyphicon-cog"></i>Edit Barang</a></li>
+            <li><a href="/admin/gallery"><i className="glyphicon glyphicon-cog"></i>Edit Barang</a></li>
             <li><a style={{ cursor: "pointer" }} onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Log-out</a></li>
             <li><a style={{ color: "#ff0000", cursor: "pointer" }} onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</a></li>
           </ul>
