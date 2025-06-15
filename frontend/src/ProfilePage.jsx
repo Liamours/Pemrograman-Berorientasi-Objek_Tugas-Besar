@@ -171,7 +171,7 @@ function ProfilePage() {
             <button className="btn-confirm" onClick={cancelHapus}>Batal</button>
             <button className="btn-cancel" onClick={() => {
               fetch('http://localhost:8080/api/user/delete', {
-                method: 'PUT',
+                method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${localStorage.getItem('token')}`

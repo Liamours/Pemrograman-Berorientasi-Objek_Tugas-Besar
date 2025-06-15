@@ -143,7 +143,7 @@ useEffect(() => {
             <button className="btn-cancel" onClick={() => {
               const token = localStorage.getItem('token');
               fetch('http://localhost:8080/api/user/delete', {
-                method: 'PUT',
+                method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
