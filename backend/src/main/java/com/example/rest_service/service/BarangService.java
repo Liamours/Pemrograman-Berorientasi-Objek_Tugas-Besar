@@ -1,7 +1,6 @@
 package com.example.rest_service.service;
 
 import com.example.rest_service.dto.UpdateBarangRequest;
-import com.example.rest_service.dto.UpdateStockRequest;
 import com.example.rest_service.dto.BarangFilterRequest;
 import com.example.rest_service.model.Barang;
 import com.example.rest_service.repository.BarangRepository;
@@ -65,23 +64,6 @@ public class BarangService {
             return null; // Return null if the Barang with given ID does not exist
         }
     }
-
-    // Update only stock
-    public Barang updateStock(@Valid UpdateStockRequest request) {
-        Optional<Barang> optionalBarang = barangRepository.findById(request.getBarangId());
-
-        if (optionalBarang.isPresent()) {
-            Barang existingBarang = optionalBarang.get();
-            if (existingBarang.getStokBarang() == 0 && request.getStokBarang() < 0) {
-                throw new IllegalArgumentException("Stok barang tidak bisa negatif jika stok awal adalah 0");
-            }
-            existingBarang.setStokBarang(request.getStokBarang());
-            return barangRepository.save(existingBarang);
-        } else {
-            return null;
-        }
-    }
-
 
     public List<Barang> getFilteredBarang(BarangFilterRequest filterRequest) {
         // Ambil semua barang dari database

@@ -23,7 +23,6 @@ import com.example.rest_service.dto.BarangIdRequest;
 import com.example.rest_service.dto.DeletebyIDRequest;
 import com.example.rest_service.dto.NewBarangRequest;
 import com.example.rest_service.dto.UpdateBarangRequest;
-import com.example.rest_service.dto.UpdateStockRequest;
 import com.example.rest_service.model.Barang;
 import com.example.rest_service.service.BarangService;
 
@@ -174,23 +173,4 @@ public class BarangController {
                     .body(new ApiResponse(false, "Error updating product: " + e.getMessage(), null));
         }
     }
-
-
-    @PutMapping("/update/stock")
-    @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<ApiResponse> updateStock(@Valid @RequestBody UpdateStockRequest request) {
-        try {
-            Barang updatedBarang = barangService.updateStock(request);
-
-            if (updatedBarang != null) {
-                return ResponseEntity.ok(new ApiResponse(true, "Stock updated successfully", updatedBarang));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Barang not found"));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "Error updating stock: " + e.getMessage(), null));
-        }
-    }
-
 }
