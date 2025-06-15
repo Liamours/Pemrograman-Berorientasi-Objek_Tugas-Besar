@@ -92,7 +92,7 @@ public class BarangController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/detail")
+    @PostMapping("/detail")
     public ResponseEntity<ApiResponse> getBarangDetail(@RequestBody BarangIdRequest request) {
         // Ambil barang berdasarkan ID
         Barang barang = barangService.getBarangById(request.getBarangId());

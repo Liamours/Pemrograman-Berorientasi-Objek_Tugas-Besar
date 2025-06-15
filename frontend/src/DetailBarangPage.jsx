@@ -6,34 +6,58 @@ const ProductCard = () => {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    const id = localStorage.getItem('id_barang');
-    fetch('http://localhost:8080/api/user/profile/update', {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json',},
+    // const id = localStorage.getItem('id_barang');
+    const barang_id = 1;
+    fetch('http://localhost:8080/barang/detail', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id
+        barang_id
       })
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json(); // Parse the response as JSON
+      })
       .then(data => {
-        if (data.status) {
+        if (data && data.success) {
+          console.log('Fetched product:', data.data);
           setProduct(data.data);
         } else {
           console.error("Failed to fetch product details:", data.message);
         }
       })
-      .catch(err => console.error("Fetch error:", err));
+      .catch(err => {
+        // Log any errors, such as network issues or unexpected response format
+        console.error("Fetch error:", err);
+        alert("An error occurred while fetching product details.");
+      });
   }, []);
 
+
   const handleIncrease = () => {
-    if (product && quantity < product.stokBarang) {
-      setQuantity(quantity + 1);
+    if (product && quantity < product.stock) {
+      setQuantity(prevQuantity => {
+        const newQuantity = prevQuantity + 1;
+        console.log('Increasing quantity:', newQuantity);
+        return newQuantity;
+      });
+    } else {
+      console.log('Cannot increase: Maximum stock reached');
     }
   };
 
   const handleDecrease = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
+      setQuantity(prevQuantity => {
+        const newQuantity = prevQuantity - 1;
+        console.log('Decreasing quantity:', newQuantity);
+        return newQuantity;
+      });
+    } else {
+      console.log('Cannot decrease: Minimum quantity reached');
     }
   };
 
@@ -43,6 +67,7 @@ const ProductCard = () => {
 
   const price = product.harga;
   const subtotal = price * quantity;
+  console.log('Subtotal:', subtotal);
 
   return (
     <div className='detail-barang'>
@@ -55,26 +80,38 @@ const ProductCard = () => {
         <div className="product-card">
           <div className="product-info">
             <img 
-              src={product.imageUrl || "/images/grownncheer_logo.png"}
-              alt={product.namaBarang}
+              src={product.image_url || "/images/grownncheer_logo.png"}
+              alt={product.nama_barang}
               className="product-image"
             />
             <div className="product-details">
-              <h1 className="product-title">{product.namaBarang}</h1>
+              <h1 className="product-title">{product.nama_barang}</h1>
               <p className="product-price">Rp {price.toLocaleString()}</p>
               <p className="product-description">
-                {product.deskripsiBarang}
+                {product.deskripsi_barang}
               </p>
               <div className="quantity-section">
-                <button className="quantity-btn" onClick={handleDecrease}>-</button>
+                <button 
+                  className="quantity-btn" 
+                  onClick={handleDecrease}
+                  disabled={quantity <= 1}
+                >
+                  -
+                </button>
                 <span className="quantity">{quantity}</span>
-                <button className="quantity-btn" onClick={handleIncrease}>+</button>
+                <button 
+                  className="quantity-btn" 
+                  onClick={handleIncrease}
+                  disabled={quantity >= product.stokBarang}
+                >
+                  +
+                </button>
               </div>
               <div className="subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
               </div>
               <button className="add-to-cart-btn">Tambah ke Keranjang</button>
-              <p className="category">Kategori: {product.tipeBarang}</p>
+              <p className="category">Kategori: {product.tipe_barang_id}</p>
             </div>
           </div>
         </div>
