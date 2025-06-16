@@ -1,7 +1,7 @@
-package com.example.backend.controller;
+// package com.example.backend.controller;
 
-import com.example.backend.model.Barang;
-import com.example.backend.repository.BarangRepository;
+// import com.example.backend.model.Barang;
+// import com.example.backend.repository.BarangRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
