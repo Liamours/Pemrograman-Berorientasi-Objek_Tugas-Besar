@@ -27,7 +27,6 @@ public class OrderController {
             @RequestBody OrderRequest request
     ) {
         Long userId = validateTokenAndGetUserId(authHeader);
-        System.out.println("USNNNNNNNNNNNNNNNNN " +userId);
         return orderService.addOrder(
                 userId,
                 request.getBarangId(),
@@ -53,7 +52,6 @@ public class OrderController {
             try {
                 // Coba dapatkan username dari token
                 String username = jwtTokenUtil.extractUsername(token);
-                System.out.println("USNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"+username);
                 if (username != null) {
                     // Cari user ID dari database berdasarkan username
                     User user = userRepository.findByEmail(username)
