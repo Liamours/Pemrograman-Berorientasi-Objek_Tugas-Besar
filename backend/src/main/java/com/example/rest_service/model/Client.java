@@ -1,38 +1,68 @@
 package com.example.rest_service.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "client")
-public class Client {
+@DiscriminatorValue("Client")
+public class Client extends User {
 
-    @Id
-    @Column(name = "user_id")
-    private Long id;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private ClientDetail clientDetail;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Keranjang> keranjangs;
 
-    @Column(nullable = false)
-    private boolean ismember;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
 
-    @Lob
-    @Column(nullable = true) // Explicitly allow null
-    private String alamat;
+    // Constructors
+    public Client() {
+        super();
+    }
 
-    public Client() {}
+    public Client(String namaUser, String email, String password) {
+        super(namaUser, email, password);
+        this.setPeran(Role.Client);
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Client(String namaUser, String email, String password, boolean isMember, String alamat) {
+        super(namaUser, email, password);
+        this.setPeran(Role.Client);
+        this.clientDetail = new ClientDetail(isMember, alamat);
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    // Getters and Setters
+    public ClientDetail getClientDetails() { return clientDetail; }
+    public void setClientDetails(ClientDetail clientDetails) { this.clientDetail = clientDetails; }
 
-    public boolean isIsmember() { return ismember; }
-    public void setIsmember(boolean ismember) { this.ismember = ismember; }
+    public List<Keranjang> getKeranjangs() { return keranjangs; }
+    public void setKeranjangs(List<Keranjang> keranjangs) { this.keranjangs = keranjangs; }
 
-    public String getAlamat() { return alamat; }
-    public void setAlamat(String alamat) { this.alamat = alamat; }
+    public List<Order> getOrders() { return orders; }
+    public void setOrders(List<Order> orders) { this.orders = orders; }
+
+    // Convenience methods
+    public boolean isMember() {
+        return clientDetail != null ? clientDetail.isIsmember() : false;
+    }
+
+    public void setMember(boolean member) {
+        if (clientDetail == null) {
+            clientDetail = new ClientDetail();
+        }
+        clientDetail.setIsmember(member);
+    }
+
+    public String getAlamat() {
+        return clientDetail != null ? clientDetail.getAlamat() : null;
+    }
+
+    public void setAlamat(String alamat) {
+        if (clientDetail == null) {
+            clientDetail = new ClientDetail();
+        }
+        clientDetail.setAlamat(alamat);
+    }
 }
