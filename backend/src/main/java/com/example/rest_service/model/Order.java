@@ -37,6 +37,7 @@ public class Order {
     @JoinColumn(name = "keranjang_id")
     private Keranjang keranjang;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

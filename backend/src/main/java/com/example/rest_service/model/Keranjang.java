@@ -13,7 +13,7 @@ public class Keranjang {
     private Integer keranjangId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id",unique = true)
     private User user;
 
 
