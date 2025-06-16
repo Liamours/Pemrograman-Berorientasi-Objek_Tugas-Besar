@@ -64,17 +64,30 @@ const ShoppingCart = () => {
         <a onClick={() => navigate('/profile')}>Profil</a>
         <hr />
       </div>
-
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
       <header className="gallery-admin-header">
         <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
         <div className="gallery-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
-
       <div className="contain-keranjang">
         {orders.length === 0 ? (
-          <p>Keranjang kosong.</p>
+          <div className="order-container">
+            <table className="cart-table">
+                <thead>
+                  <tr>
+                    <th>Pilih</th>
+                    <th>Produk</th>
+                    <th>Harga Satuan</th>
+                    <th>Kuantitas</th>
+                    <th>Total Harga</th>
+                    <th style={{ textAlign:"right" }}>Hapus</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            <p style={{ justifySelf:"center" }} >Keranjang kosong.</p>
+          </div>
         ) : (
           orders.map((order) => (
             <div key={order.orderId} className="order-container">
@@ -92,6 +105,13 @@ const ShoppingCart = () => {
                   {order.barang.map((item, idx) => (
                     <tr key={idx}>
                       <td>
+                        <input
+                          type="checkbox"
+                          value="true"
+                        >
+                        </input>
+                      </td>
+                      <td>
                         <img
                           src={`https://via.placeholder.com/100?text=Product+${item.barangId}`}
                           alt={`Produk ${item.barangId}`}
@@ -102,6 +122,9 @@ const ShoppingCart = () => {
                       <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
                       <td>{item.jumlahBarang}</td>
                       <td>{`Rp ${(item.hargaPerUnit * item.jumlahBarang).toLocaleString("id-ID")}`}</td>
+                      <td>
+                        <span style={{ color:"red",fontSize:"20px" }} className="glyphicon glyhicon-remove"></span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -110,12 +133,11 @@ const ShoppingCart = () => {
             </div>
           ))
         )}
-
         <div className="cart-summary">
           <p>Subtotal: Rp {totalPrice.toLocaleString("id-ID")}</p>
           <p>Potongan: Rp 0</p>
           <h2>Total: Rp {totalPrice.toLocaleString("id-ID")}</h2>
-          <button className="btn-checkout">Checkout</button>
+          <button className="btn-checkout" onClick={() => (navigate("/checkout"))}>Checkout</button>
         </div>
       </div>
     </div>
