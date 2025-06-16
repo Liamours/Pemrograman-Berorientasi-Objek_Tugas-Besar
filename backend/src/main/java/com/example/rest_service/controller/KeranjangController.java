@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -58,13 +59,13 @@ public class KeranjangController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<String> checkout(
+    public ResponseEntity<Map<String, String>> checkout(
             @RequestHeader("Authorization") String token,
             @RequestBody List<Integer> orderIds
     ) {
         Long userId = validateToken(token);
         cartService.checkout(userId, orderIds);
-        return ResponseEntity.ok("Checkout berhasil!");
+        return ResponseEntity.ok(Map.of("message", "Checkout berhasil")); // Mengembalikan {"message": "..."}
     }
 
     private Long validateToken(String authHeader) {
