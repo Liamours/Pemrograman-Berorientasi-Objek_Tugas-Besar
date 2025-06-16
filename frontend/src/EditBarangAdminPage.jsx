@@ -105,28 +105,22 @@ const ProductCardAdmin = () => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          barang_id: editableProduct.barang_id,
+          barang_id: barang_id,
           nama_barang: editableProduct.nama_barang,
           deskripsi_barang: editableProduct.deskripsi_barang,
           harga: editableProduct.harga,
-          tipe_barang_id: editableProduct.tipe_barang_id,
+          tipe_barang: editableProduct.tipe_barang_id,
           image_url: editableProduct.image_url,
           stok_barang: editableProduct.stock
         })
       });
 
       const data = await response.json();
-      let jsonData = {};
-      try {
-        jsonData = JSON.parse(data);
-      } catch (error) {
-        console.error('Error parsing JSON:', error);
-      }
 
-      if (response.ok) {
+      if (response.ok && data.success) {
         alert("Product updated successfully!");
       } else {
-        alert("Error: " + (jsonData.message || 'Failed to update product'));
+        alert("Error: " + (data.message || 'Failed to update product'));
       }
     } catch (error) {
       console.error('Error updating product:', error);
@@ -201,14 +195,16 @@ const ProductCardAdmin = () => {
               <p className="detailbarang-admin-category">
                 Kategori:
                 <select
-                  name="tipe_barang_id"
-                  value={editableProduct.tipe_barang_id}
-                  onChange={handleChange}
-                >
-                  <option value="Makanan">Makanan</option>
-                  <option value="Minuman">Minuman</option>
-                  <option value="Hygine">Hygine</option>
-                </select>
+                    name="tipe_barang_id"
+                    value={editableProduct.tipe_barang_id}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">-- Pilih Kategori --</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
+                    <option value="Hygine">Hygine</option>
+                  </select>
               </p>
               <p className="detailbarang-admin-stock">
                 Stok Barang:
@@ -252,7 +248,7 @@ const ProductCardAdmin = () => {
                         if (data.success) {
                           localStorage.removeItem('selectedProductId');
                           navigate('/admin/gallery');
-                        }else {
+                        } else {
                           alert(data.message);
                         }
                       }
