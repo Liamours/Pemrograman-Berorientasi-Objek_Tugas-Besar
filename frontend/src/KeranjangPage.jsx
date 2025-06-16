@@ -19,23 +19,33 @@ const ShoppingCart = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/order/add", {
-      method: "POST",
+    fetch("http://localhost:8080/api/cart", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        token
-      }),
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("Fetched orders:", data);
         if (data.orders) {
-          setOrders(data.orders);
-          setTotalPrice(data.totalPrice);
+          const grouped = data.orders.reduce((acc, item) => {
+            if (!acc[item.orderId]) {
+              acc[item.orderId] = {
+                orderId: item.orderId,
+                tanggal: item.tanggal,
+                barang: [],
+              };
+            }
+            acc[item.orderId].barang.push(item);
+            return acc;
+          }, {});
+          const groupedOrders = Object.values(grouped);
+          setOrders(groupedOrders);
+          setTotalPrice(data.totalPrice || 0);
         } else {
-          console.error("Failed to fetch orders.");
+          console.error("Failed to fetch orders");
         }
       })
       .catch((err) => {
@@ -47,59 +57,60 @@ const ShoppingCart = () => {
     <div className="gallery-admin-container" id="main">
       <div id="Sidebar" className="gallery-admin-sidenav">
         <a onClick={() => navigate('/gallery')}>Home</a>
-        <hr></hr>
+        <hr />
         <a style={{ cursor: "pointer" }} className="closebtn" onClick={closeSidebar}>&times;</a>
         <a onClick={closeSidebar}>Keranjang</a>
-        <hr></hr>
+        <hr />
         <a onClick={() => navigate('/profile')}>Profil</a>
-        <hr></hr>
+        <hr />
       </div>
+
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
       <header className="gallery-admin-header">
         <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
         <div className="gallery-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
+
       <div className="contain-keranjang">
-        <table className="cart-table">
-          <thead>
-            <tr>
-              <th>Pilih</th>
-              <th>Produk</th>
-              <th>Harga Satuan</th>
-              <th>Kuantitas</th>
-              <th>Total Harga</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.orderId}>
-                <td>
-                  <img
-                    src={`https://via.placeholder.com/100?text=Product+${order.barangId}`}
-                    alt={`Produk ${order.barangId}`}
-                    className="product-image"
-                  />
-                </td>
-                <td>{`Rp ${order.hargaPerUnit.toLocaleString("id-ID")}`}</td>
-                <td>
-                  <div className="quantity-control">
-                    <button className="btn-quantity">-</button>
-                    <span>{order.jumlahBarang}</span>
-                    <button className="btn-quantity">+</button>
-                  </div>
-                </td>
-                <td>
-                  {`Rp ${(order.hargaPerUnit * order.jumlahBarang).toLocaleString("id-ID")}`}
-                </td>
-                <td>
-                  <button className="btn-remove">×</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {orders.length === 0 ? (
+          <p>Keranjang kosong.</p>
+        ) : (
+          orders.map((order) => (
+            <div key={order.orderId} className="order-container">
+              <h3>Order #{order.orderId} - {order.tanggal}</h3>
+              <table className="cart-table">
+                <thead>
+                  <tr>
+                    <th>Produk</th>
+                    <th>Harga Satuan</th>
+                    <th>Kuantitas</th>
+                    <th>Total Harga</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.barang.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <img
+                          src={`https://via.placeholder.com/100?text=Product+${item.barangId}`}
+                          alt={`Produk ${item.barangId}`}
+                          className="product-image"
+                        />
+                        <span>{item.nama}</span>
+                      </td>
+                      <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
+                      <td>{item.jumlahBarang}</td>
+                      <td>{`Rp ${(item.hargaPerUnit * item.jumlahBarang).toLocaleString("id-ID")}`}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <hr />
+            </div>
+          ))
+        )}
+
         <div className="cart-summary">
           <p>Subtotal: Rp {totalPrice.toLocaleString("id-ID")}</p>
           <p>Potongan: Rp 0</p>
