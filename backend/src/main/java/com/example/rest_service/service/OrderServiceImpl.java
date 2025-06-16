@@ -22,7 +22,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Barang tidak ditemukan"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
-        Keranjang keranjang = keranjangRepository.findByUser_Id(userId)
+        Keranjang keranjang = keranjangRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Keranjang tidak ditemukan"));
 
         Order order = new Order();
