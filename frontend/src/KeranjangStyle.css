@@ -23,7 +23,7 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.header {
+.keranjang-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,18 +32,8 @@ body {
   padding: 5px 10px;
 }
 
-.logo {
+.keranjang-location {
   font-family: 'Poppins';
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.location {
-  font-family: 'Poppins';
-  font-size: 14px;
-}
-
-.cart {
   font-size: 14px;
 }
 

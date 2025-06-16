@@ -65,7 +65,7 @@ const ShoppingCart = () => {
         <hr />
       </div>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-      <header className="gallery-admin-header">
+      <header className="keranjang-header">
         <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
         <div className="gallery-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />

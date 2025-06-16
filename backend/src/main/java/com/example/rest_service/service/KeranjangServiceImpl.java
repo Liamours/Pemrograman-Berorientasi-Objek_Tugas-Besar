@@ -25,15 +25,21 @@ public class KeranjangServiceImpl implements KeranjangService {
     public CartDTO getCartByUser(Long userId) {
         Keranjang k = krRepo.findByUser_Id(userId)
                 .orElseThrow(() -> new RuntimeException("Keranjang not found"));
+
         List<OrderDTO> dtos = orRepo.findByKeranjangKeranjangId(k.getKeranjangId())
-                .stream().map(this::toDTO).collect(Collectors.toList());
+                .stream()
+                .filter(order -> order.getStatusOrder() == StatusOrder.Pending) // Hanya order pending
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+
         BigDecimal total = dtos.stream()
                 .map(o -> BigDecimal.valueOf(o.getHargaPerUnit())
                         .multiply(BigDecimal.valueOf(o.getJumlahBarang())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         CartDTO cart = new CartDTO();
         cart.setOrders(dtos);
-
+        cart.setTotal(total.doubleValue()); // Tambahkan total jika diperlukan
         return cart;
     }
 
