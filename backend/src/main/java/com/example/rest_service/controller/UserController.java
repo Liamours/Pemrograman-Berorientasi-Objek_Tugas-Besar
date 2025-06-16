@@ -109,6 +109,18 @@ public class UserController{
         }
     }
 
-    
+    @PutMapping("/member")
+    @PreAuthorize("hasRole('Client')")
+    public ResponseEntity<ApiResponse> upgradeToMember(Authentication authentication) {
+        try {
+            userService.upgradeToMember(authentication.getName());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Upgraded to member successfully")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "Upgrade failed: " + e.getMessage()));
+        }
+    }
 
 }
