@@ -18,6 +18,27 @@ const ShoppingCart = () => {
     document.getElementById("main").style.marginLeft = "0";
   };
 
+  // Fetch detail barang per barangId
+  const fetchNamaBarang = async (barangId) => {
+    try {
+      const response = await fetch("http://localhost:8080/barang/detail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ barang_id: barangId })
+      });
+      const data = await response.json();
+      if (data.success) {
+        return {
+          nama_barang: data.data.nama_barang,
+          image_url: data.data.image_url
+        };
+      }
+    } catch (err) {
+      console.error("Error fetching detail for barangId", barangId, err);
+    }
+    return { nama_barang: "Tidak Diketahui", image_url: null };
+  };
+
   useEffect(() => {
     fetch("http://localhost:8080/api/cart", {
       method: "GET",
@@ -27,8 +48,7 @@ const ShoppingCart = () => {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched orders:", data);
+      .then(async (data) => {
         if (data.orders) {
           const grouped = data.orders.reduce((acc, item) => {
             if (!acc[item.orderId]) {
@@ -42,6 +62,16 @@ const ShoppingCart = () => {
             return acc;
           }, {});
           const groupedOrders = Object.values(grouped);
+
+          // Lengkapi setiap barang dengan nama dan image
+          for (let order of groupedOrders) {
+            for (let item of order.barang) {
+              const detail = await fetchNamaBarang(item.barangId);
+              item.nama_barang = detail.nama_barang;
+              item.image_url = detail.image_url;
+            }
+          }
+
           setOrders(groupedOrders);
           setTotalPrice(data.totalPrice || 0);
         } else {
@@ -70,10 +100,30 @@ const ShoppingCart = () => {
         <div className="gallery-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
+
       <div className="contain-keranjang">
         {orders.length === 0 ? (
           <div className="order-container">
             <table className="cart-table">
+              <thead>
+                <tr>
+                  <th>Pilih</th>
+                  <th>Produk</th>
+                  <th>Harga Satuan</th>
+                  <th>Kuantitas</th>
+                  <th>Total Harga</th>
+                  <th style={{ textAlign:"right" }}>Hapus</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <p style={{ justifySelf:"center" }} >Keranjang kosong.</p>
+          </div>
+        ) : (
+          orders.map((order) => (
+            <div key={order.orderId} className="order-container">
+              <h3>Order #{order.orderId} - {order.tanggal}</h3>
+              <table className="cart-table">
                 <thead>
                   <tr>
                     <th>Pilih</th>
@@ -84,46 +134,25 @@ const ShoppingCart = () => {
                     <th style={{ textAlign:"right" }}>Hapus</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
-              </table>
-            <p style={{ justifySelf:"center" }} >Keranjang kosong.</p>
-          </div>
-        ) : (
-          orders.map((order) => (
-            <div key={order.orderId} className="order-container">
-              <h3>Order #{order.orderId} - {order.tanggal}</h3>
-              <table className="cart-table">
-                <thead>
-                  <tr>
-                    <th>Produk</th>
-                    <th>Harga Satuan</th>
-                    <th>Kuantitas</th>
-                    <th>Total Harga</th>
-                  </tr>
-                </thead>
                 <tbody>
                   {order.barang.map((item, idx) => (
                     <tr key={idx}>
                       <td>
-                        <input
-                          type="checkbox"
-                          value="true"
-                        >
-                        </input>
+                        <input type="checkbox" value="true" />
                       </td>
                       <td>
                         <img
-                          src={`https://via.placeholder.com/100?text=Product+${item.barangId}`}
+                          src={item.image_url || "/images/grownncheer_logo.png"}
                           alt={`Produk ${item.barangId}`}
                           className="product-image"
                         />
-                        <span>{item.nama}</span>
+                        <span>{item.nama_barang}</span>
                       </td>
                       <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
                       <td>{item.jumlahBarang}</td>
                       <td>{`Rp ${(item.hargaPerUnit * item.jumlahBarang).toLocaleString("id-ID")}`}</td>
                       <td>
-                        <span style={{ color:"red",fontSize:"20px" }} className="glyphicon glyhicon-remove"></span>
+                        <span style={{ color:"red",fontSize:"20px" }} className="glyphicon glyphicon-remove"></span>
                       </td>
                     </tr>
                   ))}
