@@ -62,7 +62,7 @@ const TambahBarang = () => {
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
       <div id="Sidebar" className="tambah-barang-sidenav">
         <a style={{ cursor: "pointer" }} className="closebtn" onClick={closeSidebarTambahBarang}>&times;</a>
-        <a onClick={closeSidebarTambahBarang}>Daftar Barang</a>
+        <a onClick={() => navigate('/admin/gallery')}>Daftar Barang</a>
         <hr></hr>
         <a onClick={() => navigate('/tambahBarang')}>Tambah Barang</a>
         <hr></hr>

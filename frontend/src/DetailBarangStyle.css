@@ -7,7 +7,7 @@ body {
 .detail-barang {
   display:flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: auto;
   background-color: #C1F3C8;
 }
 
@@ -45,7 +45,7 @@ body {
   justify-self: center;
   background-color: white;
   width: 75%;
-  height: 80vh;
+  height: 90vh;
   padding: 20px;
   margin: 20px;;
   border-radius: 10px;
@@ -64,8 +64,8 @@ body {
   min-height: min-content;
   width: 300px;
   height: 300px;
-  border-style:solid;
-  margin-right: 100px;
+  border:solid;
+  margin: 0px 50px;
 }
 
 .detailbarang-product-details {

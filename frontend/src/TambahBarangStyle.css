@@ -5,7 +5,7 @@ body {
 
 .tambah-barang-page {
   background-color: #C1F3C8;
-  height: auto;
+  height: 100vh;
 }
 
 .tambah-barang-input-group {
@@ -103,7 +103,7 @@ body {
 }
 
 .tambah-barang-main {
-  width: 100vh;
+  min-width: 100vh;
   margin-top: 20px;
   padding: 20px;
   border-radius: 8px;

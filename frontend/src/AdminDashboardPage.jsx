@@ -272,7 +272,6 @@ useEffect(() => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <address htmlFor="address">Alamat</address>
               <label htmlFor="email">Email</label>
               <div className="hanya info" id="email">
                 {email}

@@ -1,9 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import './DetailBarangStyle.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = () => {
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
+  const navigate = useNavigate();
+
+
+  const tambahBarangKeranjang = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/order/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          barang_id: product.barang_id,
+          jumlah_barang: quantity,
+        })
+      });
+      console.log('Response status:',product.barang_id, quantity);
+
+      const data = await response.json();
+      if (data.success) {
+        console.log('Product added to cart:', data.data);
+        
+      } else {
+        console.error("Failed to add product to cart:", data.message);
+        alert("Gagal menambahkan barang ke keranjang.");
+      }
+    } catch (error) {
+      console.error("Error saat menambahkan barang:", error);
+      alert("Terjadi kesalahan saat menambahkan barang.");
+    }
+  };
+
 
   useEffect(() => {
     const barang_id = localStorage.getItem('selectedProductId');
@@ -70,8 +103,10 @@ const ProductCard = () => {
   return (
     <div className='detail-barang'>
       <header className="detailbarang-header">
-        <div className="detailbarang-logo">G & C</div>
-        <div className="detailbarang-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-menu-left" onClick={() => (navigate('/gallery'))}></span>
+        <div className="gallery-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
       <div className='detailbarang-detail-content'>
         <div className="detailbarang-product-card">
@@ -111,7 +146,7 @@ const ProductCard = () => {
               <div className="detailbarang-subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
               </div>
-              <button className="detailbarang-add-to-cart-btn">Tambah ke Keranjang</button>
+              <button className="detailbarang-add-to-cart-btn" onClick={tambahBarangKeranjang}>Tambah ke Keranjang</button>
               <p className="detailbarang-category">Kategori: {product.tipe_barang_id}</p>
             </div>
           </div>
