@@ -1,0 +1,145 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.gallery-container {
+  margin: 0 auto;
+  background-color: #C1F3C8;
+  background-repeat: repeat;
+  min-height: 100vh;
+}
+
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4caf50;
+  color: white;
+  padding: 5px 10px;
+}
+
+.gallery-location {
+  font-family: 'arial';
+  font-size: 14px;
+}
+
+.gallery-grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.gallery-product-card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  justify-self: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  width: 35vh;
+  display: flex;
+  justify-content: space-between;
+  height: 150px;
+}
+
+.gallery-product-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-style: solid;
+  align-self: center;
+  margin-left: 10px;
+}
+
+.gallery-product-info {
+  width: 150px;
+  display: block;
+  padding: 1rem;
+  text-align: center;
+  align-content: center;
+}
+
+.gallery-product-name {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.gallery-product-price {
+  color: #38a169;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.gallery-sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  padding-top: 60px;
+  border-style: solid;
+}
+
+.gallery-sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.gallery-sidenav a:hover {
+  color: black;
+  font-style: bold;
+}
+
+.gallery-sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.gallery-search-container {
+  margin-left: 20px;
+  width: 100vh;
+  justify-self: left;
+  height: 75px;
+  align-content: center;
+}
+
+.gallery-search-container input{
+  background-color: white;
+  border: solid;
+  border-color: black;
+  color: black;
+  padding: 5px;
+  text-align: left;
+  display: inline-block;
+  font-size: 16px;
+}
+.gallery-search-container select{
+  background-color: white;
+  border: solid;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  height: 37px;
+  margin: 5px;
+}
+

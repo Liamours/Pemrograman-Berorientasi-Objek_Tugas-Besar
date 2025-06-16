@@ -5,54 +5,152 @@ import { useNavigate } from 'react-router-dom';
 function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [memberNumber, setMemberNumber] = useState("");
+  const [member, setMember] = useState("");
+  const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const token = localStorage.getItem('token');
+  const [notification, setNotification] = useState({
+    show: false,
+    message: ''
+  });
   const navigate = useNavigate();
 
-useEffect(() => {
-  const token = localStorage.getItem('token');
-  console.log("Token dari localStorage:", token);
-
-  if (!token) {
-    setName("Token tidak ditemukan");
-    setEmail("Token tidak ditemukan");
-    setMemberNumber("Token tidak ditemukan");
-    return;
-  }
-
-  fetch('http://localhost:8080/api/user/profile', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`
+  const openBeliMemberPopup = () => {
+    const isMember = localStorage.getItem('isMember') === 'true'; 
+    if (isMember) {
+      document.getElementById("SudahMemberPopup").style.width = "100%";
+    } else {
+      document.getElementById("BeliMemberPopup").style.width = "100%";
     }
-  })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`Error: ${res.status} ${res.statusText}`);
-      }
-      return res.json();
-    })
-    .then(data => {
-      if (data.name && data.email && data.id) {
-        setName(data.name);
-        setEmail(data.email);
-        setMemberNumber(data.id.toString());
-      } else {
-        setName("data tidak ditemukan");
-        setEmail("data tidak ditemukan");
-        setMemberNumber("data tidak ditemukan");
-      }
-    })
-    .catch((err) => {
-      console.error("Fetch error:", err);
-      setName("Token gagal");
-      setEmail("Token gagal");
-      setMemberNumber("Token gagal");
-    });
-}, []);
+  };
 
+  const cancelBeliMember = () => {
+    document.getElementById("BeliMemberPopup").style.width = "0%";
+  };
+
+  const closeSudahMemberPopup = () => {
+    document.getElementById("SudahMemberPopup").style.width = "0%";
+  };
+
+  const handleBeliMember = () => {
+    fetch('http://localhost:8080/api/user/member', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('token')
+      })
+    });
+
+    setMember("Yes");
+    localStorage.setItem('isMember', 'true');
+    document.getElementById("BeliMemberPopup").style.width = "0%";
+    showNotification("Anda telah menjadi member!");
+  };
+
+
+  const showNotification = (message) => {
+    setNotification({ show: true, message });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 5000); 
+  };
+
+  const Notification = ({ message, onClose }) => {
+    return (
+      <div style={{ backgroundColor:"#dca42b", border:"solid" }}className="notification">
+        <span>{message}</span>
+        <span className="close-btn" onClick={onClose}>×</span>
+      </div>
+    );
+  };
+
+  const sidebar = () => {
+    document.getElementById("Sidebar").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+  };
+
+  const closeSidebar = () => {
+    document.getElementById("Sidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+  };
+
+  const confirmChange = () => {
+    document.getElementById("Change").style.width = "100%";
+  };
+
+  const cancelConfirmChange = () => {
+    document.getElementById("Change").style.width = "0%";
+  };
+
+  const confirmSave = () => {
+    document.getElementById("Save").style.width = "100%";
+  };
+
+  const cancelConfirmSave = () => {
+    document.getElementById("Save").style.width = "0%";
+  };
+
+  const logout = () => {
+    document.getElementById("LogOut").style.width = "100%";
+  };
+
+  const cancelLogout = () => {
+    document.getElementById("LogOut").style.width = "0%";
+  };
+
+  const hapus = () => {
+    document.getElementById("Hapus").style.width = "100%";
+  };
+
+  const cancelHapus = () => {
+    document.getElementById("Hapus").style.width = "0%";
+  };
+
+  useEffect(() => {
+    console.log("Token dari localStorage:", token);
+
+    fetch('http://localhost:8080/api/user/profile/client', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.data.name && data.data.email && data.data.id) {
+          setName(data.data.name);
+          setEmail(data.data.email);
+          setAddress(data.data.address);
+          if (data.data.isMember == true){
+            setMember("Yes");
+            localStorage.setItem('isMember', 'true');
+          }else {
+            setMember("No")
+            localStorage.setItem('isMember', 'false');
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        navigate('/login');
+      });
+  }, []);
 
   const handleSaveAccountSettings = () => {
     fetch('http://localhost:8080/api/user/profile/update', {
@@ -63,20 +161,22 @@ useEffect(() => {
       },
       body: JSON.stringify({
         name,
-        email
+        email,
+        address
       })
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert("Perubahan akun berhasil disimpan!");
+          showNotification("Perubahan akun berhasil disimpan!");
         } else {
-          alert(data.message || "Gagal menyimpan perubahan akun.");
+          showNotification(data.message || "Gagal menyimpan perubahan akun.");
         }
       })
       .catch(() => {
-        alert("Terjadi kesalahan saat menghubungi server.");
+        showNotification("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmSave();
   };
 
   const handleChangePassword = () => {
@@ -85,51 +185,144 @@ useEffect(() => {
       return;
     }
 
-    fetch('http://localhost:8080/api/user/profile/change-password', {
-      method: 'PUT', // ganti dari PUSH ke PUT
+    fetch('http://localhost:8080/api/user/password/change', {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({
         currentPassword,
-        newPassword
+        newPassword,
+        confirmPassword
       })
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert("Password berhasil diubah!");
+          showNotification("Password berhasil diubah!");
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
         } else {
-          alert(data.message || "Gagal mengubah password.");
+          showNotification(data.message || "Gagal mengubah password.");
         }
       })
       .catch(() => {
-        alert("Terjadi kesalahan saat menghubungi server.");
+        showNotification("Terjadi kesalahan saat menghubungi server.");
       });
+    cancelConfirmChange();
   };
 
   return (
-    <div className="account-settings">
-      <header className="header">
-        <div className="logo">G & C</div>
-        <div className="location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
-        <div className="cart">Keranjang: Rp 100.000</div>
+    <div className="profile-page">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+      {notification.show && (
+        <Notification 
+          message={notification.message} 
+          onClose={() => setNotification({ show: false, message: '' })}
+        />
+      )}
+      <div id="Sidebar" className="profile-sidenav">
+        <a style={{ cursor:"pointer" }} className= "closebtn" onClick={closeSidebar}>&times;</a>
+        <a onClick={() => navigate('/gallery')}>Home</a>
+        <a onClick={() => navigate('/keranjang')}>Keranjang</a>
+        <a onClick={() => navigate('/profile')}>Profil</a>
+        <a style={{ cursor: "pointer" }} onClick={openBeliMemberPopup}>Beli Member</a>
+        <div id="BeliMemberPopup" className="profile-overlay">
+          <div className="profile-popup-container">
+            <h2>Beli Member</h2>
+            <p>Rp. 10.000.000 untuk seumur hidup</p>
+            <div className="profile-popup-actions">
+              <button className="profile-btn-cancel" onClick={cancelBeliMember}>Batal</button>
+              <button className="profile-btn-confirm" onClick={handleBeliMember}>Terima</button>
+            </div>
+          </div>
+        </div>
+        <div id="SudahMemberPopup" className="profile-overlay">
+          <div className="profile-popup-container">
+            <h2>Anda Sudah Member</h2>
+            <p>Anda Tidak Perlu Lagi Membeli Member</p>
+            <div className="profile-popup-actions">
+              <button className="profile-btn-confirm" onClick={closeSudahMemberPopup}>Tutup</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div id="LogOut" className="profile-overlay">
+        <div className="profile-popup-container">
+          <h2>Yakin Ingin Keluar?</h2>
+          <p>Anda perlu login lagi jika sudah keluar</p>
+          <div className="profile-popup-actions">
+            <button className="profile-btn-cancel" onClick={cancelLogout}>Batal</button>
+            <button className="profile-btn-confirm" onClick={() => {
+              localStorage.removeItem("token");
+              navigate('/login');
+            }}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Hapus" className="profile-overlay">
+        <div className="profile-popup-container">
+          <h2>Yakin Ingin Hapus Akun?</h2>
+          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
+          <div className="profile-popup-actions">
+            <input type="password" placeholder='Password akun anda' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <button className="profile-btn-cancel" onClick={cancelHapus}>Batal</button>
+            <button className="profile-btn-confirm" onClick={async () => {
+              const response = await fetch('http://localhost:8080/api/user/delete', {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  password: password
+                })
+              });
+              const data = await response.json();
+              if (response.ok) {
+                if (data.success) {
+                  localStorage.removeItem("token");
+                  navigate('/login');
+                }else {
+                  alert(data.message);
+                }
+              }
+            }}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Change" className="profile-overlay">
+        <div className="profile-popup-container">
+          <h2>Yakin Ingin Ubah Password?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div className="profile-popup-actions">
+            <button className="profile-btn-cancel" onClick={cancelConfirmChange}>Batal</button>
+            <button className="profile-btn-confirm" onClick={handleChangePassword}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Save" className="profile-overlay">
+        <div className="profile-popup-container">
+          <h2>Yakin Ingin Simpan Perubahan?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div className="profile-popup-actions">
+            <button className="profile-btn-cancel" onClick={cancelConfirmSave}>Batal</button>
+            <button className="profile-btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <header className="profile-header">
+        <span style={{ cursor:"pointer",fontSize:"40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
+        <div className="profile-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <img style={{ width:"100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
-      <div className="content">
-        <nav className="sidebar">
-          <ul>
-            <li><a href="#">Shopping Cart</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Log-out</a></li>
-          </ul>
-        </nav>
-        <main className="main">
-          <div className="card">
-            <h2>Setting Akun</h2>
+      <div className="profile-content">
+        <main id="main" className="profile-main">
+          <div className="profile-card">
+            <h2>Informasi Akun</h2>
             <form>
               <label htmlFor="name">Nama</label>
               <input
@@ -138,24 +331,25 @@ useEffect(() => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label htmlFor="member-number">Nomor Member</label>
+              <address htmlFor="address">Alamat</address>
               <input
                 type="text"
-                id="member-number"
-                value={memberNumber}
-                onChange={(e) => setMemberNumber(e.target.value)}
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
-              <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
+              <label htmlFor="email">Email</label>
+              <div className="hanya info" id="email">
+                {email}
+              </div>
+              <label htmlFor="member">Member</label>
+              <div className="hanya info" id="member">
+                {member}
+              </div>
+              <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
             </form>
           </div>
-          <div className="card">
+          <div className="profile-card">
             <h2>Ubah Password</h2>
             <form>
               <label htmlFor="current-password">Password Sekarang</label>
@@ -165,22 +359,44 @@ useEffect(() => {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
-              <label htmlFor="new-password">Password Baru</label>
+              <div className="profile-title-shownewpassword-wrapper">
+                <label htmlFor="new-password">Password Baru</label>
+                <button
+                  type="button"
+                  className="profile-toggle-new-password"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                >
+                  {showNewPassword ? '🚫' : '👁️'}
+                </button>
+              </div>
               <input
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 id="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
-              <label htmlFor="confirm-password">Konfirmasi Password</label>
+              <div className="profile-title-showconfirmnewpassword-wrapper">
+                <label htmlFor="confirm-password">Konfirmasi Password</label>
+                <button
+                  type="button"
+                  className="profile-toggle-confirm-new-password"
+                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                >
+                  {showConfirmNewPassword ? '🚫' : '👁️'}
+                </button>
+              </div>
               <input
-                type="password"
+                type={showConfirmNewPassword ? 'text' : 'password'}
                 id="confirm-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <button type="button" onClick={handleChangePassword}>Ubah Password</button>
+              <button type="button" onClick={confirmChange}>Ubah Password</button>
             </form>
+          </div>
+          <div className='profile-bottom'>
+            <button className='profile-bottom-button' onClick={logout}><i className="glyphicon glyphicon-log-out"></i> Logout</button>
+            <button className='profile-bottom-button' onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</button>
           </div>
         </main>
       </div>

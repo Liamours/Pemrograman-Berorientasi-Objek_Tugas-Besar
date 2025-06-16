@@ -7,30 +7,30 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setMessage("Email dan password harus diisi");
-      return;
-    }
-  
     try {
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, rememberMe}),
+        body: JSON.stringify({ email, password}),
       });
   
       const data = await response.json();
   
-      if (response.ok) {
-        localStorage.setItem('token', data.token); 
-        navigate('/profile');
+      if (data.success) {
+        localStorage.setItem("token", data.data.token);
+        if (data.data.role == 'Admin') {
+          navigate('/admin/dashboard');
+          return;
+        } else {
+          navigate('/gallery');
+          return
+        }
       } else {
-        setMessage(data.error || "Login gagal");
+        setMessage(data.message);
       }
     } catch (err) {
       setMessage("Terjadi kesalahan saat menghubungi server");
@@ -67,18 +67,8 @@ function LoginPage() {
             className="login-toggle-password"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? '🙈' : '👁️'}
+            {showPassword ? '🚫' : '👁️'}
           </button>
-        </div>
-
-        <div className="login-remember-me">
-          <input
-            type="checkbox"
-            id="remember"
-            checked={rememberMe}
-            onChange={() => setRememberMe(!rememberMe)}
-          />
-          <label htmlFor="remember">Ingat saya</label>
         </div>
 
         <button className="login-button" onClick={handleLogin}>Login</button>
