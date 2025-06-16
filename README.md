@@ -1,5 +1,11 @@
 # Grow and Cheer - Tugas Besar PBO 
 
+![Spring Boot](https://img.shields.io/badge/-Spring%20Boot-6DB33F?style=flat&logo=springboot&logoColor=white)
+![Java](https://img.shields.io/badge/-Java-007396?style=flat&logo=java&logoColor=white)
+![ReactJS](https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=black)
+![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
+![XAMPP](https://img.shields.io/badge/-XAMPP-FB7A24?style=flat&logo=apache&logoColor=white)
+
 > **Mata Kuliah:** Pemrograman Berorientasi Objek  
 > **Nama Aplikasi:** Grow and Cheer  
 > **Kelompok:** 06
@@ -11,15 +17,6 @@
 - M Rifqi Dzaky Azhad (103012330009)  
 - Ezra Mangasi Andika Sibuea (103012330117)  
 - Rafiq Labib (103012330353)
-
----
-
-## ⚙️ Teknologi yang Digunakan
-
-- 🧠 **Backend:** Spring Boot `☕`
-- 💻 **Frontend:** ReactJS `⚛️`
-- 🗃️ **Database:** MySQL via XAMPP `🐬`
-- 📂 **Database File:** `growandcheer_final.sql`
 
 ---
 
@@ -49,10 +46,10 @@
 }
 ```
 
-### 🧪 `POST /api/auth/login (Dummy Client)`
+### `POST /api/auth/login (Dummy Client)`
 Simulasi login dummy dengan format request dan response yang sama seperti login biasa.
 
-### 📝 `POST /api/auth/register`
+### `POST /api/auth/register`
 ```json
 {
   "email": "test00@mail.com",
@@ -70,7 +67,7 @@ Simulasi login dummy dengan format request dan response yang sama seperti login 
 }
 ```
 
-### 🚪 `POST /api/auth/logout`
+### `POST /api/auth/logout`
 **Response:**
 ```json
 {
@@ -84,7 +81,7 @@ Simulasi login dummy dengan format request dan response yang sama seperti login 
 
 ## 👤 User API
 
-### 👮‍♂️ `GET /api/user/profile/admin`
+### 🔧 `GET /api/user/profile/admin`
 ```json
 {
   "success": true,
@@ -178,7 +175,7 @@ Simulasi login dummy dengan format request dan response yang sama seperti login 
 }
 ```
 
-### 📋 `GET /api/user/alluser`
+### `GET /api/user/alluser`
 Mengambil semua user dalam sistem (tidak ada contoh response).
 
 ---
@@ -214,7 +211,7 @@ Mengambil semua user dalam sistem (tidak ada contoh response).
 }
 ```
 
-### 📄 `POST /api/barang`
+###  `POST /api/barang`
 ```json
 {
   "nama_barang": "",
@@ -265,7 +262,7 @@ Digunakan untuk mengambil semua barang (tanpa filter). Response berupa array `da
 }
 ```
 
-### 🛠️ `PUT /api/barang/update/detail`
+###  `PUT /api/barang/update/detail`
 ```json
 {
   "barang_id": "9",
@@ -316,7 +313,7 @@ Digunakan untuk mengambil semua barang (tanpa filter). Response berupa array `da
 }
 ```
 
-### 🔎 `GET /api/order/${orderId}`
+###  `GET /api/order/${orderId}`
 **Response:**
 ```json
 {
@@ -330,7 +327,7 @@ Digunakan untuk mengambil semua barang (tanpa filter). Response berupa array `da
 }
 ```
 
-### 🧺 `GET /api/cart`
+### 🛒 `GET /api/cart`
 **Response:**
 ```json
 {
@@ -348,7 +345,7 @@ Digunakan untuk mengambil semua barang (tanpa filter). Response berupa array `da
 }
 ```
 
-### 🔁 `PUT /api/cart/orders/${orderId}`
+###  `PUT /api/cart/orders/${orderId}`
 ```json
 {
   "jumlahBarang": 10
@@ -395,7 +392,7 @@ Digunakan untuk mengambil semua barang (tanpa filter). Response berupa array `da
 **Response:**
 ```json
 {
-  "mesaage": "Order Berhasil dihapus"
+  "message": "Order Berhasil dihapus"
 }
 ```
 
