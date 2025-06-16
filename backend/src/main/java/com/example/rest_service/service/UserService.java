@@ -58,7 +58,22 @@ public class UserService {
         return profile;
     }
 
-    
+    public Map<String, Object> getClientProfile(String email) {
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("id", client.getId());
+        profile.put("email", client.getEmail());
+        profile.put("name", client.getNamaUser());
+        profile.put("role", client.getPeran());
+        profile.put("isMember", client.isMember());
+        profile.put("address", client.getAlamat());
+        profile.put("createdAt", client.getCreatedAt());
+        profile.put("updatedAt", client.getUpdatedAt());
+
+        return profile;
+    }
 
     @Transactional
     public void updateProfile(String email, UpdateProfileRequest request) {
