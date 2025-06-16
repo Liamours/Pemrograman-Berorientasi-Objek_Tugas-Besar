@@ -51,16 +51,31 @@ public class KeranjangServiceImpl implements KeranjangService {
     }
 
     @Override
-    public CartDTO checkout(Long userId, List<Integer> orderIds) {
-        CartDTO cart = getCartByUser(userId);
-        cart.getOrders().stream()
-                .filter(o -> orderIds.contains(o.getOrderId()))
-                .forEach(o -> {
-                    Order m = orRepo.findById(o.getOrderId()).orElseThrow();
-                    m.setStatusOrder(StatusOrder.Done);
-                    orRepo.save(m);
-                });
-        return getCartByUser(userId);
+    public List<OrderDTO> checkout(Long userId, List<Integer> orderIds) {
+        Keranjang k = krRepo.findByUser_Id(userId)
+                .orElseThrow(() -> new RuntimeException("Keranjang not found"));
+
+        // Get all pending orders for the user's cart
+        List<Order> orders = orRepo.findByKeranjangKeranjangId(k.getKeranjangId())
+                .stream()
+                .filter(order -> order.getStatusOrder() == StatusOrder.Pending)
+                .filter(order -> orderIds.contains(order.getOrderId()))
+                .collect(Collectors.toList());
+
+        if (orders.isEmpty()) {
+            throw new RuntimeException("No valid orders found for checkout");
+        }
+
+        // Update status to Done
+        orders.forEach(order -> {
+            order.setStatusOrder(StatusOrder.Done);
+            orRepo.save(order);
+        });
+
+        // Convert to DTOs and return
+        return orders.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

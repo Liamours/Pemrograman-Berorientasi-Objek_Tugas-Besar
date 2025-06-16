@@ -9,6 +9,7 @@ public interface KeranjangService {
     CartDTO getCartByUser(Long userId);
     OrderDTO updateOrder(Integer orderId, Integer jumlahBarang);
     void removeOrder(Integer orderId);
-    CartDTO checkout(Long userId, List<Integer> orderIds);
-    List<OrderDTO> getOrdersInCart(Long userId); // Pastikan metode ini ada
+    List<OrderDTO> checkout(Long userId, List<Integer> orderIds);
+    List<OrderDTO> getOrdersInCart(Long userId);
+    // Pastikan metode ini ada
 }
