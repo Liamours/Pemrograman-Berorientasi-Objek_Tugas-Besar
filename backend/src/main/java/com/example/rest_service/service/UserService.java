@@ -75,21 +75,7 @@ public class UserService {
         return profile;
     }
 
-    @Transactional
-    public void updateProfile(String email, UpdateProfileRequest request) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        user.setNamaUser(request.getName());
-        user.setUpdatedAt(LocalDateTime.now());
-
-        if (user instanceof Client client) {
-            client.setAlamat(request.getAddress());
-            clientRepository.save(client);
-        } else {
-            userRepository.save(user);
-        }
-    }
+    
 
     @Transactional
     public void changePassword(String email, ChangePasswordRequest request) {
