@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,15 +21,21 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private KeranjangRepository keranjangRepository;
+    private ClientRepository clientRepository;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private ClientDetailRepository clientDetailRepository;
 
     @Autowired
     private OrderRepository orderRepository;
 
-    // Tambahkan method ini untuk controller
+    @Autowired
+    private KeranjangRepository keranjangRepository;
+
+    // Helper method to get user by email
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
@@ -38,10 +45,14 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        if (!(user instanceof Admin)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied - not an admin");
+        }
+
         Map<String, Object> profile = new HashMap<>();
         profile.put("id", user.getId());
         profile.put("email", user.getEmail());
-        profile.put("name", user.getName());
+        profile.put("name", user.getNamaUser());
         profile.put("role", user.getPeran());
         profile.put("createdAt", user.getCreatedAt());
         profile.put("updatedAt", user.getUpdatedAt());
@@ -51,21 +62,18 @@ public class UserService {
 
     // Get client profile
     public Map<String, Object> getClientProfile(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        Client client = clientRepository.findById(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client details not found"));
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
 
         Map<String, Object> profile = new HashMap<>();
-        profile.put("id", user.getId());
-        profile.put("email", user.getEmail());
-        profile.put("name", user.getName());
-        profile.put("role", user.getPeran());
-        profile.put("isMember", client.isIsmember());
+        profile.put("id", client.getId());
+        profile.put("email", client.getEmail());
+        profile.put("name", client.getNamaUser());
+        profile.put("role", client.getPeran());
+        profile.put("isMember", client.isMember());
         profile.put("address", client.getAlamat());
-        profile.put("createdAt", user.getCreatedAt());
-        profile.put("updatedAt", user.getUpdatedAt());
+        profile.put("createdAt", client.getCreatedAt());
+        profile.put("updatedAt", client.getUpdatedAt());
 
         return profile;
     }
@@ -76,14 +84,14 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        user.setName(request.getName());
-        userRepository.save(user);
+        user.setNamaUser(request.getName());
+        user.setUpdatedAt(LocalDateTime.now());
 
-        if (user.getPeran() == User.Role.Client) {
-            Client client = clientRepository.findById(user.getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client data not found"));
+        if (user instanceof Client client) {
             client.setAlamat(request.getAddress());
             clientRepository.save(client);
+        } else {
+            userRepository.save(user);
         }
     }
 
@@ -102,23 +110,29 @@ public class UserService {
         }
 
         user.setPassword(request.getNewPassword());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
     }
 
     // Delete account
     @Transactional
     public void deleteAccount(String email, DeleteAccountRequest request) {
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        if(!user.getPassword().equals(request.getPassword())) {
+
+        if (!user.getPassword().equals(request.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
         }
 
-        if (user.getPeran() == User.Role.Client) {
-            clientRepository.deleteById(user.getId());
-            orderRepository.deleteById(user.getId().intValue());
-            keranjangRepository.deleteById(user.getId().intValue());
+        if (user instanceof Client client) {
+            // Delete related entities
+            keranjangRepository.deleteAll(client.getKeranjangs());
+            orderRepository.deleteAll(client.getOrders());
+
+            // Delete client detail if exists
+            if (client.getClientDetails() != null) {
+                clientDetailRepository.delete(client.getClientDetails());
+            }
         }
 
         userRepository.delete(user);
@@ -127,71 +141,40 @@ public class UserService {
     // Upgrade to member
     @Transactional
     public void upgradeToMember(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
 
-        Client client = clientRepository.findById(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client data not found"));
-
-        if (client.isIsmember()) {
+        if (client.isMember()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already a member");
         }
 
-        client.setIsmember(true);
+        client.setMember(true);
+        client.setUpdatedAt(LocalDateTime.now());
         clientRepository.save(client);
     }
 
     // Get all users
     public List<Map<String, Object>> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(user -> {
-                    Map<String, Object> userData = new HashMap<>();
-                    userData.put("id", user.getId());
-                    userData.put("email", user.getEmail());
-                    userData.put("name", user.getName());
-                    userData.put("role", user.getPeran());
-                    userData.put("createdAt", user.getCreatedAt());
-                    userData.put("updatedAt", user.getUpdatedAt());
+        List<User> users = userRepository.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
 
-                    if (user.getPeran() == User.Role.Client) {
-                        clientRepository.findById(user.getId()).ifPresent(client -> {
-                            userData.put("isMember", client.isIsmember());
-                            userData.put("address", client.getAlamat());
-                        });
-                    }
+        for (User user : users) {
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("id", user.getId());
+            userData.put("email", user.getEmail());
+            userData.put("name", user.getNamaUser());
+            userData.put("role", user.getPeran());
+            userData.put("createdAt", user.getCreatedAt());
+            userData.put("updatedAt", user.getUpdatedAt());
 
-                    return userData;
-                })
-                .collect(Collectors.toList());
-    }
-
-    // Change user role
-    @Transactional
-    public void changeUserRole(String adminEmail, ChangeRoleRequest request) {
-        User admin = userRepository.findByEmail(adminEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found"));
-
-        User userToUpdate = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        if (userToUpdate.getEmail().equals(adminEmail)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot change your own role");
-        }
-
-        User.Role newRole = (userToUpdate.getPeran() == User.Role.Admin) ? User.Role.Client : User.Role.Admin;
-
-        if (userToUpdate.getPeran() == User.Role.Client && newRole == User.Role.Admin) {
-            clientRepository.findById(userToUpdate.getId()).ifPresent(clientRepository::delete);
-        } else if (userToUpdate.getPeran() == User.Role.Admin && newRole == User.Role.Client) {
-            if (!clientRepository.existsById(userToUpdate.getId())) {
-                Client newClient = new Client();
-                newClient.setUser(userToUpdate);
-                newClient.setIsmember(false);
-                clientRepository.save(newClient);
+            if (user instanceof Client client) {
+                userData.put("isMember", client.isMember());
+                userData.put("address", client.getAlamat());
             }
+
+            result.add(userData);
         }
 
-        userToUpdate.setPeran(newRole);
-        userRepository.save(userToUpdate);
+        return result;
     }
 }
