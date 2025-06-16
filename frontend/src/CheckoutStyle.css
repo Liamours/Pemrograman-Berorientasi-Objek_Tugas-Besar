@@ -27,7 +27,6 @@ h1, h2 {
   margin-bottom: 20px;
 }
 
-/* Address Section */
 .address-input {
   width: 100%;
   padding: 10px;
@@ -36,7 +35,6 @@ h1, h2 {
   resize: none;
 }
 
-/* Order Table */
 .order-table {
   width: 100%;
   border-collapse: collapse;
@@ -58,7 +56,6 @@ h1, h2 {
   vertical-align: middle;
 }
 
-/* Payment Options */
 .payment-options label {
   display: block;
   margin-bottom: 10px;
@@ -76,7 +73,6 @@ h1, h2 {
   border-radius: 5px;
 }
 
-/* Total Section */
 .total-section {
   text-align: right;
 }
@@ -87,7 +83,6 @@ h1, h2 {
   color: #333;
 }
 
-/* Confirm Button */
 .btn-confirm-checkout {
   display: block;
   width: 100%;
