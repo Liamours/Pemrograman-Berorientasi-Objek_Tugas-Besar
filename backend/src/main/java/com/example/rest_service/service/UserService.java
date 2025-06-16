@@ -118,7 +118,7 @@ public class UserService {
         if (user.getPeran() == User.Role.Client) {
             clientRepository.deleteById(user.getId());
             orderRepository.deleteById(user.getId().intValue());
-            keranjangRepository.deleteById(user.getId().intValue());
+            keranjangRepository.deleteById(user.getId());
         }
 
         userRepository.delete(user);
