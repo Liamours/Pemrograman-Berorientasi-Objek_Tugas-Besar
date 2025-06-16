@@ -109,7 +109,26 @@ public class UserService {
         userRepository.save(user);
     }
 
-    
+    @Transactional
+    public void deleteAccount(String email, DeleteAccountRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
+        }
+
+        if (user instanceof Client client) {
+            keranjangRepository.deleteAll(client.getKeranjangs());
+            orderRepository.deleteAll(client.getOrders());
+
+            if (client.getClientDetails() != null) {
+                clientDetailRepository.delete(client.getClientDetails());
+            }
+        }
+
+        userRepository.delete(user);
+    }
 
     @Transactional
     public void upgradeToMember(String email) {
