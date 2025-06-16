@@ -35,12 +35,10 @@ public class UserService {
     @Autowired
     private KeranjangRepository keranjangRepository;
 
-    // Helper method to get user by email
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    // Get admin profile
     public Map<String, Object> getAdminProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -121,11 +119,9 @@ public class UserService {
         }
 
         if (user instanceof Client client) {
-            // Delete related entities
             keranjangRepository.deleteAll(client.getKeranjangs());
             orderRepository.deleteAll(client.getOrders());
 
-            // Delete client detail if exists
             if (client.getClientDetails() != null) {
                 clientDetailRepository.delete(client.getClientDetails());
             }

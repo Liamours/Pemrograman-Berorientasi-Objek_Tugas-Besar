@@ -40,7 +40,7 @@ public class KeranjangController {
     public OrderDTO updateOrder(
             @RequestHeader("Authorization") String token,
             @PathVariable Integer orderId,
-            @RequestBody UpdateOrderRequest request // ✅ ganti jadi DTO
+            @RequestBody UpdateOrderRequest request
     ) {
         validateToken(token);
         return cartService.updateOrder(orderId, request.getJumlahBarang());

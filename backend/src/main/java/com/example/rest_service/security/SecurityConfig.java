@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/barang").permitAll()
                         .requestMatchers("/barang/detail/**").permitAll()
 
-                        // 🛒 Client/cart features
+                        //Keranjang
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/api/checkout").authenticated()
 

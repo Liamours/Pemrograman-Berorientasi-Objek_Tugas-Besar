@@ -28,7 +28,7 @@ public class JwtTokenUtil {
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId()); // Tambahkan user ID ke claims
+        claims.put("userId", user.getId());
         return createToken(claims, user.getEmail());
     }
 

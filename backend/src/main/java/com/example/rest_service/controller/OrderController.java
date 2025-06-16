@@ -1,4 +1,3 @@
-// src/main/java/com/example/rest_service/controller/OrderController.java
 package com.example.rest_service.controller;
 
 import com.example.rest_service.dto.OrderDTO;
@@ -36,7 +35,6 @@ public class OrderController {
         return orderService.getOrderById(orderId);
     }
 
-    // Tambahan: POST method untuk get order by ID via request body
     @PostMapping("/get")
     public OrderDTO getOrderByIdFromBody(@RequestBody GetOrderRequest request) {
         return orderService.getOrderById(request.getOrderId());
@@ -44,7 +42,7 @@ public class OrderController {
 
     private Long validateTokenAndGetUserId(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7); // Remove "Bearer " prefix
+            String token = authHeader.substring(7);
 
             try {
                 Long userId = jwtTokenUtil.extractUserId(token);

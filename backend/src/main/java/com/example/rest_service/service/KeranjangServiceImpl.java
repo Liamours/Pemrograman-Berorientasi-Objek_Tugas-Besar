@@ -1,4 +1,3 @@
-// src/main/java/com/example/rest_service/service/impl/KeranjangServiceImpl.java
 package com.example.rest_service.service;
 
 import com.example.rest_service.dto.CartDTO;
@@ -63,7 +62,7 @@ public class KeranjangServiceImpl implements KeranjangService {
                 .filter(o -> orderIds.contains(o.getOrderId()))
                 .forEach(o -> {
                     Order m = orRepo.getOne(o.getOrderId());
-                    m.setStatusOrder(StatusOrder.Done); // Otomatis Done
+                    m.setStatusOrder(StatusOrder.Done);
                     orRepo.save(m);
                 });
         return getCartByUser(userId);
