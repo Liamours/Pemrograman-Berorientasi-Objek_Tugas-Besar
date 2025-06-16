@@ -11,6 +11,7 @@ const CheckoutPage = () => {
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [isMember, setIsMember] = useState(false);
   const [alamat, setAlamat] = useState('');
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -32,7 +33,6 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    // Ambil profil user
     fetch("http://localhost:8080/api/user/profile/client", {
       method: "GET",
       headers: {
@@ -109,20 +109,6 @@ const CheckoutPage = () => {
     fetchOrders();
   }, [token, isMember]);
 
-  const closePopupConfirm = () => {
-    document.getElementById("ConfirmCheckout").style.width = "0%";
-    navigate("/Receipt");
-  };
-
-  const handlePaymentChange = (e) => {
-    setPaymentMethod(e.target.value);
-    setSelectedBank('');
-  };
-
-  const handleBankChange = (e) => {
-    setSelectedBank(e.target.value);
-  };
-
   const handleConfirmCheckout = async () => {
     try {
       const payload = {
@@ -136,18 +122,22 @@ const CheckoutPage = () => {
         total: discountedTotal
       };
 
+      const temp = localStorage.getItem("selectedOrders")
+      console.log("Selected Orders:", temp);
       const res = await fetch("http://localhost:8080/api/checkout", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(
+          temp
+        )
       });
 
       if (!res.ok) throw new Error("Checkout gagal");
 
-      document.getElementById("ConfirmCheckout").style.width = "100%";
+      setShowConfirmPopup(true);
     } catch (err) {
       console.error("Error saat checkout:", err);
     }
@@ -156,18 +146,22 @@ const CheckoutPage = () => {
   return (
     <div className="checkout-page">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-      <div id="ConfirmCheckout" className="checkout-overlay">
+
+      <div className={`checkout-overlay ${showConfirmPopup ? 'show' : ''}`}>
         <div className="checkout-popup-container">
           <h2>Checkout Berhasil</h2>
           <p>Terima Kasih Sudah Berbelanja</p>
           <div className="checkout-popup-actions">
-            <button className="checkout-btn-confirm" onClick={closePopupConfirm}>Tutup</button>
+            <button className="checkout-btn-confirm" onClick={() => navigate("/Receipt")}>Tutup</button>
           </div>
         </div>
       </div>
 
       <header className="checkout-header">
-        <span className="glyphicon glyphicon-menu-left" style={{ cursor: "pointer", fontSize: "40px" }} onClick={() => navigate('/Keranjang')}></span>
+        <span className="glyphicon glyphicon-menu-left" style={{ cursor: "pointer", fontSize: "40px" }} onClick={() => {
+          localStorage.removeItem("selectedOrders");
+          navigate('/Keranjang');
+        }}></span>
         <div className="gallery-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <img src="/images/logogncmin.png" alt="Logo" style={{ width: "100px" }} />
       </header>
@@ -210,11 +204,11 @@ const CheckoutPage = () => {
           <h2>Metode Pembayaran</h2>
           <div className="payment-options">
             <label>
-              <input type="radio" name="payment-method" value="COD" checked={paymentMethod === 'COD'} onChange={handlePaymentChange} />
+              <input type="radio" name="payment-method" value="COD" checked={paymentMethod === 'COD'} onChange={(e) => setPaymentMethod(e.target.value)} />
               COD (Bayar di Tempat)
             </label>
             <label>
-              <input type="radio" name="payment-method" value="Transfer" checked={paymentMethod === 'Transfer'} onChange={handlePaymentChange} />
+              <input type="radio" name="payment-method" value="Transfer" checked={paymentMethod === 'Transfer'} onChange={(e) => setPaymentMethod(e.target.value)} />
               Transfer Bank
             </label>
           </div>
@@ -222,7 +216,7 @@ const CheckoutPage = () => {
           {paymentMethod === 'Transfer' && (
             <div className="bank-options">
               <h3>Pilihan Bank</h3>
-              <select className="bank-select" value={selectedBank} onChange={handleBankChange}>
+              <select className="bank-select" value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)}>
                 <option value="">Pilih Bank</option>
                 <option value="BCA">BCA</option>
                 <option value="Mandiri">Mandiri</option>
