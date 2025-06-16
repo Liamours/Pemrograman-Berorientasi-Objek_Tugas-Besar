@@ -15,6 +15,7 @@ public class UpdateBarangRequest {
     @JsonProperty("nama_barang")
     private String namaBarang;
 
+    @NotBlank(message = "Deskripsi Barang cannot be blank")
     @JsonProperty("deskripsi_barang")
     private String deskripsiBarang;
 
@@ -27,6 +28,7 @@ public class UpdateBarangRequest {
     @JsonProperty("tipe_barang")
     private String tipeBarangId;
 
+    @NotBlank(message = "Nama gambar cannot be blank")
     @JsonProperty("image_url")
     private String imageUrl;
 
