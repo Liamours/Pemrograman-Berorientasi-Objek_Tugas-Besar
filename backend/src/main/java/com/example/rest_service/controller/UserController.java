@@ -51,29 +51,7 @@ public class UserController{
         }
     }
 
-    @PutMapping("/profile/update")
-    public ResponseEntity<ApiResponse> updateProfile(
-            Authentication authentication,
-            @Valid @RequestBody UpdateProfileRequest request,
-            BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            FieldError firstError = bindingResult.getFieldErrors().get(0);
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false,
-                            "Validation error: " + firstError.getField() + " " + firstError.getDefaultMessage()));
-        }
-
-        try {
-            userService.updateProfile(authentication.getName(), request);
-            return ResponseEntity.ok(
-                    new ApiResponse(true, "Profile updated successfully")
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "Failed to update profile: " + e.getMessage()));
-        }
-    }
+    
 
     @PutMapping("/password/change")
     public ResponseEntity<ApiResponse> changePassword(
