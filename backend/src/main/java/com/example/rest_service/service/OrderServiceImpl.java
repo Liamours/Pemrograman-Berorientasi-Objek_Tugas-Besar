@@ -1,4 +1,3 @@
-// src/main/java/com/example/rest_service/service/impl/OrderServiceImpl.java
 package com.example.rest_service.service;
 
 import com.example.rest_service.dto.OrderDTO;
@@ -31,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
         order.setHargaPerUnit(barang.getHarga());
         order.setTanggalOrder(LocalDateTime.now());
         order.setAlamatTujuan(alamatTujuan);
-        order.setStatusOrder(StatusOrder.Pending); // Status awal: Pending_Client
+        order.setStatusOrder(StatusOrder.Pending);
         order.setUser(user);
         order.setKeranjang(keranjang);
 

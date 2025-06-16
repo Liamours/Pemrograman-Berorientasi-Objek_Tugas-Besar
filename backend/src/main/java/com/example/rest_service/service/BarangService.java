@@ -39,7 +39,7 @@ public class BarangService {
                 barangRepository.save(barang);
             }
 
-            barangRepository.delete(barang); // Now perform the delete
+            barangRepository.delete(barang);
             return true;
         }
         return false;
