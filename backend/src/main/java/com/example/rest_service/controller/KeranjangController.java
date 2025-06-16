@@ -8,6 +8,7 @@ import com.example.rest_service.service.UserService;
 import com.example.rest_service.security.JwtTokenUtil;
 import com.example.rest_service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -57,12 +58,13 @@ public class KeranjangController {
     }
 
     @PostMapping("/checkout")
-    public CartDTO checkout(
+    public ResponseEntity<String> checkout(
             @RequestHeader("Authorization") String token,
             @RequestBody List<Integer> orderIds
     ) {
         Long userId = validateToken(token);
-        return cartService.checkout(userId, orderIds);
+        cartService.checkout(userId, orderIds);
+        return ResponseEntity.ok("Checkout berhasil!");
     }
 
     private Long validateToken(String authHeader) {
