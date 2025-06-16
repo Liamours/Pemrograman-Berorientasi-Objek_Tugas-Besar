@@ -75,23 +75,7 @@ public class UserController{
         }
     }
 
-    @PutMapping("/password/change")
-    public ResponseEntity<ApiResponse> changePassword(
-            Authentication authentication,
-            @Valid @RequestBody ChangePasswordRequest request) {
-        try {
-            userService.changePassword(authentication.getName(), request);
-            return ResponseEntity.ok(
-                    new ApiResponse(true, "Password changed successfully")
-            );
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode())
-                    .body(new ApiResponse(false, e.getReason()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse(false, "Password change failed: " + e.getMessage()));
-        }
-    }
+    
 
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteAccount(
