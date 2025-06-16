@@ -26,7 +26,7 @@ const ProductCard = () => {
         return res.json();
       })
       .then(data => {
-        if (data.data?.address) {
+        if (data.data.address) {
           setAddress(data.data.address);
         }
       })
@@ -91,7 +91,7 @@ const ProductCard = () => {
   };
 
   const handleIncrease = () => {
-    if (product && quantity < product.stokBarang) {
+    if (product && quantity < product.stock) {
       setQuantity(prev => prev + 1);
     }
   };
@@ -125,15 +125,6 @@ const ProductCard = () => {
               alt={product.nama_barang}
               className="detailbarang-product-image"
             />
-            {/* <div id="SudahMemberPopup" className="profile-overlay">
-              <div className="profile-popup-container">
-                <h2>Anda Sudah Member</h2>
-                <p>Anda Tidak Perlu Lagi Membeli Member</p>
-                <div className="profile-popup-actions">
-                  <button className="profile-btn-confirm" onClick={closeSudahMemberPopup}>Tutup</button>
-                </div>
-              </div>
-            </div> */}
             <div className="detailbarang-product-details">
               <h1 className="detailbarang-product-title">{product.nama_barang}</h1>
               <p className="detailbarang-product-price">Rp {product.harga.toLocaleString()}</p>
@@ -145,7 +136,7 @@ const ProductCard = () => {
               <div className="detailbarang-quantity-section">
                 <button className="detailbarang-quantity-btn" onClick={handleDecrease} disabled={quantity <= 1}>-</button>
                 <span className="detailbarang-quantity">{quantity}</span>
-                <button className="detailbarang-quantity-btn" onClick={handleIncrease} disabled={quantity >= product.stokBarang}>+</button>
+                <button className="detailbarang-quantity-btn" onClick={handleIncrease} disabled={quantity >= product.stock}>+</button>
               </div>
               <div className="detailbarang-subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
