@@ -1,6 +1,7 @@
 package com.example.rest_service.controller;
 
 import com.example.rest_service.dto.CartDTO;
+import com.example.rest_service.dto.CheckoutResponse;
 import com.example.rest_service.dto.OrderDTO;
 import com.example.rest_service.dto.UpdateOrderRequest;
 import com.example.rest_service.service.KeranjangService;
@@ -59,15 +60,17 @@ public class KeranjangController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<Map<String, String>> checkout(
+    public ResponseEntity<CheckoutResponse> checkout(
             @RequestHeader("Authorization") String token,
             @RequestBody List<Integer> orderIds
     ) {
         Long userId = validateToken(token);
-        cartService.checkout(userId, orderIds);
-        return ResponseEntity.ok(Map.of("message", "Checkout berhasil")); // Mengembalikan {"message": "..."}
-    }
+        List<OrderDTO> processedOrders = cartService.checkout(userId, orderIds);
 
+        return ResponseEntity.ok(
+                new CheckoutResponse("Checkout berhasil", processedOrders)
+        );
+    }
     private Long validateToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid authorization header");
