@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2025 at 04:47 AM
+-- Generation Time: Jun 16, 2025 at 06:30 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,7 +32,7 @@ CREATE TABLE `barang` (
   `nama_barang` varchar(100) NOT NULL,
   `deskripsi_barang` text DEFAULT NULL,
   `harga` decimal(10,2) NOT NULL CHECK (`harga` >= 0),
-  `tipe_barang` varchar(50) NOT NULL,
+  `tipe_barang` enum('Makanan','Minuman','Hygine') NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `stok_barang` int(11) NOT NULL DEFAULT 0 CHECK (`stok_barang` >= 0),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -43,18 +43,18 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`barang_id`, `nama_barang`, `deskripsi_barang`, `harga`, `tipe_barang`, `image_url`, `stok_barang`, `created_at`) VALUES
-(1, 'Biskuit', 'Biskuit gandum dengan selai cokelat, dipacking dalam plastik berkualitas. Terdapat dua biskuit dalam tiap pack. Setiap kardus berisi 20 pack yang cocok untuk konsumsi keluarga atau keperluan usaha kecil.', 40000, 'Makanan', '/images/box_biskuit.png', 100, '2025-05-28 20:44:48'),
-(2, 'Kripik Pedas', 'Kripik singkong pedas khas Indonesia yang dikemas dalam 25 bungkus per kardus. Tiap bungkus memiliki rasa pedas gurih dan kriuk yang tahan lama. Cocok untuk pecinta camilan pedas.', 75000, 'Makanan', '/images/box_hot_kripik.png', 85, '2025-05-28 20:44:48'),
-(3, 'Jus', 'Paket grosir jus buah dalam botol 250ml, terdiri dari 24 botol dalam 1 kardus. Varian rasa seperti jeruk, apel, dan jambu membuatnya cocok untuk usaha minuman atau acara besar.', 96000, 'Minuman', '/images/box_jus.png', 120, '2025-05-28 20:44:48'),
-(4, 'Kripik Original', 'Kripik singkong rasa original yang gurih dan renyah, dikemas dalam 30 bungkus per kardus. Camilan sehat tanpa pengawet dan pewarna buatan.', 65000, 'Makanan', '/images/box_original_kripik.png', 70, '2025-05-28 20:44:48'),
-(5, 'Paket Hygine', 'Paket hygiene berisi sabun mandi cair, pasta gigi, sampo, dan sabun cuci tangan dalam ukuran ekonomis. Terdapat 10 set per kardus, cocok untuk rumah sakit, pesantren, atau kantor.', 230000, 'Hygine', '/images/box_paket_hygine.jpg', 45, '2025-05-28 20:44:48'),
-(6, 'Paket Sanitasi', 'Paket kebersihan lengkap berisi cairan disinfektan, hand sanitizer, dan sabun cuci tangan dalam kemasan 1 liter. Dalam satu kardus terdapat 6 set, cocok untuk keperluan fasilitas umum.', 270000, 'Hygine', '/images/box_paket_sanitasi.jpg', 50, '2025-05-28 20:44:48'),
-(7, 'Sabun Mandi', 'Sabun mandi batang dengan aroma herbal alami, dikemas dalam 48 batang per kardus. Sabun ini cocok untuk keluarga besar atau keperluan penginapan.', 144000, 'Hygine', '/images/box_sabun.jpg', 60, '2025-05-28 20:44:48'),
-(8, 'Sampo', 'Sampo herbal untuk semua jenis rambut, dikemas dalam botol 250ml. Dalam satu kardus terdapat 24 botol, cocok untuk hotel dan salon.', 192000, 'Hygine', '/images/box_sampo.png', 55, '2025-05-28 20:44:48'),
-(9, 'Smoothie', 'Smoothie buah sehat dalam kemasan botol 300ml, berisi 20 botol dalam 1 kardus. Pilihan rasa alpukat, mangga, dan stroberi. Ideal untuk event atau toko minuman.', 150000, 'Minuman', '/images/box_smoothie.png', 48, '2025-05-28 20:44:48'),
-(10, 'Susu Manis', 'Susu kental manis dalam sachet ukuran 40g, dikemas dalam 100 sachet per kardus. Cocok untuk warung kopi atau kebutuhan dapur.', 130000, 'Minuman', '/images/box_susu.jpg', 80, '2025-05-28 20:44:48'),
-(11, 'Teh', 'Teh celup rasa melati dalam kotak isi 25 kantong. Setiap kardus terdiri dari 40 kotak. Produk lokal berkualitas ekspor yang cocok untuk konsumsi rumah tangga dan bisnis.', 200000, 'Minuman', '/images/box_teh.png', 90, '2025-05-28 20:44:48'),
-(12, 'Tisu', 'Tisu wajah lembut 2 ply dalam kemasan box. Setiap kardus berisi 36 kotak. Cocok untuk kantor, hotel, dan keperluan sehari-hari.', 175000, 'Hygine', '/images/box_tisu.jpg', 70, '2025-05-28 20:44:48');
+(1, 'Biskuit', 'Biskuit gandum dengan selai cokelat, dipacking dalam plastik berkualitas. Terdapat dua biskuit dalam tiap pack. Setiap kardus berisi 20 pack yang cocok untuk konsumsi keluarga atau keperluan usaha kecil.', 40000.00, 'Makanan', '/images/box_biskuit.png', 100, '2025-05-28 20:44:48'),
+(2, 'Kripik Pedas', 'Kripik singkong pedas khas Indonesia yang dikemas dalam 25 bungkus per kardus. Tiap bungkus memiliki rasa pedas gurih dan kriuk yang tahan lama. Cocok untuk pecinta camilan pedas.', 75000.00, 'Makanan', '/images/box_hot_kripik.jpg', 85, '2025-05-28 20:44:48'),
+(3, 'Jus', 'Paket grosir jus buah dalam botol 250ml, terdiri dari 24 botol dalam 1 kardus. Varian rasa seperti jeruk, apel, dan jambu membuatnya cocok untuk usaha minuman atau acara besar.', 96000.00, 'Minuman', '/images/box_jus.png', 120, '2025-05-28 20:44:48'),
+(4, 'Kripik Original', 'Kripik singkong rasa original yang gurih dan renyah, dikemas dalam 30 bungkus per kardus. Camilan sehat tanpa pengawet dan pewarna buatan.', 65000.00, 'Makanan', '/images/box_original_kripik.png', 70, '2025-05-28 20:44:48'),
+(5, 'Paket Hygine', 'Paket hygiene berisi sabun mandi cair, pasta gigi, sampo, dan sabun cuci tangan dalam ukuran ekonomis. Terdapat 10 set per kardus, cocok untuk rumah sakit, pesantren, atau kantor.', 230000.00, 'Hygine', '/images/box_paket_hygine.jpg', 45, '2025-05-28 20:44:48'),
+(6, 'Paket Sanitasi', 'Paket kebersihan lengkap berisi cairan disinfektan, hand sanitizer, dan sabun cuci tangan dalam kemasan 1 liter. Dalam satu kardus terdapat 6 set, cocok untuk keperluan fasilitas umum.', 270000.00, 'Hygine', '/images/box_paket_sanitasi.jpg', 50, '2025-05-28 20:44:48'),
+(7, 'Sabun Mandi', 'Sabun mandi batang dengan aroma herbal alami, dikemas dalam 48 batang per kardus. Sabun ini cocok untuk keluarga besar atau keperluan penginapan.', 144000.00, 'Hygine', '/images/box_sabun.jpg', 60, '2025-05-28 20:44:48'),
+(8, 'Sampo', 'Sampo herbal untuk semua jenis rambut, dikemas dalam botol 250ml. Dalam satu kardus terdapat 24 botol, cocok untuk hotel dan salon.', 192000.00, 'Hygine', '/images/box_sampo.png', 55, '2025-05-28 20:44:48'),
+(9, 'Smoothie', 'Smoothie buah sehat dalam kemasan botol 300ml, berisi 20 botol dalam 1 kardus. Pilihan rasa alpukat, mangga, dan stroberi. Ideal untuk event atau toko minuman.', 150000.00, 'Minuman', '/images/box_smoothie.png', 48, '2025-05-28 20:44:48'),
+(10, 'Susu Manis', 'Susu kental manis dalam sachet ukuran 40g, dikemas dalam 100 sachet per kardus. Cocok untuk warung kopi atau kebutuhan dapur.', 130000.00, 'Minuman', '/images/box_susu.jpg', 80, '2025-05-28 20:44:48'),
+(11, 'Teh', 'Teh celup rasa melati dalam kotak isi 25 kantong. Setiap kardus terdiri dari 40 kotak. Produk lokal berkualitas ekspor yang cocok untuk konsumsi rumah tangga dan bisnis.', 200000.00, 'Minuman', '/images/box_teh.png', 90, '2025-05-28 20:44:48'),
+(12, 'Tisu', 'Tisu wajah lembut 2 ply dalam kemasan box. Setiap kardus berisi 36 kotak. Cocok untuk kantor, hotel, dan keperluan sehari-hari.', 175000.00, 'Hygine', '/images/box_tisu.jpg', 70, '2025-05-28 20:44:48');
 
 -- --------------------------------------------------------
 
@@ -74,7 +74,6 @@ CREATE TABLE `client` (
 
 INSERT INTO `client` (`user_id`, `ismember`, `alamat`) VALUES
 (5, 1, 'rumah batan'),
-(6, 0, 'Jl. Sudirman Kav. 1, Jakarta Selatan'),
 (18, 0, NULL);
 
 -- --------------------------------------------------------
@@ -86,7 +85,6 @@ INSERT INTO `client` (`user_id`, `ismember`, `alamat`) VALUES
 CREATE TABLE `keranjang` (
   `keranjang_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
   `waktu_ditambahkan` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -94,9 +92,9 @@ CREATE TABLE `keranjang` (
 -- Dumping data for table `keranjang`
 --
 
-INSERT INTO `keranjang` (`keranjang_id`, `user_id`, `order_id`, `waktu_ditambahkan`) VALUES
-(1, 5, 1, '2025-06-09 02:45:00'),
-(2, 6, 2, '2025-06-09 04:15:00');
+INSERT INTO `keranjang` (`keranjang_id`, `user_id`, `waktu_ditambahkan`) VALUES
+(1, 5, '2025-06-09 02:45:00'),
+(2, 18, '2025-06-11 12:36:37');
 
 -- --------------------------------------------------------
 
@@ -111,18 +109,10 @@ CREATE TABLE `order` (
   `harga_per_unit` decimal(10,2) NOT NULL CHECK (`harga_per_unit` >= 0),
   `tanggal_order` timestamp NOT NULL DEFAULT current_timestamp(),
   `alamat_tujuan` text NOT NULL,
-  `status_order` enum('Pending_Client','Pending_Admin','Done') NOT NULL DEFAULT 'Pending_Client',
+  `status_order` enum('Pending','Done') NOT NULL DEFAULT 'Pending',
   `keranjang_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `order`
---
-
-INSERT INTO `order` (`order_id`, `barang_id`, `jumlah_barang`, `harga_per_unit`, `tanggal_order`, `alamat_tujuan`, `status_order`, `keranjang_id`, `user_id`) VALUES
-(1, 1, 2, 5.50, '2025-06-09 03:00:00', 'Jl. Merdeka No. 123, Jakarta Pusat', 'Pending_Client', NULL, 0),
-(2, 2, 1, 12.00, '2025-06-09 04:30:00', 'Jl. Sudirman Kav. 1, Jakarta Selatan', 'Pending_Admin', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -148,7 +138,6 @@ INSERT INTO `user` (`user_id`, `nama_user`, `password`, `email`, `peran`, `creat
 (1, 'admin', 'admin123', 'admin@mail.com', 'Admin', '2025-05-28 20:44:48', '2025-05-28 20:44:48'),
 (2, 'batanbilek', 'passwordBaru', 'test@mail.com', 'Admin', '2025-05-28 20:44:48', '2025-05-28 20:44:48'),
 (5, 'batan', 'user123', 'client@mail.com', 'Client', '2025-05-28 20:44:48', '2025-05-28 20:44:48'),
-(6, 'batanbilek', 'user123', 'client2@mail.com', 'Client', '2025-06-06 07:34:00', '2025-06-06 07:34:00'),
 (9, 'test', 'admin123', 'test3@mail.com', 'Client', '2025-06-11 04:49:20', '2025-06-11 04:49:20'),
 (18, 'test', 'admin123', 'test11@mail.com', 'Client', '2025-06-11 12:36:37', '2025-06-11 12:36:37');
 
@@ -173,8 +162,8 @@ ALTER TABLE `client`
 --
 ALTER TABLE `keranjang`
   ADD PRIMARY KEY (`keranjang_id`),
-  ADD KEY `fk_keranjang_user` (`user_id`),
-  ADD KEY `fk_keranjang_order` (`order_id`);
+  ADD UNIQUE KEY `unique_user_id` (`user_id`),
+  ADD KEY `fk_keranjang_user` (`user_id`);
 
 --
 -- Indexes for table `order`
@@ -199,7 +188,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `barang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `barang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `keranjang`
@@ -233,7 +222,6 @@ ALTER TABLE `client`
 -- Constraints for table `keranjang`
 --
 ALTER TABLE `keranjang`
-  ADD CONSTRAINT `fk_keranjang_order` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_keranjang_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;
 
 --
@@ -247,9 +235,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- 1. Drop foreign key constraint dulu
-ALTER TABLE keranjang DROP FOREIGN KEY fk_keranjang_order;
-
--- 2. Hapus kolom order_id
-ALTER TABLE keranjang DROP COLUMN order_id;

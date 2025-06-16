@@ -12,6 +12,10 @@ Anggota:
 - Ezra Mangasi Andika Sibuea (103012330117)
 - Rafiq Labib (103012330353)
 
+Backend: Springboot
+Frontend: ReactJS
+Database: XAMPP, MySQL, 'growandcheer_final.sql'
+
 ---
 
 ## 🔐 Auth
