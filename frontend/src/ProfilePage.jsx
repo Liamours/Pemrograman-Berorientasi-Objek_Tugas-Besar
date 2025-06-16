@@ -267,7 +267,7 @@ function ProfilePage() {
       <div id="Hapus" className="profile-overlay">
         <div className="profile-popup-container">
           <h2>Yakin Ingin Hapus Akun?</h2>
-          <p>Akun anda akan dihapus sepenuhnya</p>
+          <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
           <div className="profile-popup-actions">
             <input type="password" placeholder='Password akun anda' value={password} onChange={(e) => setPassword(e.target.value)}></input>
             <button className="profile-btn-cancel" onClick={cancelHapus}>Batal</button>
