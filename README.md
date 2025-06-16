@@ -20,6 +20,26 @@
 
 ---
 
+## Project Setup
+
+Ubah direktori ke frontend untuk memulai
+
+```bash
+cd frontend
+```
+
+Unduh semua dependensi dan pustaka(library) yang dibutuhkan
+
+```bash
+npm install
+```
+
+Jalankan Aplikasi di Server Pengembangan
+
+```bash
+npm start
+```
+
 ## 🔐 Auth API
 
 ### 🔑 `POST /api/auth/login`
