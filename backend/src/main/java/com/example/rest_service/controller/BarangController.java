@@ -43,6 +43,7 @@ public class BarangController {
             if (filteredBarang.isEmpty()) {
                 return ResponseEntity.ok(new ApiResponse(true, "No matching items found", new ArrayList<>()));
             }
+
             List<Map<String, Object>> formattedData = new ArrayList<>();
             for (Barang barang : filteredBarang) {
                 Map<String, Object> formattedBarang = new HashMap<>();
@@ -61,38 +62,6 @@ public class BarangController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "Error retrieving items: " + e.getMessage(), null));
-        }
-    }
-
-    @PostMapping("/new")
-    @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<ApiResponse> addProduct(@Valid @RequestBody NewBarangRequest dto) {
-        try {
-            Barang product = new Barang();
-            product.setNamaBarang(dto.getNamaBarang());
-            product.setDeskripsiBarang(dto.getDeskripsiBarang());
-            product.setHarga(dto.getHarga());
-            product.setTipeBarang(dto.getTipeBarang());
-            product.setImageUrl(dto.getImageUrl());
-            product.setStokBarang(dto.getStokBarang());
-            product.setCreatedAt(LocalDateTime.now());
-
-            Barang savedProduct = barangService.addProduct(product);
-
-            Map<String, Object> formattedData = new HashMap<>();
-            formattedData.put("barang_id", savedProduct.getBarangId());
-            formattedData.put("nama_barang", savedProduct.getNamaBarang());
-            formattedData.put("deskripsi_barang", savedProduct.getDeskripsiBarang());
-            formattedData.put("harga", savedProduct.getHarga());
-            formattedData.put("tipe_barang_id", savedProduct.getTipeBarang());
-            formattedData.put("image_url", savedProduct.getImageUrl());
-            formattedData.put("stock", savedProduct.getStokBarang());
-
-            ApiResponse response = new ApiResponse(true, "Barang baru berhasil ditambahkan", formattedData);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "Error adding product: " + e.getMessage(), null));
         }
     }
 
@@ -120,6 +89,39 @@ public class BarangController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "Error retrieving item details: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/new")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<ApiResponse> addProduct(@Valid @RequestBody NewBarangRequest dto) {
+        try {
+            Barang product = new Barang();
+
+            product.setNamaBarang(dto.getNamaBarang());
+            product.setDeskripsiBarang(dto.getDeskripsiBarang());
+            product.setHarga(dto.getHarga());
+            product.setTipeBarang(dto.getTipeBarang());
+            product.setImageUrl(dto.getImageUrl());
+            product.setStokBarang(dto.getStokBarang());
+            product.setCreatedAt(LocalDateTime.now());
+
+            Barang savedProduct = barangService.addProduct(product);
+
+            Map<String, Object> formattedData = new HashMap<>();
+            formattedData.put("barang_id", savedProduct.getBarangId());
+            formattedData.put("nama_barang", savedProduct.getNamaBarang());
+            formattedData.put("deskripsi_barang", savedProduct.getDeskripsiBarang());
+            formattedData.put("harga", savedProduct.getHarga());
+            formattedData.put("tipe_barang_id", savedProduct.getTipeBarang());
+            formattedData.put("image_url", savedProduct.getImageUrl());
+            formattedData.put("stock", savedProduct.getStokBarang());
+
+            ApiResponse response = new ApiResponse(true, "Barang baru berhasil ditambahkan", formattedData);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error adding product: " + e.getMessage(), null));
         }
     }
 

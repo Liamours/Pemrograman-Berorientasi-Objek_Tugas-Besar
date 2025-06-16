@@ -38,7 +38,6 @@ public class BarangService {
             if (barang.getBarangId() == null) {
                 barangRepository.save(barang);
             }
-
             barangRepository.delete(barang);
             return true;
         }
