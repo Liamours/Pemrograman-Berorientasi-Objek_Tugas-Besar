@@ -4,8 +4,11 @@ import com.example.rest_service.dto.CartDTO;
 import com.example.rest_service.dto.OrderDTO;
 import com.example.rest_service.model.*;
 import com.example.rest_service.repository.*;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +17,7 @@ import java.util.stream.Collectors;
 public class KeranjangServiceImpl implements KeranjangService {
     @Autowired private KeranjangRepository krRepo;
     @Autowired private OrderRepository orRepo;
-
+    @Autowired private EntityManager entityManager;
     @Override
     public CartDTO getCartByUser(Long userId) {
         Keranjang k = krRepo.findByUser_Id(userId)
@@ -46,16 +49,30 @@ public class KeranjangServiceImpl implements KeranjangService {
     }
 
     @Override
+    @Transactional
     public void removeOrder(Integer orderId) {
-        orRepo.deleteById(orderId);
-    }
+        try {
 
+            if (!orRepo.existsById(orderId)) {
+                throw new RuntimeException("Order not found");
+            }
+
+
+            orRepo.executeDeleteOrder(orderId);
+
+
+            entityManager.flush();
+            entityManager.clear();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete order: " + e.getMessage());
+        }
+    }
     @Override
     public List<OrderDTO> checkout(Long userId, List<Integer> orderIds) {
         Keranjang k = krRepo.findByUser_Id(userId)
                 .orElseThrow(() -> new RuntimeException("Keranjang not found"));
 
-        // Get all pending orders for the user's cart
+
         List<Order> orders = orRepo.findByKeranjangKeranjangId(k.getKeranjangId())
                 .stream()
                 .filter(order -> order.getStatusOrder() == StatusOrder.Pending)
@@ -66,13 +83,13 @@ public class KeranjangServiceImpl implements KeranjangService {
             throw new RuntimeException("No valid orders found for checkout");
         }
 
-        // Update status to Done
+
         orders.forEach(order -> {
             order.setStatusOrder(StatusOrder.Done);
             orRepo.save(order);
         });
 
-        // Convert to DTOs and return
+
         return orders.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
