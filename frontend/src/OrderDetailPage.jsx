@@ -8,6 +8,7 @@ const ProductCardOrder = () => {
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const barangId = localStorage.getItem('selectedProductId');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/user/profile/client', {
@@ -37,11 +38,10 @@ const ProductCardOrder = () => {
   }, [token, navigate]);
 
   useEffect(() => {
-    const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ barang_id })
+      body: JSON.stringify({ barang_id: barangId })
     })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
@@ -58,49 +58,31 @@ const ProductCardOrder = () => {
         console.error("Fetch error:", err);
         alert("Gagal mengambil detail barang.");
       });
-  }, []);
+  }, [barangId]);
 
-  const tambahBarangKeranjang = async () => {
-    if (!product) return;
+  useEffect(() => {
+    if (!barangId) return;
 
-    try {
-      const response = await fetch('http://localhost:8080/api/order/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          barangId: product.barang_id,
-          jumlahBarang: quantity,
-          alamatTujuan: address
-        })
-      });
-
-      const data = await response.json();
-      if (data) {
-        navigate('/keranjang');
-      } else {
-        console.error("Failed:", data.message);
-        alert("Gagal menambahkan barang ke keranjang.");
+    fetch(`http://localhost:8080/api/cart/order/${barangId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Terjadi kesalahan saat menambahkan barang.");
-    }
-  };
-
-  const handleIncrease = () => {
-    if (product && quantity < product.stock) {
-      setQuantity(prev => prev + 1);
-    }
-  };
-
-  const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(prev => prev - 1);
-    }
-  };
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`Gagal mengambil kuantitas barang. Status: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (data) {
+          setQuantity(data.jumlahBarang);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching quantity:", err);
+      });
+  }, [barangId, token]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -133,15 +115,12 @@ const ProductCardOrder = () => {
                 Deskripsi:<br />{product.deskripsi_barang}
               </p>
               <hr/>
-              <div className="detailbarang-quantity-section">
-                <button className="detailbarang-quantity-btn" onClick={handleDecrease} disabled={quantity <= 1}>-</button>
-                <span className="detailbarang-quantity">{quantity}</span>
-                <button className="detailbarang-quantity-btn" onClick={handleIncrease} disabled={quantity >= product.stock}>+</button>
+              <div className="detailbarang-quantity-static">
+                <p>Jumlah: <strong>{quantity}</strong></p>
               </div>
               <div className="detailbarang-subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
               </div>
-              <button className="detailbarang-add-to-cart-btn" onClick={tambahBarangKeranjang}>Tambah ke Keranjang</button>
               <p className="detailbarang-category">Kategori: {product.tipe_barang_id}</p>
             </div>
           </div>
