@@ -6,6 +6,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [selectedBank, setSelectedBank] = useState('');
   const [orders, setOrders] = useState([]);
+  const [selectedOrderIds, setSelectedOrderIds] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -108,6 +109,18 @@ const CheckoutPage = () => {
     fetchOrders();
   }, [token]);
 
+  const handleCheckboxChange = (orderId, checked) => {
+    let updated = [...selectedOrderIds];
+    if (checked) {
+      if (!updated.includes(orderId)) updated.push(orderId);
+    } else {
+      updated = updated.filter(id => id !== orderId);
+    }
+    setSelectedOrderIds(updated);
+    localStorage.setItem("orders", JSON.stringify(updated));
+  };
+
+
   const closePopupConfirm = () => {
     document.getElementById("ConfirmCheckout").style.width = "0%";
     navigate("/Receipt");
@@ -157,6 +170,7 @@ const CheckoutPage = () => {
           <table className="order-table">
             <thead>
               <tr>
+                <th>Pilih</th>
                 <th>Produk</th>
                 <th>Harga Satuan</th>
                 <th>Kuantitas</th>
@@ -166,6 +180,13 @@ const CheckoutPage = () => {
             <tbody>
               {orders.map((item, idx) => (
                 <tr key={idx}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedOrderIds.includes(item.orderId)}
+                      onChange={(e) => handleCheckboxChange(item.orderId, e.target.checked)}
+                    />
+                  </td>
                   <td>{item.nama_barang || `Produk #${item.barangId}`}</td>
                   <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
                   <td>{item.jumlahBarang}</td>
