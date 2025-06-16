@@ -78,8 +78,7 @@ const ProductCard = () => {
       });
 
       const data = await response.json();
-      if (data.success) {
-        alert('Barang berhasil ditambahkan ke keranjang!');
+      if (data) {
         navigate('/keranjang');
       } else {
         console.error("Failed:", data.message);
@@ -126,6 +125,15 @@ const ProductCard = () => {
               alt={product.nama_barang}
               className="detailbarang-product-image"
             />
+            {/* <div id="SudahMemberPopup" className="profile-overlay">
+              <div className="profile-popup-container">
+                <h2>Anda Sudah Member</h2>
+                <p>Anda Tidak Perlu Lagi Membeli Member</p>
+                <div className="profile-popup-actions">
+                  <button className="profile-btn-confirm" onClick={closeSudahMemberPopup}>Tutup</button>
+                </div>
+              </div>
+            </div> */}
             <div className="detailbarang-product-details">
               <h1 className="detailbarang-product-title">{product.nama_barang}</h1>
               <p className="detailbarang-product-price">Rp {product.harga.toLocaleString()}</p>
