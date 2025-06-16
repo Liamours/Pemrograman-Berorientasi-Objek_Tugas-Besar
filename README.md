@@ -1,31 +1,31 @@
-# Tugas besar mata kuliah Pemrograman Berorientasi Objek
+# 🌱 Grow and Cheer - Tugas Besar PBO 👨‍💻👩‍💻
 
-Nama Aplikasi: Grow and Cheer
+> **Mata Kuliah:** Pemrograman Berorientasi Objek  
+> **Nama Aplikasi:** Grow and Cheer  
+> **Kelompok:** 06
 
-Kelompok: 06\
-Anggota:
-
-- Fathan Arya Maulana (103012300083)
-- Samuel Yohanes Michael Kaunang (103012300247)
-- Dzaky Alfaris (103012300391)
-- M Rifqi Dzaky Azhad (103012330009)
-- Ezra Mangasi Andika Sibuea (103012330117)
-- Rafiq Labib (103012330353)
-
-Backend: Springboot
-Frontend: ReactJS
-Database: XAMPP, MySQL, 'growandcheer_final.sql'
+## 👥 Anggota Kelompok
+- Fathan Arya Maulana (103012300083)  
+- Samuel Yohanes Michael Kaunang (103012300247)  
+- Dzaky Alfaris (103012300391)  
+- M Rifqi Dzaky Azhad (103012330009)  
+- Ezra Mangasi Andika Sibuea (103012330117)  
+- Rafiq Labib (103012330353)
 
 ---
 
-## 🔐 Auth
+## ⚙️ Teknologi yang Digunakan
 
-### `POST /api/auth/login`
+- 🧠 **Backend:** Spring Boot `☕`
+- 💻 **Frontend:** ReactJS `⚛️`
+- 🗃️ **Database:** MySQL via XAMPP `🐬`
+- 📂 **Database File:** `growandcheer_final.sql`
 
-Login user (Admin/Client)
+---
 
-**Request:**
+## 🔐 Auth API
 
+### 🔑 `POST /api/auth/login`
 ```json
 {
   "email": "test200@mail.com",
@@ -34,7 +34,6 @@ Login user (Admin/Client)
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -50,18 +49,10 @@ Login user (Admin/Client)
 }
 ```
 
-### `POST /api/auth/login (Dummy Client)`
+### 🧪 `POST /api/auth/login (Dummy Client)`
+Simulasi login dummy dengan format request dan response yang sama seperti login biasa.
 
-Simulasi login dummy (sama formatnya dengan endpoint login biasa).
-
----
-
-### `POST /api/auth/register`
-
-Register akun baru
-
-**Request:**
-
+### 📝 `POST /api/auth/register`
 ```json
 {
   "email": "test00@mail.com",
@@ -71,7 +62,6 @@ Register akun baru
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -80,14 +70,8 @@ Register akun baru
 }
 ```
 
----
-
-### `POST /api/auth/logout`
-
-Logout user
-
+### 🚪 `POST /api/auth/logout`
 **Response:**
-
 ```json
 {
   "success": true,
@@ -98,14 +82,9 @@ Logout user
 
 ---
 
-## 👤 User
+## 👤 User API
 
-### `GET /api/user/profile/admin`
-
-Ambil profil admin
-
-**Response:**
-
+### 👮‍♂️ `GET /api/user/profile/admin`
 ```json
 {
   "success": true,
@@ -121,14 +100,7 @@ Ambil profil admin
 }
 ```
 
----
-
-### `GET /api/user/profile/client`
-
-Ambil profil client
-
-**Response:**
-
+### 👤 `GET /api/user/profile/client`
 ```json
 {
   "success": true,
@@ -146,14 +118,7 @@ Ambil profil client
 }
 ```
 
----
-
-### `PUT /api/user/profile/update`
-
-Update nama
-
-**Request:**
-
+### ✏️ `PUT /api/user/profile/update`
 ```json
 {
   "name": "batanbilek"
@@ -161,7 +126,6 @@ Update nama
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -170,14 +134,7 @@ Update nama
 }
 ```
 
----
-
-### `PUT /api/user/password/change`
-
-Ganti password
-
-**Request:**
-
+### 🔐 `PUT /api/user/password/change`
 ```json
 {
   "currentPassword": "123456",
@@ -187,7 +144,6 @@ Ganti password
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -196,14 +152,7 @@ Ganti password
 }
 ```
 
----
-
-### `DELETE /api/user/delete`
-
-Hapus akun user
-
-**Request:**
-
+### 🗑️ `DELETE /api/user/delete`
 ```json
 {
   "password": "123456"
@@ -211,7 +160,6 @@ Hapus akun user
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -220,14 +168,8 @@ Hapus akun user
 }
 ```
 
----
-
-### `PUT /api/user/member`
-
-Upgrade menjadi member
-
+### 🌟 `PUT /api/user/member`
 **Response:**
-
 ```json
 {
   "success": true,
@@ -236,22 +178,14 @@ Upgrade menjadi member
 }
 ```
 
----
-
-### `GET /api/user/alluser`
-
-Ambil semua user
+### 📋 `GET /api/user/alluser`
+Mengambil semua user dalam sistem (tidak ada contoh response).
 
 ---
 
-## 📦 Barang
+## 📦 Barang API
 
-### `POST /api/barang/new`
-
-Tambah barang baru
-
-**Request:**
-
+### ➕ `POST /api/barang/new`
 ```json
 {
   "nama_barang": "Kopi Arabika",
@@ -264,7 +198,6 @@ Tambah barang baru
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -281,41 +214,16 @@ Tambah barang baru
 }
 ```
 
----
-
-### `POST /api/barang`
-
-List semua barang
-
-**Request:**
-
+### 📄 `POST /api/barang`
 ```json
 {
   "nama_barang": "",
   "tipe_barang": ""
 }
 ```
+Digunakan untuk mengambil semua barang (tanpa filter). Response berupa array `data`.
 
-**Response:**
-
-```json
-{
-  "success": true,
-  "message": "List barang berhasil diambil",
-  "data": [
-    ...
-  ]
-}
-```
-
----
-
-### `POST /api/barang/detail`
-
-Ambil detail barang
-
-**Request:**
-
+### 🔍 `POST /api/barang/detail`
 ```json
 {
   "barang_id": 8
@@ -323,7 +231,6 @@ Ambil detail barang
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -340,14 +247,7 @@ Ambil detail barang
 }
 ```
 
----
-
-### `DELETE /api/barang/delete`
-
-Hapus barang
-
-**Request:**
-
+### ❌ `DELETE /api/barang/delete`
 ```json
 {
   "barang_id": 8
@@ -355,7 +255,6 @@ Hapus barang
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
@@ -366,14 +265,7 @@ Hapus barang
 }
 ```
 
----
-
-### `PUT /api/barang/update/detail`
-
-Update barang
-
-**Request:**
-
+### 🛠️ `PUT /api/barang/update/detail`
 ```json
 {
   "barang_id": "9",
@@ -387,97 +279,76 @@ Update barang
 ```
 
 **Response:**
-
 ```json
 {
   "success": true,
   "message": "Data barang berhasil diubah",
   "data": {
     "barangId": 9,
-    "namaBarang": "Nabati Suup",
+    "namaBarang": "Nabati Suup"
   }
 }
 ```
-## 📃 Order, 🛒 Keranjang dan ✅ Checkout
 
-### `POST /api/order/add`
+---
 
-Add Order ke Keranjang
+## 📃 Order, 🛒 Keranjang, ✅ Checkout
 
-**Request:**
+### ➕ `POST /api/order/add`
 ```json
 {
   "barangId": 9,
   "jumlahBarang": 10,
-  "alamatTujuan": "Jl. Telekomunikasi No. 1, Bandung Terusan Buahbatu - Bojongsoang, Sukapura, Kec. Dayeuhkolot, Kabupaten Bandung, Jawa Barat 40257"
+  "alamatTujuan": "Jl. Telekomunikasi No. 1, Bandung"
 }
 ```
 
 **Response:**
-
 ```json
 {
-  {
-    "orderId": 3,
-    "barangId": 8,
-    "jumlahBarang": 1,
-    "hargaPerUnit": 192000.0,
-    "tanggalOrder": "2025-06-16T11:31:59",
-    "alamatTujuan": "rumah",
-    "statusOrder": "Pending"
-  } 
-}
-```
-### `GET /api/order/${orderId}`
-
-Get Info Order dengan ID
-
-**Request:**
-```json
-  pathVariabel = orderId
-```
-
-**Response:**
-
-```json
-{
-  {
-    "orderId": 3,
-    "barangId": 8,
-    "jumlahBarang": 1,
-    "hargaPerUnit": 192000.0,
-    "tanggalOrder": "2025-06-16T11:31:59",
-    "alamatTujuan": "rumah",
-    "statusOrder": "Pending"
-  } 
+  "orderId": 3,
+  "barangId": 8,
+  "jumlahBarang": 1,
+  "hargaPerUnit": 192000.0,
+  "tanggalOrder": "2025-06-16T11:31:59",
+  "alamatTujuan": "rumah",
+  "statusOrder": "Pending"
 }
 ```
 
-### `GET /api/cart`
-
-GET Order dalam Keranjang
-
+### 🔎 `GET /api/order/${orderId}`
 **Response:**
 ```json
 {
-    "orders": [
-        {
-            "orderId": 6,
-            "barangId": 8,
-            "jumlahBarang": 2,
-            "hargaPerUnit": 192000.0,
-            "tanggalOrder": "2025-06-16T15:15:23",
-            "alamatTujuan": "rumah",
-            "statusOrder": "Pending"
-        }
-    ]
+  "orderId": 3,
+  "barangId": 8,
+  "jumlahBarang": 1,
+  "hargaPerUnit": 192000.0,
+  "tanggalOrder": "2025-06-16T11:31:59",
+  "alamatTujuan": "rumah",
+  "statusOrder": "Pending"
 }
 ```
-### `PUT /api/cart/orders/${orderId}`
 
-Edit Jumlah Barang dalam Order
+### 🧺 `GET /api/cart`
+**Response:**
+```json
+{
+  "orders": [
+    {
+      "orderId": 6,
+      "barangId": 8,
+      "jumlahBarang": 2,
+      "hargaPerUnit": 192000.0,
+      "tanggalOrder": "2025-06-16T15:15:23",
+      "alamatTujuan": "rumah",
+      "statusOrder": "Pending"
+    }
+  ]
+}
+```
 
-**Request:**
+### 🔁 `PUT /api/cart/orders/${orderId}`
 ```json
 {
   "jumlahBarang": 10
@@ -485,63 +356,46 @@ Edit Jumlah Barang dalam Order
 ```
 
 **Response:**
-
 ```json
 {
-    "orderId": 6,
-    "barangId": 8,
-    "jumlahBarang": 1,
-    "hargaPerUnit": 192000.0,
-    "tanggalOrder": "2025-06-16T15:15:23",
-    "alamatTujuan": "rumah",
-    "statusOrder": "Pending"
+  "orderId": 6,
+  "barangId": 8,
+  "jumlahBarang": 1,
+  "hargaPerUnit": 192000.0,
+  "tanggalOrder": "2025-06-16T15:15:23",
+  "alamatTujuan": "rumah",
+  "statusOrder": "Pending"
 }
 ```
 
-### `POST /api/checkout`
-
-Melakukan Checkout
-
-**Request:**
+### ✅ `POST /api/checkout`
 ```json
-{
-  [6]
-}
+[6]
 ```
 
 **Response:**
-
 ```json
 {
-    "message": "Checkout berhasil",
-    "checkedOutOrders": [
-        {
-            "orderId": 6,
-            "barangId": 8,
-            "jumlahBarang": 1,
-            "hargaPerUnit": 192000.0,
-            "tanggalOrder": "2025-06-16T15:15:23",
-            "alamatTujuan": "rumah",
-            "statusOrder": "Done"
-        }
-    ]
+  "message": "Checkout berhasil",
+  "checkedOutOrders": [
+    {
+      "orderId": 6,
+      "barangId": 8,
+      "jumlahBarang": 1,
+      "hargaPerUnit": 192000.0,
+      "tanggalOrder": "2025-06-16T15:15:23",
+      "alamatTujuan": "rumah",
+      "statusOrder": "Done"
+    }
+  ]
 }
 ```
 
-### `DELETE /api/cart/orders/{orderId}`
-
-Delete Order
-
-**Request:**
-```json
-  pathVariabel = orderId
-```
-
+### 🗑️ `DELETE /api/cart/orders/{orderId}`
 **Response:**
-
 ```json
 {
-  "mesaage":"Order Berhasil dihapus"
+  "mesaage": "Order Berhasil dihapus"
 }
 ```
 
