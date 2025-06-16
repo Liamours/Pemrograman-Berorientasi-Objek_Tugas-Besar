@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 const ShoppingCart = () => {
   const [orders, setOrders] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [discountedTotal, setDiscountedTotal] = useState(0);
+  const [selectedOrderIds, setSelectedOrderIds] = useState([]);
+  const [isMember, setIsMember] = useState(false);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -43,6 +46,83 @@ const ShoppingCart = () => {
     navigate("/OrderDetail");
   };
 
+  const handleUpdateQuantity = async (orderId, barangId, newQty) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/cart/orders/${orderId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ jumlahBarang: newQty }),
+      });
+
+      if (!res.ok) throw new Error(`Update gagal: ${res.status}`);
+
+      const updatedOrders = orders.map(order => {
+        if (order.orderId === orderId) {
+          const updatedBarang = order.barang.map(item =>
+            item.barangId === barangId ? { ...item, jumlahBarang: newQty } : item
+          );
+          return { ...order, barang: updatedBarang };
+        }
+        return order;
+      });
+
+      setOrders(updatedOrders);
+      updateTotal(updatedOrders, selectedOrderIds);
+    } catch (err) {
+      console.error("Error updating quantity:", err);
+    }
+  };
+
+  const handleCheckboxChange = (orderId, checked) => {
+    let updated = [...selectedOrderIds];
+    if (checked) {
+      if (!updated.includes(orderId)) updated.push(orderId);
+    } else {
+      updated = updated.filter(id => id !== orderId);
+    }
+    setSelectedOrderIds(updated);
+    localStorage.setItem("selectedOrders", JSON.stringify(updated));
+    updateTotal(orders, updated);
+  };
+
+  const updateTotal = (orders, selectedIds) => {
+    const filteredOrders = orders.filter(order => selectedIds.includes(order.orderId));
+    const total = filteredOrders.reduce((sum, order) =>
+      sum + order.barang.reduce((subtotal, item) =>
+        subtotal + item.hargaPerUnit * item.jumlahBarang, 0), 0
+    );
+    setTotalPrice(total);
+    const discount = isMember ? total * 0.1 : 0;
+    setDiscountedTotal(total - discount);
+  };
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/user/profile/client', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
+        return res.json();
+      })
+      .then(data => {
+        if (data.data && data.data.isMember === true) {
+          setIsMember(true);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching user profile:", err);
+      });
+  }, [token]);
+  console.log(localStorage.getItem("selectedOrders"));
   useEffect(() => {
     fetch("http://localhost:8080/api/cart", {
       method: "GET",
@@ -76,7 +156,6 @@ const ShoppingCart = () => {
           }
 
           setOrders(groupedOrders);
-          setTotalPrice(data.totalPrice || 0);
         } else {
           console.error("Failed to fetch orders");
         }
@@ -97,6 +176,7 @@ const ShoppingCart = () => {
         <a onClick={() => navigate('/profile')}>Profil</a>
         <hr />
       </div>
+
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
       <header className="keranjang-header">
         <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
@@ -140,7 +220,11 @@ const ShoppingCart = () => {
                   order.barang.map((item, idx) => (
                     <tr key={`${order.orderId}-${idx}`}>
                       <td>
-                        <input type="checkbox" value="true" />
+                        <input
+                          type="checkbox"
+                          checked={selectedOrderIds.includes(order.orderId)}
+                          onChange={(e) => handleCheckboxChange(order.orderId, e.target.checked)}
+                        />
                       </td>
                       <td>
                         <img
@@ -153,9 +237,25 @@ const ShoppingCart = () => {
                       <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
                       <td>
                         <div className="detailbarang-quantity-section">
-                          <button className="detailbarang-quantity-btn" disabled={item.jumlahBarang <= 1}>-</button>
+                          <button
+                            className="detailbarang-quantity-btn"
+                            onClick={() =>
+                              item.jumlahBarang > 1 &&
+                              handleUpdateQuantity(order.orderId, item.barangId, item.jumlahBarang - 1)
+                            }
+                            disabled={item.jumlahBarang <= 1}
+                          >
+                            -
+                          </button>
                           <span className="detailbarang-quantity">{item.jumlahBarang}</span>
-                          <button className="detailbarang-quantity-btn">+</button>
+                          <button
+                            className="detailbarang-quantity-btn"
+                            onClick={() =>
+                              handleUpdateQuantity(order.orderId, item.barangId, item.jumlahBarang + 1)
+                            }
+                          >
+                            +
+                          </button>
                         </div>
                       </td>
                       <td>{`Rp ${(item.hargaPerUnit * item.jumlahBarang).toLocaleString("id-ID")}`}</td>
@@ -174,8 +274,8 @@ const ShoppingCart = () => {
         )}
         <div className="cart-summary">
           <p>Subtotal: Rp {totalPrice.toLocaleString("id-ID")}</p>
-          <p>Potongan: Rp 0</p>
-          <h2>Total: Rp {totalPrice.toLocaleString("id-ID")}</h2>
+          <p>Potongan: Rp {(isMember ? (totalPrice * 0.1).toLocaleString("id-ID") : "0")}</p>
+          <h2>Total: Rp {discountedTotal.toLocaleString("id-ID")}</h2>
           <button className="btn-checkout" onClick={() => navigate("/checkout")}>Checkout</button>
         </div>
       </div>
