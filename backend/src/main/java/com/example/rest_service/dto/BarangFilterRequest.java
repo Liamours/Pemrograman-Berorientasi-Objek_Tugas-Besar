@@ -9,7 +9,6 @@ public class BarangFilterRequest {
     @JsonProperty("tipe_barang")
     private String tipeBarang;
 
-    // Getters and Setters
     public String getNamaBarang() {
         return namaBarang;
     }

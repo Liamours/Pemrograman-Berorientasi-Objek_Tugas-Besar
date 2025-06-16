@@ -60,7 +60,6 @@ public class UserService {
         return profile;
     }
 
-    // Get client profile
     public Map<String, Object> getClientProfile(String email) {
         Client client = clientRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
@@ -78,7 +77,6 @@ public class UserService {
         return profile;
     }
 
-    // Update profile
     @Transactional
     public void updateProfile(String email, UpdateProfileRequest request) {
         User user = userRepository.findByEmail(email)
@@ -95,7 +93,6 @@ public class UserService {
         }
     }
 
-    // Change password
     @Transactional
     public void changePassword(String email, ChangePasswordRequest request) {
         User user = userRepository.findByEmail(email)
@@ -114,7 +111,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // Delete account
     @Transactional
     public void deleteAccount(String email, DeleteAccountRequest request) {
         User user = userRepository.findByEmail(email)
@@ -138,7 +134,6 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    // Upgrade to member
     @Transactional
     public void upgradeToMember(String email) {
         Client client = clientRepository.findByEmail(email)
@@ -153,7 +148,6 @@ public class UserService {
         clientRepository.save(client);
     }
 
-    // Get all users
     public List<Map<String, Object>> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<Map<String, Object>> result = new ArrayList<>();

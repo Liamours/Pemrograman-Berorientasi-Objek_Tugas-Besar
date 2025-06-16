@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 @Table(name = "barang")
 public class Barang {
 
-    public Barang(){}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "barang_id")
@@ -44,6 +42,8 @@ public class Barang {
         Minuman,
         Hygine
     }
+
+    public Barang(){}
 
     // Getters and Setters
     public Integer getBarangId() {

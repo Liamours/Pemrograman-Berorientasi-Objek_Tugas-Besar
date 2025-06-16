@@ -46,11 +46,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/api/checkout").authenticated()
 
-                        // 👤 User-only endpoints
+                        //User
                         .requestMatchers("/api/user/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/user/delete").authenticated()
 
-                        // 🛠 Admin-only endpoints
+                        //Admin
                         .requestMatchers("/products/new").hasRole("Admin")
                         .requestMatchers("/products/delete").hasRole("Admin")
                         .requestMatchers("/products/update").hasRole("Admin")
@@ -73,12 +73,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // frontend origin
-        config.setAllowedMethods(Arrays.asList("*")); // all HTTP methods
-        config.setAllowedHeaders(Arrays.asList("*")); // all headers
-        config.setExposedHeaders(Arrays.asList("Authorization")); // expose JWT
-        config.setAllowCredentials(true); // allow cookies if needed
-        config.setMaxAge(3600L); // cache duration
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setExposedHeaders(Arrays.asList("Authorization"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

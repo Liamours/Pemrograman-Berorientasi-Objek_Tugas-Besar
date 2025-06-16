@@ -6,8 +6,6 @@ import java.util.List;
 public class CartDTO {
     private List<OrderDTO> orders;
 
-
-    // Getter dan Setter untuk orders
     public List<OrderDTO> getOrders() {
         return orders;
     }
@@ -15,7 +13,5 @@ public class CartDTO {
     public void setOrders(List<OrderDTO> orders) {
         this.orders = orders;
     }
-
-    // Getter dan Setter untuk totalPrice
 
 }

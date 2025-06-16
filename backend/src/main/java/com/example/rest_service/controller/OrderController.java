@@ -47,26 +47,18 @@ public class OrderController {
             String token = authHeader.substring(7); // Remove "Bearer " prefix
 
             try {
-                // Coba extract userId dari claims dulu
                 Long userId = jwtTokenUtil.extractUserId(token);
-
-                // Jika userId ada di claims, langsung return
                 if (userId != null) {
                     return userId;
                 }
-
-                // Fallback: Jika tidak ada userId di claims, extract username
                 String username = jwtTokenUtil.extractUsername(token);
 
                 if (username != null) {
-                    // Sementara return hardcoded user ID untuk testing
-                    // TODO: Ganti dengan query ke database untuk cari user by email
                     System.out.println("Token username: " + username);
-                    return 1L; // Hardcoded sementara
+                    return 1L;
                 }
 
                 throw new RuntimeException("Username not found in token");
-
             } catch (Exception e) {
                 throw new RuntimeException("Invalid JWT token: " + e.getMessage());
             }
@@ -75,16 +67,13 @@ public class OrderController {
         throw new RuntimeException("Authorization header must start with Bearer");
     }
 
-    // Inner class untuk request body
     public static class OrderRequest {
         private Integer barangId;
         private Integer jumlahBarang;
         private String alamatTujuan;
 
-        // Default constructor
         public OrderRequest() {}
 
-        // Getters dan Setters
         public Integer getBarangId() {
             return barangId;
         }
@@ -110,7 +99,6 @@ public class OrderController {
         }
     }
 
-    // DTO untuk get order request
     public static class GetOrderRequest {
         private Integer orderId;
 

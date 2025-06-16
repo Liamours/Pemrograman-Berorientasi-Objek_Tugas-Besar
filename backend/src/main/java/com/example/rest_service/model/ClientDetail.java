@@ -17,7 +17,6 @@ public class ClientDetail {
     @Column(nullable = true)
     private String alamat;
 
-    // Constructors
     public ClientDetail() {}
 
     public ClientDetail(boolean ismember, String alamat) {
@@ -25,7 +24,6 @@ public class ClientDetail {
         this.alamat = alamat;
     }
 
-    // Getters and Setters
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 

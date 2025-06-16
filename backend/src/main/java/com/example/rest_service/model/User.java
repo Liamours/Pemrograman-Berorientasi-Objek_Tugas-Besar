@@ -36,7 +36,6 @@ public abstract class User {
         Admin
     }
 
-    // Constructors
     public User() {}
 
     public User(String namaUser, String email, String password) {

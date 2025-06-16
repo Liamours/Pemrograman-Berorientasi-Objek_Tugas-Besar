@@ -80,7 +80,6 @@ public class KeranjangController {
                 throw new RuntimeException("User not found");
             }
 
-            // Gunakan getId() bukan getUserId()
             return user.getId();
 
         } catch (Exception e) {
