@@ -38,13 +38,7 @@ public abstract class User {
 
     public User() {}
 
-    public User(String namaUser, String email, String password) {
-        this.namaUser = namaUser;
-        this.email = email;
-        this.password = password;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+    
 
     // Getters and Setters
     public Long getId() { return id; }
