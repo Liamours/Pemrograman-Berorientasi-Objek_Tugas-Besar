@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function AdminDashboardPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -204,8 +205,9 @@ useEffect(() => {
           <h2>Yakin Ingin Hapus Akun?</h2>
           <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
           <div className="profile-admin-popup-actions">
-            <button className="profile-admin-btn-confirm" onClick={cancelHapus}>Batal</button>
-            <button className="profile-admin-btn-cancel" onClick={() => {
+            <input type="password" placeholder='Password akun anda' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <button className="profile-admin-btn-cancel" onClick={cancelHapus}>Batal</button>
+            <button className="profile-admin-btn-confirm" onClick={() => {
               const token = localStorage.getItem('token');
               fetch('http://localhost:8080/api/user/delete', {
                 method: 'DELETE',
@@ -214,7 +216,7 @@ useEffect(() => {
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                  token
+                  password : password
                 })
               })
               localStorage.removeItem("token");

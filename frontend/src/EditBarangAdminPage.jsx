@@ -142,7 +142,7 @@ const ProductCardAdmin = () => {
     <div className="gallery-admin-container" id="main">
       <div id="Sidebar" className="gallery-admin-sidenav">
         <a style={{ cursor: "pointer" }} className="closebtn" onClick={closeSidebar}>&times;</a>
-        <a onClick={closeSidebar}>Daftar Barang</a>
+        <a onClick={() => navigate('/admin/gallery')}>Daftar Barang</a>
         <hr></hr>
         <a onClick={() => navigate('/tambahBarang')}>Tambah Barang</a>
         <hr></hr>
@@ -179,7 +179,7 @@ const ProductCardAdmin = () => {
                 </h1>
               </div>
               <p className="detailbarang-admin-product-price">
-                <label style={{ color:"black"}}>Harga:</label>
+                <label style={{ color:"black"}}>Harga: Rp.</label>
                 <input
                   type="number"
                   name="harga"
