@@ -7,6 +7,37 @@ const ProductCard = () => {
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
 
+
+  const tambahBarangKeranjang = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/order/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          barang_id: product.barang_id,
+          jumlah_barang: quantity,
+        })
+      });
+      console.log('Response status:',product.barang_id, quantity);
+
+      const data = await response.json();
+      if (data.success) {
+        console.log('Product added to cart:', data.data);
+        
+      } else {
+        console.error("Failed to add product to cart:", data.message);
+        alert("Gagal menambahkan barang ke keranjang.");
+      }
+    } catch (error) {
+      console.error("Error saat menambahkan barang:", error);
+      alert("Terjadi kesalahan saat menambahkan barang.");
+    }
+  };
+
+
   useEffect(() => {
     const barang_id = localStorage.getItem('selectedProductId');
     fetch('http://localhost:8080/barang/detail', {
@@ -115,7 +146,7 @@ const ProductCard = () => {
               <div className="detailbarang-subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
               </div>
-              <button className="detailbarang-add-to-cart-btn">Tambah ke Keranjang</button>
+              <button className="detailbarang-add-to-cart-btn" onClick={tambahBarangKeranjang}>Tambah ke Keranjang</button>
               <p className="detailbarang-category">Kategori: {product.tipe_barang_id}</p>
             </div>
           </div>
