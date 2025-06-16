@@ -15,7 +15,6 @@ const ReceiptPage = () => {
   const [isMember, setIsMember] = useState(false);
 
   useEffect(() => {
-    // Fetch user info (nama, alamat, status member)
     fetch("http://localhost:8080/api/user/profile/client", {
       method: "GET",
       headers: {
@@ -36,7 +35,6 @@ const ReceiptPage = () => {
       })
       .catch(err => console.error("Error fetching user profile:", err));
 
-    // Get selected orders from localStorage
     const selected = JSON.parse(localStorage.getItem("selectedOrders")) || [];
 
     fetch("http://localhost:8080/api/cart", {
@@ -61,7 +59,6 @@ const ReceiptPage = () => {
             .filter(order => selected.includes(order.orderId))
             .flatMap(order => order.barang);
 
-          // Fetch product names
           const enrichedItems = await Promise.all(selectedItems.map(async (item) => {
             try {
               const res = await fetch('http://localhost:8080/barang/detail', {

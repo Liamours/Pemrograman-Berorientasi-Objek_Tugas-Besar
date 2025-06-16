@@ -8,7 +8,26 @@ const ProductCardOrder = () => {
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const barangId = localStorage.getItem('selectedProductId');
+  const orderId = localStorage.getItem('selectedProductId');
+
+  const hapusOrder = async () => {
+  fetch('http://localhost:8080/api/cart/orders/${orderId}', {
+    method: 'DELETE',
+    headers: {
+      'Authorization': 'Bearer ${token}',
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error('Gagal menghapus order. Status: ${res.status}');
+    }
+    console.log("Order berhasil dihapus.");
+  })
+  .catch(err => {
+    console.error("Error:", err);
+  });
+};
 
   useEffect(() => {
     fetch('http://localhost:8080/api/user/profile/client', {
@@ -41,7 +60,7 @@ const ProductCardOrder = () => {
     fetch('http://localhost:8080/barang/detail', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ barang_id: barangId })
+      body: JSON.stringify({ barang_id: orderId })
     })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
@@ -58,12 +77,11 @@ const ProductCardOrder = () => {
         console.error("Fetch error:", err);
         alert("Gagal mengambil detail barang.");
       });
-  }, [barangId]);
+  }, [orderId]);
 
   useEffect(() => {
-    if (!barangId) return;
-
-    fetch(`http://localhost:8080/api/cart/order/${barangId}`, {
+    if (!orderId) return;
+    fetch(`http://localhost:8080/api/cart/order/${orderId}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -82,7 +100,7 @@ const ProductCardOrder = () => {
       .catch(err => {
         console.error("Error fetching quantity:", err);
       });
-  }, [barangId, token]);
+  }, [orderId, token]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -115,13 +133,11 @@ const ProductCardOrder = () => {
                 Deskripsi:<br />{product.deskripsi_barang}
               </p>
               <hr/>
-              <div className="detailbarang-quantity-static">
-                <p>Jumlah: <strong>{quantity}</strong></p>
-              </div>
               <div className="detailbarang-subtotal">
-                <p>Subtotal: Rp {subtotal.toLocaleString()}</p>
+                <p>Harga: Rp {subtotal.toLocaleString()}</p>
               </div>
               <p className="detailbarang-category">Kategori: {product.tipe_barang_id}</p>
+              <button style={{ backgroundColor:"red" }}className="detailbarang-add-to-cart-btn" onClick={hapusOrder}>Hapus Order</button>
             </div>
           </div>
         </div>
