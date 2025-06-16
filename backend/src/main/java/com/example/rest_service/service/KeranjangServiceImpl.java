@@ -2,21 +2,16 @@ package com.example.rest_service.service;
 
 import com.example.rest_service.dto.CartDTO;
 import com.example.rest_service.dto.OrderDTO;
-import com.example.rest_service.model.Keranjang;
-import com.example.rest_service.model.Order;
-import com.example.rest_service.model.StatusOrder;
-import com.example.rest_service.repository.KeranjangRepository;
-import com.example.rest_service.repository.OrderRepository;
+import com.example.rest_service.model.*;
+import com.example.rest_service.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class KeranjangServiceImpl implements KeranjangService {
-
     @Autowired private KeranjangRepository krRepo;
     @Autowired private OrderRepository orRepo;
 
@@ -27,7 +22,7 @@ public class KeranjangServiceImpl implements KeranjangService {
 
         List<OrderDTO> dtos = orRepo.findByKeranjangKeranjangId(k.getKeranjangId())
                 .stream()
-                .filter(order -> order.getStatusOrder() == StatusOrder.Pending) // Hanya order pending
+                .filter(order -> order.getStatusOrder() == StatusOrder.Pending)
                 .map(this::toDTO)
                 .collect(Collectors.toList());
 
@@ -38,7 +33,7 @@ public class KeranjangServiceImpl implements KeranjangService {
 
         CartDTO cart = new CartDTO();
         cart.setOrders(dtos);
-        cart.setTotal(total.doubleValue()); // Tambahkan total jika diperlukan
+        cart.setTotal(total.doubleValue());
         return cart;
     }
 
@@ -61,7 +56,7 @@ public class KeranjangServiceImpl implements KeranjangService {
         cart.getOrders().stream()
                 .filter(o -> orderIds.contains(o.getOrderId()))
                 .forEach(o -> {
-                    Order m = orRepo.getOne(o.getOrderId());
+                    Order m = orRepo.findById(o.getOrderId()).orElseThrow();
                     m.setStatusOrder(StatusOrder.Done);
                     orRepo.save(m);
                 });

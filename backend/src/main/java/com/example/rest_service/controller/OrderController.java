@@ -1,6 +1,8 @@
 package com.example.rest_service.controller;
 
 import com.example.rest_service.dto.OrderDTO;
+import com.example.rest_service.model.User;
+import com.example.rest_service.repository.UserRepository;
 import com.example.rest_service.service.OrderService;
 import com.example.rest_service.security.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/add")
@@ -22,6 +27,7 @@ public class OrderController {
             @RequestBody OrderRequest request
     ) {
         Long userId = validateTokenAndGetUserId(authHeader);
+        System.out.println("USNNNNNNNNNNNNNNNNN " +userId);
         return orderService.addOrder(
                 userId,
                 request.getBarangId(),
@@ -45,15 +51,14 @@ public class OrderController {
             String token = authHeader.substring(7);
 
             try {
-                Long userId = jwtTokenUtil.extractUserId(token);
-                if (userId != null) {
-                    return userId;
-                }
+                // Coba dapatkan username dari token
                 String username = jwtTokenUtil.extractUsername(token);
-
+                System.out.println("USNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"+username);
                 if (username != null) {
-                    System.out.println("Token username: " + username);
-                    return 1L;
+                    // Cari user ID dari database berdasarkan username
+                    User user = userRepository.findByEmail(username)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+                    return user.getId();
                 }
 
                 throw new RuntimeException("Username not found in token");
