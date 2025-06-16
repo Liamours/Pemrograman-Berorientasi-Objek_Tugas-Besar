@@ -93,21 +93,7 @@ public class UserController{
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse> deleteAccount(
-            Authentication authentication,
-            @Valid @RequestBody DeleteAccountRequest request) {
-
-        try {
-            userService.deleteAccount(authentication.getName(),request);
-            return ResponseEntity.ok(
-                    new ApiResponse(true, "Account deleted successfully")
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "Failed to delete account: " + e.getMessage()));
-        }
-    }
+    
 
     @PutMapping("/member")
     @PreAuthorize("hasRole('Client')")
