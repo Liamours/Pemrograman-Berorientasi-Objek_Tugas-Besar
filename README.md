@@ -395,9 +395,154 @@ Update barang
   "data": {
     "barangId": 9,
     "namaBarang": "Nabati Suup",
-    ...
   }
 }
 ```
+## 📃 Order, 🛒 Keranjang dan ✅ Checkout
+
+### `POST /api/order/add`
+
+Add Order ke Keranjang
+
+**Request:**
+```json
+{
+  "barangId": 9,
+  "jumlahBarang": 10,
+  "alamatTujuan": "Jl. Telekomunikasi No. 1, Bandung Terusan Buahbatu - Bojongsoang, Sukapura, Kec. Dayeuhkolot, Kabupaten Bandung, Jawa Barat 40257"
+}
+```
+
+**Response:**
+
+```json
+{
+  {
+    "orderId": 3,
+    "barangId": 8,
+    "jumlahBarang": 1,
+    "hargaPerUnit": 192000.0,
+    "tanggalOrder": "2025-06-16T11:31:59",
+    "alamatTujuan": "rumah",
+    "statusOrder": "Pending"
+  } 
+}
+```
+### `GET /api/order/${orderId}`
+
+Get Info Order dengan ID
+
+**Request:**
+```json
+  pathVariabel = orderId
+```
+
+**Response:**
+
+```json
+{
+  {
+    "orderId": 3,
+    "barangId": 8,
+    "jumlahBarang": 1,
+    "hargaPerUnit": 192000.0,
+    "tanggalOrder": "2025-06-16T11:31:59",
+    "alamatTujuan": "rumah",
+    "statusOrder": "Pending"
+  } 
+}
+```
+
+### `GET /api/cart`
+
+GET Order dalam Keranjang
+
+**Response:**
+```json
+{
+    "orders": [
+        {
+            "orderId": 6,
+            "barangId": 8,
+            "jumlahBarang": 2,
+            "hargaPerUnit": 192000.0,
+            "tanggalOrder": "2025-06-16T15:15:23",
+            "alamatTujuan": "rumah",
+            "statusOrder": "Pending"
+        }
+    ]
+}
+```
+### `PUT /api/cart/orders/${orderId}`
+
+Edit Jumlah Barang dalam Order
+
+**Request:**
+```json
+{
+  "jumlahBarang": 10
+}
+```
+
+**Response:**
+
+```json
+{
+    "orderId": 6,
+    "barangId": 8,
+    "jumlahBarang": 1,
+    "hargaPerUnit": 192000.0,
+    "tanggalOrder": "2025-06-16T15:15:23",
+    "alamatTujuan": "rumah",
+    "statusOrder": "Pending"
+}
+```
+
+### `POST /api/checkout`
+
+Melakukan Checkout
+
+**Request:**
+```json
+{
+  [6]
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Checkout berhasil",
+    "checkedOutOrders": [
+        {
+            "orderId": 6,
+            "barangId": 8,
+            "jumlahBarang": 1,
+            "hargaPerUnit": 192000.0,
+            "tanggalOrder": "2025-06-16T15:15:23",
+            "alamatTujuan": "rumah",
+            "statusOrder": "Done"
+        }
+    ]
+}
+```
+
+### `DELETE /api/cart/orders/{orderId}`
+
+Delete Order
+
+**Request:**
+```json
+  pathVariabel = orderId
+```
+
+**Response:**
+
+```json
+{
+  "mesaage":"Order Berhasil dihapus"
+}
+
 
 ---
