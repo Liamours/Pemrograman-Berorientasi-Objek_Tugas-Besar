@@ -26,7 +26,7 @@ const ProductCard = () => {
         return res.json();
       })
       .then(data => {
-        if (data.data?.address) {
+        if (data.data.address) {
           setAddress(data.data.address);
         }
       })
@@ -78,8 +78,7 @@ const ProductCard = () => {
       });
 
       const data = await response.json();
-      if (data.success) {
-        alert('Barang berhasil ditambahkan ke keranjang!');
+      if (data) {
         navigate('/keranjang');
       } else {
         console.error("Failed:", data.message);
@@ -92,7 +91,7 @@ const ProductCard = () => {
   };
 
   const handleIncrease = () => {
-    if (product && quantity < product.stokBarang) {
+    if (product && quantity < product.stock) {
       setQuantity(prev => prev + 1);
     }
   };
@@ -137,7 +136,7 @@ const ProductCard = () => {
               <div className="detailbarang-quantity-section">
                 <button className="detailbarang-quantity-btn" onClick={handleDecrease} disabled={quantity <= 1}>-</button>
                 <span className="detailbarang-quantity">{quantity}</span>
-                <button className="detailbarang-quantity-btn" onClick={handleIncrease} disabled={quantity >= product.stokBarang}>+</button>
+                <button className="detailbarang-quantity-btn" onClick={handleIncrease} disabled={quantity >= product.stock}>+</button>
               </div>
               <div className="detailbarang-subtotal">
                 <p>Subtotal: Rp {subtotal.toLocaleString()}</p>

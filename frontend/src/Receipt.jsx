@@ -1,8 +1,10 @@
 import React from 'react';
 import { jsPDF } from "jspdf";
 import './Receipt.css';
+import { useNavigate } from 'react-router-dom';
 
 const ReceiptPage = () => {
+  const navigate = useNavigate();
   const storeInfo = {
     name: "Toko G&C",
     address: "Jl. Mawar No. 45, Purwadadi, Subang, Jawa Barat, Indonesia",
@@ -55,54 +57,58 @@ const ReceiptPage = () => {
   };
 
   return (
-    <div className="receipt-container">
-      <h1>Receipt</h1>
-      {/* Store Information */}
-      <div className="section">
-        <h2>{storeInfo.name}</h2>
-        <p>{storeInfo.address}</p>
-      </div>
+    <div className='receipt-page'>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+      <header className="receipt-header">
+        <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-home" onClick={() => navigate("/gallery")}></span>
+        <div className="receipt-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
+      </header>
+      <div className="receipt-container" id="main">
+        
+        <h1>Receipt</h1>
+        <div className="receipt-section">
+          <h2>{storeInfo.name}</h2>
+          <p>{storeInfo.address}</p>
+        </div>
 
-      {/* Buyer Information */}
-      <div className="section">
-        <h3>Informasi Pembeli</h3>
-        <p>Nama: {buyerInfo.name}</p>
-        <p>Alamat: {buyerInfo.address}</p>
-      </div>
+        <div className="receipt-section">
+          <h3>Informasi Pembeli</h3>
+          <p>Nama: {buyerInfo.name}</p>
+          <p>Alamat: {buyerInfo.address}</p>
+        </div>
 
-      {/* Order Details */}
-      <div className="section">
-        <h3>Detail Barang</h3>
-        <table className="order-table">
-          <thead>
-            <tr>
-              <th>Produk</th>
-              <th>Jumlah</th>
-              <th>Harga</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderDetails.map((item, index) => (
-              <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.quantity}</td>
-                <td>Rp {item.price.toLocaleString()}</td>
+        <div className="receipt-section">
+          <h3>Detail Barang</h3>
+          <table className="receipt-order-table">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {orderDetails.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.name}</td>
+                  <td>{item.quantity}</td>
+                  <td>Rp {item.price.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Total Price */}
-      <div className="section total-section">
-        <h3>Total Harga</h3>
-        <p>Rp {totalPrice.toLocaleString()}</p>
-      </div>
+        <div className="receipt-total-section">
+          <h3>Total Harga</h3>
+          <p>Rp {totalPrice.toLocaleString()}</p>
+        </div>
 
-      {/* Download Button */}
-      <button className="btn-download" onClick={generatePDF}>
-        Unduh Receipt
-      </button>
+        <button className="receipt-btn-download" onClick={generatePDF}>
+          Unduh Receipt
+        </button>
+      </div>
     </div>
   );
 };

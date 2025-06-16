@@ -19,18 +19,8 @@ body {
   padding: 5px 10px;
 }
 
-.gallery-logo {
-  font-family: 'arial';
-  font-size: 24px;
-  font-weight: bold;
-}
-
 .gallery-location {
   font-family: 'arial';
-  font-size: 14px;
-}
-
-.gallery-cart {
   font-size: 14px;
 }
 
