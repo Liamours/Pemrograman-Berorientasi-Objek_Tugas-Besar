@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -77,21 +78,15 @@ public class UserController {
     @PutMapping("/password/change")
     public ResponseEntity<ApiResponse> changePassword(
             Authentication authentication,
-            @Valid @RequestBody ChangePasswordRequest request,
-            BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            FieldError firstError = bindingResult.getFieldErrors().get(0);
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false,
-                            "Validation error: " + firstError.getField() + " " + firstError.getDefaultMessage()));
-        }
-
+            @Valid @RequestBody ChangePasswordRequest request) {
         try {
             userService.changePassword(authentication.getName(), request);
             return ResponseEntity.ok(
                     new ApiResponse(true, "Password changed successfully")
             );
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(new ApiResponse(false, e.getReason()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse(false, "Password change failed: " + e.getMessage()));
@@ -125,20 +120,6 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "Upgrade failed: " + e.getMessage()));
-        }
-    }
-
-    @GetMapping("/alluser")
-    @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<ApiResponse> getAllUsers() {
-        try {
-            List<Map<String, Object>> users = userService.getAllUsers();
-            return ResponseEntity.ok(
-                    new ApiResponse(true, "Users retrieved successfully", users)
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "Failed to retrieve users: " + e.getMessage()));
         }
     }
 

@@ -144,27 +144,4 @@ public class UserService {
         clientRepository.save(client);
     }
 
-    public List<Map<String, Object>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<Map<String, Object>> result = new ArrayList<>();
-
-        for (User user : users) {
-            Map<String, Object> userData = new HashMap<>();
-            userData.put("id", user.getId());
-            userData.put("email", user.getEmail());
-            userData.put("name", user.getNamaUser());
-            userData.put("role", user.getPeran());
-            userData.put("createdAt", user.getCreatedAt());
-            userData.put("updatedAt", user.getUpdatedAt());
-
-            if (user instanceof Client client) {
-                userData.put("isMember", client.isMember());
-                userData.put("address", client.getAlamat());
-            }
-
-            result.add(userData);
-        }
-
-        return result;
-    }
 }
