@@ -265,7 +265,7 @@ const ProductCardAdmin = () => {
               </button>
               <br />
               <br />
-              <button className="detailbarang-admin-delete-btn" onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Akun</button>
+              <button className="detailbarang-admin-delete-btn" onClick={hapus}><i className="glyphicon glyphicon-trash"></i> Hapus Barang</button>
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import Keranjang from './KeranjangPage';
 import GalleryPageAdmin from './GalleryBarangAdmin';
 import EditBarang from './EditBarangAdminPage';
 import Receipt from './Receipt'
+import OrderDetail from './OrderDetailPage';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/admin/gallery" element={<GalleryPageAdmin />} />
         <Route path="/admin/edit" element={<EditBarang />} />
         <Route path="/Receipt" element={<Receipt />} />
+        <Route path="/OrderDetail" element={<OrderDetail />} />
       </Routes>
     </Router>
   );
