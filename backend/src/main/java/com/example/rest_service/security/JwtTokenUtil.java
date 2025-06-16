@@ -26,14 +26,12 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // Method untuk generate token dengan user ID
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId()); // Tambahkan user ID ke claims
         return createToken(claims, user.getEmail());
     }
 
-    // Method lama untuk backward compatibility
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
@@ -58,7 +56,6 @@ public class JwtTokenUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Method baru untuk extract user ID
     public Long extractUserId(String token) {
         return extractClaim(token, claims -> claims.get("userId", Long.class));
     }

@@ -8,13 +8,11 @@ import java.util.Optional;
 
 public interface BarangRepository extends JpaRepository<Barang, Integer> {
 
-    // Cari barang yang mengandung nama tertentu
     List<Barang> findByNamaBarangContainingIgnoreCase(String namaBarang);
 
-    // Cari barang yang mengandung tipe tertentu
     List<Barang> findByTipeContainingIgnoreCase(String tipeBarang);
 
     Optional<Barang> findById(Integer barangId);
-    // Cari barang berdasarkan nama dan tipe
+
     List<Barang> findByNamaBarangContainingIgnoreCaseAndTipeContainingIgnoreCase(String namaBarang, String tipeBarang);
 }

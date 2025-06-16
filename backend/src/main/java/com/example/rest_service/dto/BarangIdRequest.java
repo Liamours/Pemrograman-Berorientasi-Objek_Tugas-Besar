@@ -6,7 +6,6 @@ public class BarangIdRequest {
     @JsonProperty("barang_id")
     private Integer barangId;
 
-    // Getter and Setter
     public Integer getBarangId() {
         return barangId;
     }

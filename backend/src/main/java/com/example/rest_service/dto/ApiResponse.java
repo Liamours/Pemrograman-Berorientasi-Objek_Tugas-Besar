@@ -9,10 +9,8 @@ public class ApiResponse {
     private String message;
     private Object data;
 
-    // No-arg constructor (required for JSON deserialization)
     public ApiResponse() {}
 
-    // Existing constructors
     public ApiResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
@@ -24,7 +22,6 @@ public class ApiResponse {
         this.data = data;
     }
 
-    // Getters and setters (also required for proper JSON serialization)
     public boolean isSuccess() { return success; }
     public void setSuccess(boolean success) { this.success = success; }
     public String getMessage() { return message; }

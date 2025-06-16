@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 @Entity
 @DiscriminatorValue("Admin")
 public class Admin extends User {
-
-    // Constructors
     public Admin() {
         super();
     }

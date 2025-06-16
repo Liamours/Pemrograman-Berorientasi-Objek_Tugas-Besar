@@ -17,7 +17,6 @@ public class Client extends User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    // Constructors
     public Client() {
         super();
     }
@@ -33,7 +32,6 @@ public class Client extends User {
         this.clientDetail = new ClientDetail(isMember, alamat);
     }
 
-    // Getters and Setters
     public ClientDetail getClientDetails() { return clientDetail; }
     public void setClientDetails(ClientDetail clientDetails) { this.clientDetail = clientDetails; }
 
@@ -43,7 +41,6 @@ public class Client extends User {
     public List<Order> getOrders() { return orders; }
     public void setOrders(List<Order> orders) { this.orders = orders; }
 
-    // Convenience methods
     public boolean isMember() {
         return clientDetail != null ? clientDetail.isIsmember() : false;
     }

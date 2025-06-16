@@ -12,7 +12,6 @@ public class OrderDTO {
     private String alamatTujuan;
     private String statusOrder;
 
-    // Getter dan Setter untuk orderId
     public Integer getOrderId() {
         return orderId;
     }
@@ -21,7 +20,6 @@ public class OrderDTO {
         this.orderId = orderId;
     }
 
-    // Getter dan Setter untuk barangId
     public Integer getBarangId() {
         return barangId;
     }
@@ -30,7 +28,6 @@ public class OrderDTO {
         this.barangId = barangId;
     }
 
-    // Getter dan Setter untuk jumlahBarang
     public Integer getJumlahBarang() {
         return jumlahBarang;
     }
@@ -39,7 +36,6 @@ public class OrderDTO {
         this.jumlahBarang = jumlahBarang;
     }
 
-    // Getter dan Setter untuk hargaPerUnit
     public Double getHargaPerUnit() {
         return hargaPerUnit;
     }
@@ -48,7 +44,6 @@ public class OrderDTO {
         this.hargaPerUnit = hargaPerUnit;
     }
 
-    // Getter dan Setter untuk tanggalOrder
     public LocalDateTime getTanggalOrder() {
         return tanggalOrder;
     }
@@ -57,7 +52,6 @@ public class OrderDTO {
         this.tanggalOrder = tanggalOrder;
     }
 
-    // Getter dan Setter untuk alamatTujuan
     public String getAlamatTujuan() {
         return alamatTujuan;
     }
@@ -66,7 +60,6 @@ public class OrderDTO {
         this.alamatTujuan = alamatTujuan;
     }
 
-    // Getter dan Setter untuk statusOrder
     public String getStatusOrder() {
         return statusOrder;
     }

@@ -34,7 +34,6 @@ public class NewBarangRequest {
     private Integer stokBarang;
 
     // Getters and Setters
-
     public String getNamaBarang() {
         return namaBarang;
     }
