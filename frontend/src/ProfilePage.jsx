@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileStyle.css';
 import { useNavigate } from 'react-router-dom';
-import './LogoutStyle.css';
 
 function ProfilePage() {
   const [name, setName] = useState("");

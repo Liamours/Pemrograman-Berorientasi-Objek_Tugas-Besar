@@ -2,7 +2,13 @@ body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
+}
+
+.checkout-page {
+  display:flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #C1F3C8;
 }
 
 .checkout-container {
@@ -15,7 +21,7 @@ body {
 }
 
 .contain-checkout {
-    background-color: #C1F3C8;
+  background-color: #C1F3C8;
 }
 
 h1, h2 {
@@ -100,7 +106,7 @@ h1, h2 {
   background-color: #2f855a;
 }
 
-.header {
+.checkout-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -122,4 +128,102 @@ h1, h2 {
 
 .cart {
   font-size: 14px;
+}
+
+.checkout-overlay {
+  align-content: center;
+  justify-items: center;
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+}
+
+.checkout-overlay-content {
+  position: relative;
+  top: 25%;
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.checkout-overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.checkout-overlay a:hover, .checkout-overlay a:focus {
+  color: #f1f1f1;
+}
+
+.checkout-overlay .checkout-closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+}
+
+.checkout-popup-container {
+  background-color: #fff;
+  padding: 20px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.checkout-popup-container h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.checkout-popup-container p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.checkout-popup-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.checkout-popup-actions .checkout-btn-cancel,
+.checkout-popup-actions .checkout-btn-confirm {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.checkout-popup-actions .checkout-btn-cancel {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+.checkout-popup-actions .checkout-btn-cancel:hover {
+  background-color: #f5f5f5;
+}
+
+.checkout-popup-actions .checkout-btn-confirm {
+  background-color: #000;
+  color: #fff;
+}
+
+.checkout-popup-actions .checkout-btn-confirm:hover {
+  background-color: #333;
 }
