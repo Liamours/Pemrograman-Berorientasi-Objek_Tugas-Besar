@@ -141,6 +141,7 @@ const CheckoutPage = () => {
 
   return (
     <div className="checkout-page">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
       <div id="ConfirmCheckout" className="checkout-overlay">
         <div className="checkout-popup-container">
           <h2>Checkout Berhasil</h2>
@@ -170,7 +171,6 @@ const CheckoutPage = () => {
           <table className="order-table">
             <thead>
               <tr>
-                <th>Pilih</th>
                 <th>Produk</th>
                 <th>Harga Satuan</th>
                 <th>Kuantitas</th>
@@ -180,13 +180,6 @@ const CheckoutPage = () => {
             <tbody>
               {orders.map((item, idx) => (
                 <tr key={idx}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedOrderIds.includes(item.orderId)}
-                      onChange={(e) => handleCheckboxChange(item.orderId, e.target.checked)}
-                    />
-                  </td>
                   <td>{item.nama_barang || `Produk #${item.barangId}`}</td>
                   <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
                   <td>{item.jumlahBarang}</td>
