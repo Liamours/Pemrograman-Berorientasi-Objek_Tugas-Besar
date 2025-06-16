@@ -18,7 +18,6 @@ const ShoppingCart = () => {
     document.getElementById("main").style.marginLeft = "0";
   };
 
-  // Fetch detail barang per barangId
   const fetchNamaBarang = async (barangId) => {
     try {
       const response = await fetch("http://localhost:8080/barang/detail", {
