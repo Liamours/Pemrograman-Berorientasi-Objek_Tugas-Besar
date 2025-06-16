@@ -91,7 +91,23 @@ public class UserService {
         }
     }
 
-    
+    @Transactional
+    public void changePassword(String email, ChangePasswordRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New password and confirmation password don't match");
+        }
+
+        if (!request.getCurrentPassword().equals(user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
+        }
+
+        user.setPassword(request.getNewPassword());
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
 
     @Transactional
     public void deleteAccount(String email, DeleteAccountRequest request) {
