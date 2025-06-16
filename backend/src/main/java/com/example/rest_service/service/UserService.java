@@ -130,6 +130,18 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    
+    @Transactional
+    public void upgradeToMember(String email) {
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+
+        if (client.isMember()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already a member");
+        }
+
+        client.setMember(true);
+        client.setUpdatedAt(LocalDateTime.now());
+        clientRepository.save(client);
+    }
 
 }
