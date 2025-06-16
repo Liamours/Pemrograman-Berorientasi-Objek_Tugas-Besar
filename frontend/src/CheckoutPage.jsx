@@ -6,8 +6,11 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [selectedBank, setSelectedBank] = useState('');
   const [orders, setOrders] = useState([]);
-  const [selectedOrderIds, setSelectedOrderIds] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [discountedTotal, setDiscountedTotal] = useState(0);
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [isMember, setIsMember] = useState(false);
+  const [alamat, setAlamat] = useState('');
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -20,9 +23,7 @@ const CheckoutPage = () => {
       });
       const data = await res.json();
       if (data.success) {
-        return {
-          nama_barang: data.data.nama_barang,
-        };
+        return { nama_barang: data.data.nama_barang };
       }
     } catch (error) {
       console.error("Error fetching detail barang:", error);
@@ -30,118 +31,131 @@ const CheckoutPage = () => {
     return { nama_barang: "Tidak Diketahui" };
   };
 
-  const fetchCartFallback = async () => {
-    try {
-      const res = await fetch("http://localhost:8080/api/cart", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const text = await res.text();
-      if (!text) return;
-
-      const data = JSON.parse(text);
-      if (data.orders && data.orders.length > 0) {
-        const grouped = data.orders.reduce((acc, item) => {
-          if (!acc[item.orderId]) {
-            acc[item.orderId] = { orderId: item.orderId, barang: [] };
-          }
-          acc[item.orderId].barang.push(item);
-          return acc;
-        }, {});
-        const groupedOrders = Object.values(grouped).flatMap(order => order.barang);
-
-        for (let item of groupedOrders) {
-          const detail = await fetchNamaBarang(item.barangId);
-          item.nama_barang = detail.nama_barang;
-        }
-
-        setOrders(groupedOrders);
-        const total = groupedOrders.reduce((acc, item) => acc + item.hargaPerUnit * item.jumlahBarang, 0);
-        setTotalPrice(total);
+  useEffect(() => {
+    // Ambil profil user
+    fetch("http://localhost:8080/api/user/profile/client", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json"
       }
-    } catch (err) {
-      console.error("Fallback fetch /api/cart error:", err);
-    }
-  };
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.data) {
+          setIsMember(data.data.isMember || false);
+          setAlamat(data.data.address || "-");
+        }
+      })
+      .catch(err => console.error("Error fetching user profile:", err));
+  }, [token]);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/checkput");
-        if (!res.ok) {
-          console.warn("checkput not OK:", res.status);
-          return fetchCartFallback();
-        }
+        const selected = JSON.parse(localStorage.getItem("selectedOrders")) || [];
+        setSelectedOrders(selected);
 
-        const text = await res.text();
-        if (!text) {
-          console.warn("checkput response empty");
-          return fetchCartFallback();
-        }
+        const res = await fetch("http://localhost:8080/api/cart", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
 
-        const data = JSON.parse(text);
-        if (data.orders && data.orders.length > 0) {
-          const enrichedOrders = await Promise.all(
-            data.orders.map(async (item) => {
-              const detail = await fetchNamaBarang(item.barangId);
-              return {
-                ...item,
-                nama_barang: detail.nama_barang,
+        const data = await res.json();
+        if (data.orders) {
+          const grouped = data.orders.reduce((acc, item) => {
+            if (!acc[item.orderId]) {
+              acc[item.orderId] = {
+                orderId: item.orderId,
+                tanggal: item.tanggal,
+                barang: [],
               };
-            })
+            }
+            acc[item.orderId].barang.push(item);
+            return acc;
+          }, {});
+
+          const groupedOrders = Object.values(grouped).filter(order =>
+            selected.includes(order.orderId)
           );
 
-          setOrders(enrichedOrders);
-          const total = enrichedOrders.reduce((acc, item) => acc + item.hargaPerUnit * item.jumlahBarang, 0);
+          let enrichedItems = [];
+          for (let order of groupedOrders) {
+            for (let item of order.barang) {
+              const detail = await fetchNamaBarang(item.barangId);
+              enrichedItems.push({
+                ...item,
+                nama_barang: detail.nama_barang,
+              });
+            }
+          }
+
+          setOrders(enrichedItems);
+          const total = enrichedItems.reduce((acc, item) => acc + item.hargaPerUnit * item.jumlahBarang, 0);
           setTotalPrice(total);
-        } else {
-          fetchCartFallback();
+
+          const discount = isMember ? total * 0.1 : 0;
+          setDiscountedTotal(total - discount);
         }
       } catch (error) {
-        console.error("Error fetching checkput:", error);
-        fetchCartFallback();
+        console.error("Error fetching orders for checkout:", error);
       }
     };
 
     fetchOrders();
-  }, [token]);
-
-  const handleCheckboxChange = (orderId, checked) => {
-    let updated = [...selectedOrderIds];
-    if (checked) {
-      if (!updated.includes(orderId)) updated.push(orderId);
-    } else {
-      updated = updated.filter(id => id !== orderId);
-    }
-    setSelectedOrderIds(updated);
-    localStorage.setItem("orders", JSON.stringify(updated));
-  };
-
+  }, [token, isMember]);
 
   const closePopupConfirm = () => {
     document.getElementById("ConfirmCheckout").style.width = "0%";
     navigate("/Receipt");
   };
 
-  const handlePaymentChange = (event) => {
-    setPaymentMethod(event.target.value);
+  const handlePaymentChange = (e) => {
+    setPaymentMethod(e.target.value);
     setSelectedBank('');
   };
 
-  const handleBankChange = (event) => {
-    setSelectedBank(event.target.value);
+  const handleBankChange = (e) => {
+    setSelectedBank(e.target.value);
   };
 
-  const handleConfirmCheckout = () => {
-    document.getElementById("ConfirmCheckout").style.width = "100%";
+  const handleConfirmCheckout = async () => {
+    try {
+      const payload = {
+        orders: orders.map(item => ({
+          orderId: item.orderId,
+          barangId: item.barangId,
+          jumlahBarang: item.jumlahBarang,
+        })),
+        paymentMethod,
+        bank: paymentMethod === "Transfer" ? selectedBank : null,
+        total: discountedTotal
+      };
+
+      const res = await fetch("http://localhost:8080/api/checkout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("Checkout gagal");
+
+      document.getElementById("ConfirmCheckout").style.width = "100%";
+    } catch (err) {
+      console.error("Error saat checkout:", err);
+    }
   };
 
   return (
     <div className="checkout-page">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
       <div id="ConfirmCheckout" className="checkout-overlay">
         <div className="checkout-popup-container">
           <h2>Checkout Berhasil</h2>
@@ -153,9 +167,9 @@ const CheckoutPage = () => {
       </div>
 
       <header className="checkout-header">
-        <span style={{ cursor: "pointer", fontSize: "40px" }} className="glyphicon glyphicon-menu-left" onClick={() => (navigate('/Keranjang'))}></span>
+        <span className="glyphicon glyphicon-menu-left" style={{ cursor: "pointer", fontSize: "40px" }} onClick={() => navigate('/Keranjang')}></span>
         <div className="gallery-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
-        <img style={{ width: "100px" }} src="/images/logogncmin.png" alt="Logo" />
+        <img src="/images/logogncmin.png" alt="Logo" style={{ width: "100px" }} />
       </header>
 
       <div className="checkout-container">
@@ -163,7 +177,9 @@ const CheckoutPage = () => {
 
         <div className="section">
           <h2>Alamat Pengiriman</h2>
-          <textarea className="address-input" placeholder="Masukkan alamat pengiriman" rows="3" />
+          <div className="address-display">
+            <p>{alamat}</p>
+          </div>
         </div>
 
         <div className="section">
@@ -218,8 +234,10 @@ const CheckoutPage = () => {
         </div>
 
         <div className="section total-section">
-          <h2>Total Harga</h2>
-          <p>{`Rp ${totalPrice.toLocaleString("id-ID")}`}</p>
+          <h2>Ringkasan Harga</h2>
+          <p>Subtotal: Rp {totalPrice.toLocaleString("id-ID")}</p>
+          <p>Potongan Member: Rp {isMember ? (totalPrice * 0.1).toLocaleString("id-ID") : "0"}</p>
+          <h3>Total: Rp {discountedTotal.toLocaleString("id-ID")}</h3>
         </div>
 
         <button className="btn-confirm-checkout" onClick={handleConfirmCheckout}>
