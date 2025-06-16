@@ -3,6 +3,7 @@ import "./KeranjangStyle.css";
 import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart = () => {
+  const [quantity, setQuantity] = useState(1);
   const [orders, setOrders] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const token = localStorage.getItem("token");
@@ -18,7 +19,6 @@ const ShoppingCart = () => {
     document.getElementById("main").style.marginLeft = "0";
   };
 
-  // Fetch detail barang per barangId
   const fetchNamaBarang = async (barangId) => {
     try {
       const response = await fetch("http://localhost:8080/barang/detail", {
@@ -37,6 +37,14 @@ const ShoppingCart = () => {
       console.error("Error fetching detail for barangId", barangId, err);
     }
     return { nama_barang: "Tidak Diketahui", image_url: null };
+  };
+
+  const handleIncrease = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    setQuantity(prev => prev - 1);
   };
 
   useEffect(() => {
@@ -63,7 +71,6 @@ const ShoppingCart = () => {
           }, {});
           const groupedOrders = Object.values(grouped);
 
-          // Lengkapi setiap barang dengan nama dan image
           for (let order of groupedOrders) {
             for (let item of order.barang) {
               const detail = await fetchNamaBarang(item.barangId);
@@ -112,7 +119,7 @@ const ShoppingCart = () => {
                   <th>Harga Satuan</th>
                   <th>Kuantitas</th>
                   <th>Total Harga</th>
-                  <th style={{ textAlign:"right" }}>Hapus</th>
+                  <th>Hapus</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -120,48 +127,56 @@ const ShoppingCart = () => {
             <p style={{ justifySelf:"center" }} >Keranjang kosong.</p>
           </div>
         ) : (
-          orders.map((order) => (
-            <div key={order.orderId} className="order-container">
-              <h3>Order #{order.orderId} - {order.tanggal}</h3>
+            <div className="order-container">
               <table className="cart-table">
-                <thead>
-                  <tr>
-                    <th>Pilih</th>
-                    <th>Produk</th>
-                    <th>Harga Satuan</th>
-                    <th>Kuantitas</th>
-                    <th>Total Harga</th>
-                    <th style={{ textAlign:"right" }}>Hapus</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.barang.map((item, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <input type="checkbox" value="true" />
-                      </td>
-                      <td>
-                        <img
-                          src={item.image_url || "/images/grownncheer_logo.png"}
-                          alt={`Produk ${item.barangId}`}
-                          className="product-image"
-                        />
-                        <span>{item.nama_barang}</span>
-                      </td>
-                      <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
-                      <td>{item.jumlahBarang}</td>
-                      <td>{`Rp ${(item.hargaPerUnit * item.jumlahBarang).toLocaleString("id-ID")}`}</td>
-                      <td>
-                        <span style={{ color:"red",fontSize:"20px" }} className="glyphicon glyphicon-remove"></span>
-                      </td>
+                  <thead>
+                    <tr>
+                      <th>Pilih</th>
+                      <th>Produk</th>
+                      <th>Harga Satuan</th>
+                      <th>Kuantitas</th>
+                      <th>Total Harga</th>
+                      <th>Detail</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {orders.map((order) =>
+                      order.barang.map((item, idx) => (
+                        <tr key={`${order.orderId}-${idx}`}>
+                          <td>
+                            <input type="checkbox" value="true" />
+                          </td>
+                          <td>
+                            <img
+                              src={item.image_url || ""}
+                              alt={`Produk ${item.barangId}`}
+                              className="product-image"
+                            />
+                            <span>{item.nama_barang}</span>
+                          </td>
+                          <td>{`Rp ${item.hargaPerUnit.toLocaleString("id-ID")}`}</td>
+                          <td>
+                            <div className="detailbarang-quantity-section">
+                              <button className="detailbarang-quantity-btn" onClick={handleDecrease} disabled={item.jumlahBarang <= 1}>-</button>
+                              <span className="detailbarang-quantity">{item.jumlahBarang}</span>
+                              <button className="detailbarang-quantity-btn" onClick={handleIncrease}>+</button>
+                            </div>
+                          </td>
+                          <td>{`Rp ${(item.hargaPerUnit * item.jumlahBarang).toLocaleString("id-ID")}`}</td>
+                          <td>
+                            <span
+                              style={{ color: "red", fontSize: "20px" }}
+                              className="glyphicon glyphicon-remove"
+                            ></span>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               <hr />
             </div>
-          ))
-        )}
+          )}
         <div className="cart-summary">
           <p>Subtotal: Rp {totalPrice.toLocaleString("id-ID")}</p>
           <p>Potongan: Rp 0</p>
