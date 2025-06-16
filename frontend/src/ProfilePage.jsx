@@ -61,7 +61,7 @@ function ProfilePage() {
     setNotification({ show: true, message });
     setTimeout(() => {
       setNotification({ show: false, message: '' });
-    }, 2000); 
+    }, 5000); 
   };
 
   const Notification = ({ message, onClose }) => {

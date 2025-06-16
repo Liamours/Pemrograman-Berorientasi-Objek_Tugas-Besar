@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function AdminDashboardPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -47,6 +48,16 @@ function AdminDashboardPage() {
 
     const main = document.getElementById("main");
     if (main) main.style.marginLeft = "0px";
+  };
+
+  const sidebar = () => {
+    document.getElementById("Sidebar").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+  };
+
+  const closeSidebar = () => {
+    document.getElementById("Sidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
   };
 
   const confirmChange = () => {
@@ -204,8 +215,9 @@ useEffect(() => {
           <h2>Yakin Ingin Hapus Akun?</h2>
           <p style={{ color: "#FF0000" }}>Akun anda akan dihapus sepenuhnya</p>
           <div className="profile-admin-popup-actions">
-            <button className="profile-admin-btn-confirm" onClick={cancelHapus}>Batal</button>
-            <button className="profile-admin-btn-cancel" onClick={() => {
+            <input type="password" placeholder='Password akun anda' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <button className="profile-admin-btn-cancel" onClick={cancelHapus}>Batal</button>
+            <button className="profile-admin-btn-confirm" onClick={() => {
               const token = localStorage.getItem('token');
               fetch('http://localhost:8080/api/user/delete', {
                 method: 'DELETE',
@@ -214,7 +226,7 @@ useEffect(() => {
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                  token
+                  password : password
                 })
               })
               localStorage.removeItem("token");
@@ -223,13 +235,33 @@ useEffect(() => {
           </div>
         </div>
       </div>
+      <div id="Change" className="profile-admin-overlay">
+        <div className="profile-admin-popup-container">
+          <h2>Yakin Ingin Ubah Password?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div className="profile-admin-popup-actions">
+            <button className="profile-admin-btn-cancel" onClick={cancelConfirmChange}>Batal</button>
+            <button className="profile-admin-btn-confirm" onClick={handleChangePassword}>Terima</button>
+          </div>
+        </div>
+      </div>
+      <div id="Save" className="profile-admin-overlay">
+        <div className="profile-admin-popup-container">
+          <h2>Yakin Ingin Simpan Perubahan?</h2>
+          <p>Perubahan tidak akan bisa dikembalikan</p>
+          <div className="profile-admin-popup-actions">
+            <button className="profile-admin-btn-cancel" onClick={cancelConfirmSave}>Batal</button>
+            <button className="profile-admin-btn-confirm" onClick={handleSaveAccountSettings}>Terima</button>
+          </div>
+        </div>
+      </div>
       <header className="profile-admin-header">
-        <span style={{ cursor:"pointer",fontSize:"40px" }} class="glyphicon glyphicon-list" onClick={adminSidebar}></span>
-        <div className="profile-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
+        <span style={{ cursor:"pointer",fontSize:"40px" }} className="glyphicon glyphicon-list" onClick={sidebar}></span>
+        <div className="profile-admin-location">Location: Purwadadi - Subang, Jawa Barat, Indonesia</div>
         <img style={{ width:"100px" }} src="/images/logogncmin.png" alt="Logo" />
       </header>
       <div className="profile-admin-content">
-        <main className="profile-admin-main">
+        <main id="main" className="profile-admin-main">
           <div className="profile-admin-card">
             <h2>Informasi Akun</h2>
             <form>
@@ -240,11 +272,12 @@ useEffect(() => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+              <address htmlFor="address">Alamat</address>
               <label htmlFor="email">Email</label>
-              <div className="admin-hanya-info" id="email">
+              <div className="hanya info" id="email">
                 {email}
               </div>
-              <button type="button" onClick={handleSaveAccountSettings}>Simpan Perubahan</button>
+              <button type="button" onClick={confirmSave}>Simpan Perubahan</button>
             </form>
           </div>
           <div className="profile-admin-card">
@@ -289,7 +322,7 @@ useEffect(() => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <button type="button" onClick={handleChangePassword}>Ubah Password</button>
+              <button type="button" onClick={confirmChange}>Ubah Password</button>
             </form>
           </div>
           <div className='profile-admin-bottom'>
