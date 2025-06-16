@@ -1,4 +1,4 @@
-# 🌱 Grow and Cheer - Tugas Besar PBO 👨‍💻👩‍💻
+# Grow and Cheer - Tugas Besar PBO 
 
 > **Mata Kuliah:** Pemrograman Berorientasi Objek  
 > **Nama Aplikasi:** Grow and Cheer  
