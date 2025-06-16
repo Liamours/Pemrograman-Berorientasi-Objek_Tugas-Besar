@@ -20,7 +20,22 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController{
 
-    
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/profile/admin")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<ApiResponse> getAdminProfile(Authentication authentication) {
+        try {
+            Map<String, Object> profile = userService.getAdminProfile(authentication.getName());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "Admin profile retrieved successfully", profile)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, e.getMessage()));
+        }
+    }
 
     @GetMapping("/profile/client")
     @PreAuthorize("hasRole('Client')")
