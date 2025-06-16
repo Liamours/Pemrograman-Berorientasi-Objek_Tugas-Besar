@@ -39,24 +39,7 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    public Map<String, Object> getAdminProfile(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        if (!(user instanceof Admin)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied - not an admin");
-        }
-
-        Map<String, Object> profile = new HashMap<>();
-        profile.put("id", user.getId());
-        profile.put("email", user.getEmail());
-        profile.put("name", user.getNamaUser());
-        profile.put("role", user.getPeran());
-        profile.put("createdAt", user.getCreatedAt());
-        profile.put("updatedAt", user.getUpdatedAt());
-
-        return profile;
-    }
+    
 
     public Map<String, Object> getClientProfile(String email) {
         Client client = clientRepository.findByEmail(email)
